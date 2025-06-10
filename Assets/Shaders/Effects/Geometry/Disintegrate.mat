@@ -98,8 +98,8 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DissolveEdgeColor: {r: 2.372939, g: 2.372939, b: 26.477013, a: 1}
+    - _DissolveEdgeColor: {r: 0.66116476, g: 0.66116476, b: 7.377209, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FlowDirection: {r: 0, g: 2, b: 0, a: 0}
-    - _ParticleColor: {r: 93.74572, g: 39.815784, b: 196.30107, a: 0.6313726}
+    - _ParticleColor: {r: 2.6699862, g: 1.1339995, b: 5.590881, a: 1}
   m_BuildTextureStacks: []

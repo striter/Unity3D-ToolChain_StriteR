@@ -54,7 +54,7 @@ MonoBehaviour:
   - {fileID: -924903564014875152}
   m_RendererFeatureMap: 2a846daac4186b1879ae368a09c908cf46feb556e20b325987780c004dba952af08d66df1b152af3
   m_UseNativeRenderPass: 0
-  postProcessData: {fileID: 0}
+  postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   shaders:
     blitPS: {fileID: 4800000, guid: c17132b1f77d20942aa75f8429c0f8bc, type: 3}
@@ -140,11 +140,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_AntiAliasing:
-    mode: 2
+    mode: 0
     fxaa: 2
-    m_AdditionalSample: 1
-    m_UseDepth: 0
-    m_ContrastSkip: 0.1
-    m_RelativeSkip: 0.2
-    m_SubPixelBlend: 1
+    additionalSample: 1
+    useDepth: 0
+    contrastSkip: 0.1
+    relativeSkip: 0.2
+    subPixelBlend: 1
     blend: 0.104

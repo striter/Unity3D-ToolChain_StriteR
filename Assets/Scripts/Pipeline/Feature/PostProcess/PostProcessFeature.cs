@@ -19,7 +19,7 @@ namespace Rendering.Pipeline
         {
             m_TAASetup = new SRP_TAASetupPass() { renderPassEvent = RenderPassEvent.BeforeRenderingPrePasses };
             m_OpaquePostProcess = new PostProcessPass() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3 };
-            m_ScreenPostProcess = new PostProcessPass() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing + 1 };
+            m_ScreenPostProcess = new PostProcessPass() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
             m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_AntiAliasing, m_TAASetup);
         }
 
@@ -32,6 +32,7 @@ namespace Rendering.Pipeline
             m_AntiAliasingPostProcess.Dispose();
         }
 
+        private static List<IPostProcessBehaviour> kResults = new();
         protected override void EnqueuePass(ScriptableRenderer _renderer, ref RenderingData _renderingData)
         {
             if (!RenderResources.Enabled)
@@ -41,20 +42,27 @@ namespace Rendering.Pipeline
             
             if (_renderingData is { postProcessingEnabled: true, cameraData: { postProcessEnabled: true } })
             {
-                if (m_AntiAliasing.mode != EAntiAliasing.None)
-                    m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
-                if(m_AntiAliasing.mode == EAntiAliasing.TAA)
-                    _renderer.EnqueuePass(m_TAASetup);
+                var antiAliasing = m_AntiAliasing.mode;
+                #if UNITY_EDITOR
+                if (_renderingData.cameraData.isSceneViewCamera && UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() != null)
+                    antiAliasing = EAntiAliasing.None;
+                #endif
                 
-                m_PostprocessQueue.AddRange(_renderingData.cameraData.camera.GetComponentsInChildren<IPostProcessBehaviour>());
-                foreach (var volume in PostProcessGlobalVolume.kVolumes)
+                if(antiAliasing != EAntiAliasing.None)
+                    m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
+                if(antiAliasing == EAntiAliasing.TAA)
+                    _renderer.EnqueuePass(m_TAASetup);
+
+                _renderingData.cameraData.camera.GetComponentsInChildren(kResults);
+                m_PostprocessQueue.AddRange(kResults);
+                foreach (var volume in PostProcessVolume.kVolumes)
                 {
                     if (!CullingMaskAttribute.Enabled(_renderingData.cameraData.volumeLayerMask.value, volume.gameObject.layer))
                         continue;
                     
-                    var components = volume.GetComponents<IPostProcessBehaviour>();
-                    for (var j = 0; j < components.Length; j++)
-                        m_PostprocessQueue.Add(components[j]);
+                    volume.GetComponents(kResults);
+                    for (var j = 0; j < kResults.Count; j++)
+                        m_PostprocessQueue.Add(kResults[j]);
                 }
             }
             
@@ -68,19 +76,19 @@ namespace Rendering.Pipeline
             for (int i = 0; i < postProcessCount; i++)
             {
                 var postProcess = m_PostprocessQueue[i];
-                postProcess.ValidateParameters();
-                if (!postProcess.m_Enabled)
+                if (!postProcess.Validate(ref _renderingData))
                     continue;
                 
-                if(postProcess.m_OpaqueProcess)
+                if(postProcess.OpaqueProcess)
                     m_OpaqueProcessing.Add(postProcess);
                 else
                     m_ScreenProcessing.Add(postProcess);
             }
 
-            if(m_OpaqueProcessing.Count>0)
+            if (m_OpaqueProcessing.Count > 0)
                 _renderer.EnqueuePass(m_OpaquePostProcess.Setup(m_OpaqueProcessing));
-            if(m_ScreenProcessing.Count>0)
+
+            if (m_ScreenProcessing.Count > 0)
                 _renderer.EnqueuePass(m_ScreenPostProcess.Setup(m_ScreenProcessing));
         }
     }

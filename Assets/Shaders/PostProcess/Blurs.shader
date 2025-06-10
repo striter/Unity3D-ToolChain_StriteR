@@ -17,13 +17,13 @@
     
     #pragma multi_compile_local_fragment _ _DOF_DISTANCE
     #pragma multi_compile_local_fragment _ _DOF_MASK
-    
+
+    #pragma multi_compile _ _BLOOM
     #pragma multi_compile _ _FIRSTBLUR
     #pragma multi_compile _ _FINALBLUR
     #pragma multi_compile_local_fragment _ _ENCODE
     #include "Assets/Shaders/Library/PostProcess.hlsl"
 	#include "BlurFilters.hlsl"
-	
     
 	//Kawase
 	half4 fragKawase(v2f_img i):SV_TARGET
@@ -208,7 +208,12 @@
 		half3 srcCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),i.uv,_MainTex_TexelSize,_BlurSize);
 		half3 mipCol = DualFilteringUpFilter(TEXTURE2D_ARGS(_PreDownSample,sampler_PreDownSample),i.uv,_PreDownSample_TexelSize,_BlurSize);
 
-		return RecordBlurTex(srcCol) + RecordBlurTex(mipCol);
+		half4 finalCol = RecordBlurTex(srcCol) + RecordBlurTex(mipCol);
+		#ifndef _BLOOM
+			finalCol = finalCol * 0.5f;
+		#endif
+		
+		return finalCol;
 	}
 
     half4 fragNextGenUpSampleFinal(v2f_img i):SV_TARGET

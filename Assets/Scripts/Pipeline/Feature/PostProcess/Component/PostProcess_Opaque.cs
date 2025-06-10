@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq.Extensions;
 using Rendering.Pipeline;
 using Rendering.Pipeline.Mask;
@@ -8,14 +6,13 @@ using Runtime.Random;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using Random = System.Random;
 
 namespace Rendering.PostProcess
 {
     public class PostProcess_Opaque:APostProcessBehaviour<FOpaqueCore, DOpaque>
     {
         public bool m_Opaque = true;
-        public override bool m_OpaqueProcess => m_Opaque;
+        public override bool OpaqueProcess => m_Opaque;
         public override EPostProcess Event => EPostProcess.Opaque;
 
         #region HelperFunc
@@ -25,14 +22,20 @@ namespace Rendering.PostProcess
             if (m_ScanCoroutine==null)
                 m_ScanCoroutine =  CoroutineHelper.CreateSingleCoroutine();
             m_ScanCoroutine.Stop();
-            m_Data.m_Scan = true;
-            m_Data.m_ScanData.m_Origin = origin;
-            m_ScanCoroutine.Start(TIEnumerators.ChangeValueTo((float value) => {
-                m_Data.m_ScanData.m_Elapse= radius * value; 
-                ValidateParameters();
+            var data = GetData();
+            data.scan = true;
+            data.scanData.origin = origin;
+            SetEffectData(data);
+            var startColor = data.scanData.color;
+            m_ScanCoroutine.Start(TIEnumerators.ChangeValueTo(value => {
+                var data = GetData();
+                data.scanData.elapse = radius * value;
+                data.scanData.color = startColor.SetA(1f - value);
+                SetEffectData(data);
             }, 0, 1, duration, () => { 
-                m_Data.m_Scan = false;
-                ValidateParameters();
+                var data = GetData();
+                data.scan = false;
+                SetEffectData(data);
             }));
         }
         #endregion
@@ -44,28 +47,28 @@ namespace Rendering.PostProcess
             if (!enabled||!m_DrawGizmos)
                 return;
 
-            if (m_Data.m_Scan)
+            if (m_Data.scan)
             {
-                ref var data=ref m_Data. m_ScanData ;
+                ref var data=ref m_Data. scanData ;
                 Gizmos.color = Color.white;
-                Gizmos.DrawSphere(data.m_Origin, .2f);
-                Gizmos.color = data.m_Color;
-                Gizmos.DrawWireSphere(data.m_Origin, data.m_Elapse);
-                Gizmos.DrawWireSphere(data.m_Origin, data.m_Elapse + data.m_Width);
+                Gizmos.DrawSphere(data.origin, .2f);
+                Gizmos.color = data.color;
+                Gizmos.DrawWireSphere(data.origin, data.elapse);
+                Gizmos.DrawWireSphere(data.origin, data.elapse + data.width);
             }
 
 
-            if (m_Data.m_Area)
+            if (m_Data.area)
             {
-                ref var data = ref m_Data.m_AreaData;
+                ref var data = ref m_Data.areaData;
                 Gizmos.color = Color.white;
-                Gizmos.DrawSphere(data.m_Origin, .1f);
+                Gizmos.DrawSphere(data.origin, .1f);
 
-                Gizmos.color = data.m_FillColor;
-                Gizmos.DrawWireSphere(data.m_Origin,data.m_Radius);
+                Gizmos.color = data.fillColor;
+                Gizmos.DrawWireSphere(data.origin,data.radius);
 
-                Gizmos.color = data.m_EdgeColor;
-                Gizmos.DrawWireSphere(data.m_Origin,data.m_Radius+data.m_Width);
+                Gizmos.color = data.edgeColor;
+                Gizmos.DrawWireSphere(data.origin,data.radius+data.width);
             }
         }
 #endif
@@ -112,26 +115,26 @@ namespace Rendering.PostProcess
             m_RenderFrontDepth.SetInt(KShaderProperties.kCull,(int)CullMode.Back);
         }
         
-        public override void OnValidate(ref DOpaque _data)
+        public override bool Validate(ref RenderingData _renderingData,ref DOpaque _data)
         {
-            base.OnValidate(ref _data);
-            if(m_Material.EnableKeyword(kScanKW,_data.m_Scan))
-                _data.m_ScanData.Apply(m_Material);
-            if(m_Material.EnableKeyword(kAreaKW,_data.m_Area))
-                _data.m_AreaData.Apply(m_Material);
-            if (m_Material.EnableKeyword(kOutlineKW, _data.m_Outline))
-                _data.m_OutlineData.Apply(m_Material);
-            if(m_Material.EnableKeyword(kHighlightKW,_data.m_MaskedHighlight))
-                _data.m_HighlightData.Apply(m_Material,m_HighlightBlur);
-            if (m_Material.EnableKeyword(kAmbientOcclusionKW, _data.m_SSAO))
-                _data.m_SSAOData.Apply(m_Material);
-            if(m_Material.EnableKeyword(kVolumetricCloudKW,_data.m_VolumetricCloud))
-                _data.m_VolumetricCloudData.Apply(m_Material);
+            if(m_Material.EnableKeyword(kScanKW,_data.scan))
+                _data.scanData.Validate(m_Material);
+            if(m_Material.EnableKeyword(kAreaKW,_data.area))
+                _data.areaData.Validate(m_Material);
+            if (m_Material.EnableKeyword(kOutlineKW, _data.outline))
+                _data.outlineData.Validate(m_Material);
+            if(m_Material.EnableKeyword(kHighlightKW,_data.maskedHighlight))
+                _data.highlightData.Validate(ref _renderingData, m_HighlightBlur,m_Material);
+            if (m_Material.EnableKeyword(kAmbientOcclusionKW, _data.SSAO))
+                _data.SSAOData.Validate(m_Material);
+            if(m_Material.EnableKeyword(kVolumetricCloudKW,_data.volumetricCloud))
+                _data.volumetricCloudData.Apply(m_Material);
+            return base.Validate(ref _renderingData,ref _data);
         }
 
         public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor,ref DOpaque _data)
         {
-            if (_data.m_MaskedHighlight)
+            if (_data.maskedHighlight)
             {
                 var highlightDescriptor = _descriptor;
                 highlightDescriptor.colorFormat = RenderTextureFormat.R8;
@@ -140,7 +143,7 @@ namespace Rendering.PostProcess
                 _buffer.GetTemporaryRT(kHighlightMaskBlurID, _descriptor, FilterMode.Bilinear);
             }
 
-            if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
+            if (_data.volumetricCloud && _data.volumetricCloudData.shape)
             {
                 var depthDescriptor = new RenderTextureDescriptor(_descriptor.width, _descriptor.height, RenderTextureFormat.RGFloat, 32, 0);
                 _buffer.GetTemporaryRT(ID_VolumetricCloud_Depth, depthDescriptor, FilterMode.Bilinear);
@@ -151,9 +154,9 @@ namespace Rendering.PostProcess
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             var renderer = _renderingData.cameraData.renderer;
-            if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
+            if (_data.volumetricCloud && _data.volumetricCloudData.shape)
             {
-                var volumetricData = _data.m_VolumetricCloudData;
+                var volumetricData = _data.volumetricCloudData;
                 var buffer = CommandBufferPool.Get("Volumetric Fog Mask");
                 buffer.SetRenderTarget(RT_ID_VolumetricCloud_Depth);
                 buffer.ClearRenderTarget(RTClearFlags.ColorDepth,Color.clear,0,0);
@@ -163,10 +166,10 @@ namespace Rendering.PostProcess
                 if (_renderingData.cameraData.camera.TryGetCullingParameters(out var parameters))
                 {
                     parameters.cullingOptions = CullingOptions.None;
-                    parameters.cullingMask = (uint)_data.m_VolumetricCloudData.m_CullingMask;
+                    parameters.cullingMask = (uint)_data.volumetricCloudData.cullingMask;
                     
                     
-                    FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = volumetricData.m_CullingMask };
+                    FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = volumetricData.cullingMask };
                     drawingSettings.overrideMaterialPassIndex=1;
                     drawingSettings.overrideMaterial = m_RenderBackDepth;
                     _context.DrawRenderers(_context.Cull(ref parameters), ref drawingSettings, ref filterSettings);
@@ -181,20 +184,20 @@ namespace Rendering.PostProcess
                 CommandBufferPool.Release(buffer);
             }
 
-            if (_data.m_MaskedHighlight)
+            if (_data.maskedHighlight)
             {
-                MaskTexturePass.DrawMask(kHighlightMaskRT,_context,ref _renderingData,_data.m_HighlightData.m_Mask);
-                m_HighlightBlur.Execute(_descriptor,ref _data.m_HighlightData.m_Blur,_buffer, kHighlightMaskRT, kHighlightMaskBlurRT,_context,ref _renderingData);
+                MaskTexturePass.DrawMask(kHighlightMaskRT,_context,ref _renderingData,_data.highlightData.mask);
+                m_HighlightBlur.Execute(_descriptor,ref _data.highlightData.blur,_buffer, kHighlightMaskRT, kHighlightMaskBlurRT,_context,ref _renderingData);
             }
 
-            if (!_data.m_SSAO && !_data.m_VolumetricCloud)
+            if (!_data.SSAO && !_data.volumetricCloud)
             {
                 _buffer.Blit(_src, _dst, m_Material,  (int)EPassIndex.Combine);
                 return;
             }
             
-            _descriptor.width /= _data.m_DownSample;
-            _descriptor.height /= _data.m_DownSample;
+            _descriptor.width /= _data.downSample;
+            _descriptor.height /= _data.downSample;
             _descriptor.colorFormat = RenderTextureFormat.ARGB32;
             _descriptor.depthBufferBits = 0;
             
@@ -206,13 +209,13 @@ namespace Rendering.PostProcess
 
         public override void FrameCleanUp(CommandBuffer _buffer,ref DOpaque _data)
         {
-            if (_data.m_MaskedHighlight)
+            if (_data.maskedHighlight)
             {
                 _buffer.ReleaseTemporaryRT(kHighlightMaskID);
                 _buffer.ReleaseTemporaryRT(kHighlightMaskBlurID);
             }
 
-            if (_data.m_VolumetricCloud && _data.m_VolumetricCloudData.m_Shape)
+            if (_data.volumetricCloud && _data.volumetricCloudData.shape)
                 _buffer.ReleaseTemporaryRT(ID_VolumetricCloud_Depth);
         }
     }
@@ -220,105 +223,105 @@ namespace Rendering.PostProcess
     [Serializable]
     public struct DOpaque:IPostProcessParameter
     {
-        [Title] public bool m_Scan;
-        [Foldout(nameof(m_Scan), true)] public DScan m_ScanData;
-        [Title] public bool m_Area;
-        [Foldout(nameof(m_Area), true)] public DArea m_AreaData;
-        [Title] public bool m_Outline;
-        [Foldout(nameof(m_Outline),true)] public DOutline m_OutlineData;
-        [Title] public bool m_MaskedHighlight;
-        [Foldout(nameof(m_MaskedHighlight), true)] public DHighlight m_HighlightData;
+        [Title] public bool scan;
+        [Foldout(nameof(scan), true)] public DScan scanData;
+        [Title] public bool area;
+        [Foldout(nameof(area), true)] public DArea areaData;
+        [Title] public bool outline;
+        [Foldout(nameof(outline),true)] public DOutline outlineData;
+        [Title] public bool maskedHighlight;
+        [Foldout(nameof(maskedHighlight), true)] public DHighlight highlightData;
         
         [Header("Multi Sample")]
-        [Range(1, 4)] public int m_DownSample;
-        [Title] public bool m_SSAO;
-        [Foldout(nameof(m_SSAO), true)] public DSSAO m_SSAOData;
-        [Title] public bool m_VolumetricCloud;
-        [Foldout(nameof(m_VolumetricCloud), true)] public DVolumetricCloud m_VolumetricCloudData;
-        public bool Validate() => m_Scan || m_Area || m_Outline || m_MaskedHighlight || m_SSAO || m_VolumetricCloud;
+        [Range(1, 4)] public int downSample;
+        [Title] public bool SSAO;
+        [Foldout(nameof(SSAO), true)] public DSSAO SSAOData;
+        [Title] public bool volumetricCloud;
+        [Foldout(nameof(volumetricCloud), true)] public DVolumetricCloud volumetricCloudData;
+        public bool Validate() => scan || area || outline || maskedHighlight || SSAO || volumetricCloud;
         public static readonly DOpaque kDefault = new DOpaque()
         {
-            m_Scan = true,
-            m_ScanData = new DScan()
+            scan = true,
+            scanData = new DScan()
             {
-                m_Origin = Vector3.zero,
-                m_Color = Color.green,
-                m_Elapse = 5f,
-                m_Width = 2f,
-                m_FadingPow = .8f,
-                m_MaskTextureScale = 1f,
+                origin = Vector3.zero,
+                color = Color.green,
+                elapse = 5f,
+                width = 2f,
+                fadingPow = .8f,
+                maskTextureScale = 1f,
             },
-            m_Area = true,
-            m_AreaData =new DArea()
+            area = true,
+            areaData =new DArea()
             {
-                m_Origin = Vector3.zero,
-                m_Radius = 5f,
-                m_Width = 1f,
-                m_FillColor=Color.white,
-                m_EdgeColor=Color.black,
-                m_FillTextureFlow=Vector2.one,
-                m_FillTextureScale=1f,
+                origin = Vector3.zero,
+                radius = 5f,
+                width = 1f,
+                fillColor=Color.white,
+                edgeColor=Color.black,
+                fillTextureFlow=Vector2.one,
+                fillTextureScale=1f,
             },
-            m_Outline = true,
-            m_OutlineData= new DOutline()
+            outline = true,
+            outlineData= new DOutline()
             {
-                m_Color = Color.white,
-                m_Width = 1,
-                // m_Convolution = EConvolution.Prewitt,
-                // m_DetectType = EDetectType.Depth,
-                m_Strength = 2f,
-                m_Bias = .5f,
+                color = Color.white,
+                width = 1,
+                // convolution = EConvolution.Prewitt,
+                // detectType = EDetectType.Depth,
+                strength = 2f,
+                bias = .5f,
             },
-            m_MaskedHighlight = true,
-            m_HighlightData=new DHighlight()
+            maskedHighlight = true,
+            highlightData=new DHighlight()
             {
-                m_Color=Color.blue,
-                m_Blur = DBlurs.kDefault,
+                color=Color.blue,
+                blur = DBlurs.kDefault,
             },
                 
-            m_DownSample = 1,
-            m_SSAO = true,
-            m_SSAOData = new DSSAO()
+            downSample = 1,
+            SSAO = true,
+            SSAOData = new DSSAO()
             {
-                m_Color = Color.grey,
-                m_Intensity = 1f,
-                m_Radius = .5f,
-                m_SampleCount = 16,
-                m_Dither=true,
-                m_RandomVectorKeywords=DateTime.Now.ToShortTimeString(),
+                color = Color.grey,
+                intensity = 1f,
+                radius = .5f,
+                sampleCount = 16,
+                dither=true,
+                randomVectorKeywords=DateTime.Now.ToShortTimeString(),
             },
-            m_VolumetricCloud = true,
-            m_VolumetricCloudData  = new DVolumetricCloud()
+            volumetricCloud = true,
+            volumetricCloudData  = new DVolumetricCloud()
             {
-                m_VerticalStart = 20f,
-                m_VerticalLength = 100f,
-                m_MainNoise = TResources.EditorDefaultResources.Noise3D,
-                m_MainNoiseScale = Vector3.one * 500f,
-                m_MainNoiseFlow = Vector3.one * 0.1f,
+                verticalStart = 20f,
+                verticalLength = 100f,
+                mainNoise = TResources.EditorDefaultResources.Noise3D,
+                mainNoiseScale = Vector3.one * 500f,
+                mainNoiseFlow = Vector3.one * 0.1f,
 
-                m_Density = 50f,
-                m_DensityClip = .6f,
-                m_DensitySmooth = 0.1f,
-                m_Distance = 100f,
-                m_MarchTimes = 32,
-                m_Opacity = .8f,
+                density = 50f,
+                densityClip = .6f,
+                densitySmooth = 0.1f,
+                distance = 100f,
+                marchTimes = 32,
+                opacity = .8f,
 
-                m_ColorRamp = TResources.EditorDefaultResources.Ramp,
-                m_LightAbsorption = .2f,
+                colorRamp = TResources.EditorDefaultResources.Ramp,
+                lightAbsorption = .2f,
             },
         };
         
         [Serializable]
         public struct DSSAO
         {
-            [ColorUsage(false)]public Color m_Color;
-            [Range(0.01f,5f)]public float m_Intensity;
-            [Range(0.1f,1f)]public float m_Radius;
-            [Range(0.01f, 0.5f)] public float m_Bias;
+            [ColorUsage(false)]public Color color;
+            [Range(0.01f,5f)]public float intensity;
+            [Range(0.1f,1f)]public float radius;
+            [Range(0.01f, 0.5f)] public float bias;
             [Header("Optimize")]
-            [IntEnum(8,16,32,64)]public int m_SampleCount;
-            public bool m_Dither;
-            public string m_RandomVectorKeywords;
+            [IntEnum(8,16,32,64)]public int sampleCount;
+            public bool dither;
+            public string randomVectorKeywords;
             #region Properties
                 static readonly int ID_SampleCount = Shader.PropertyToID("_AOSampleCount");
                 static readonly int ID_SampleSphere = Shader.PropertyToID("_AOSampleSphere");
@@ -328,17 +331,17 @@ namespace Rendering.PostProcess
                 static  readonly int ID_Bias=Shader.PropertyToID("_AOBias");
                 const string KW_Dither = "_DITHER";
                 const int m_MaxArraySize = 64;
-                public void Apply(Material _material)
+                public void Validate(Material _material)
                 {
-                    var random = new LCGRandom(m_RandomVectorKeywords?.GetHashCode() ?? "AOCodeDefault".GetHashCode());
+                    var random = new LCGRandom(randomVectorKeywords?.GetHashCode() ?? "AOCodeDefault".GetHashCode());
                     var randomVectors = new Vector4[m_MaxArraySize].Remake(p=> URandom.RandomSphere(random));
-                    _material.SetFloat(ID_Bias,m_Radius+m_Bias);
-                    _material.SetFloat(ID_Radius, m_Radius);
-                    _material.SetInt(ID_SampleCount, m_SampleCount);
+                    _material.SetFloat(ID_Bias,radius+bias);
+                    _material.SetFloat(ID_Radius, radius);
+                    _material.SetInt(ID_SampleCount, sampleCount);
                     _material.SetVectorArray(ID_SampleSphere, randomVectors);
-                    _material.SetColor(ID_Color, m_Color);
-                    _material.SetFloat(ID_Intensity, m_Intensity);
-                    _material.EnableKeyword(KW_Dither,m_Dither);
+                    _material.SetColor(ID_Color, color);
+                    _material.SetFloat(ID_Intensity, intensity);
+                    _material.EnableKeyword(KW_Dither,dither);
                 }
             #endregion
         }
@@ -346,14 +349,14 @@ namespace Rendering.PostProcess
         [Serializable]
         public struct DScan
         {
-            [Position] public Vector3 m_Origin;
-            [ColorUsage(true,true)]public Color m_Color;
-            public float m_Elapse;
-            [Range(0,20)]public float m_Width;
-            [Range(0.01f,2)]public float m_FadingPow;
+            [Position] public Vector3 origin;
+            [ColorUsage(true,true)]public Color color;
+            public float elapse;
+            [Range(0,20)]public float width;
+            [Range(0.01f,2)]public float fadingPow;
 
             public Texture2D m_MaskTexture;
-            [Fold(nameof(m_MaskTexture),null),Clamp(0.000001f)] public float m_MaskTextureScale;
+            [Fold(nameof(m_MaskTexture),null),Clamp(0.000001f)] public float maskTextureScale;
 
             #region ShaderProperties
             static readonly int ID_Origin = Shader.PropertyToID("_ScanOrigin");
@@ -364,20 +367,20 @@ namespace Rendering.PostProcess
             static readonly int ID_TexScale = Shader.PropertyToID("_ScanMaskTextureScale");
             static readonly int ID_MinSqrDistance = Shader.PropertyToID("_ScanMinSqrDistance");
             static readonly int ID_MaxSqrDistance = Shader.PropertyToID("_ScanMaxSqrDistance");
-            public void Apply(Material _material)
+            public void Validate(Material _material)
             {
-                _material.SetVector(ID_Origin, m_Origin);
-                _material.SetColor(ID_Color, m_Color);
-                float minDistance = m_Elapse;
-                float maxDistance = m_Elapse + m_Width;
+                _material.SetVector(ID_Origin, origin);
+                _material.SetColor(ID_Color, color);
+                float minDistance = elapse;
+                float maxDistance = elapse + width;
                 _material.SetFloat(ID_MinSqrDistance, minDistance * minDistance);
                 _material.SetFloat(ID_MaxSqrDistance, maxDistance * maxDistance);
-                _material.SetFloat(ID_FadingPow, m_FadingPow);
+                _material.SetFloat(ID_FadingPow, fadingPow);
 
                 if( _material.EnableKeyword(KW_Mask,m_MaskTexture != null))
                 {
                     _material.SetTexture(ID_Texture, m_MaskTexture);
-                    _material.SetFloat(ID_TexScale,1f/m_MaskTextureScale);
+                    _material.SetFloat(ID_TexScale,1f/maskTextureScale);
                 }
             }
             #endregion
@@ -386,14 +389,14 @@ namespace Rendering.PostProcess
         [Serializable]
         public struct DArea
         {
-            [Position] public Vector3 m_Origin;
-            public float m_Radius;
-            public float m_Width;
-            [ColorUsage(true,true)]public Color m_FillColor;
-            [ColorUsage(true,true)]public Color m_EdgeColor;
+            [Position] public Vector3 origin;
+            public float radius;
+            public float width;
+            [ColorUsage(true,true)]public Color fillColor;
+            [ColorUsage(true,true)]public Color edgeColor;
             public Texture2D m_FillTexture;
-            [Fold(nameof(m_FillTexture),null), RangeVector(-5,5)] public Vector2 m_FillTextureFlow;
-            [Fold(nameof(m_FillTexture),null),Clamp(0.000001f)] public float m_FillTextureScale;
+            [Fold(nameof(m_FillTexture),null), RangeVector(-5,5)] public Vector2 fillTextureFlow;
+            [Fold(nameof(m_FillTexture),null),Clamp(0.000001f)] public float fillTextureScale;
 
             #region ShaderProperties
                 static readonly int ID_Origin = Shader.PropertyToID("_AreaOrigin");
@@ -404,18 +407,18 @@ namespace Rendering.PostProcess
                 static readonly int ID_EdgeColor = Shader.PropertyToID("_AreaEdgeColor");
                 static readonly int ID_SqrEdgeMin = Shader.PropertyToID("_AreaSqrEdgeMin");
                 static readonly int ID_SqrEdgeMax = Shader.PropertyToID("_AreaSqrEdgeMax");
-                public void Apply(Material _material)
+                public void Validate(Material _material)
                 {
-                    float edgeMin = m_Radius;
-                    float edgeMax = m_Radius + m_Width;
+                    float edgeMin = radius;
+                    float edgeMax = radius + width;
                     _material.SetFloat(ID_SqrEdgeMax, edgeMax * edgeMax);
                     _material.SetFloat(ID_SqrEdgeMin, edgeMin * edgeMin);
-                    _material.SetVector(ID_Origin, m_Origin);
-                    _material.SetColor(ID_FillColor, m_FillColor);
-                    _material.SetColor(ID_EdgeColor, m_EdgeColor);
+                    _material.SetVector(ID_Origin, origin);
+                    _material.SetColor(ID_FillColor, fillColor);
+                    _material.SetColor(ID_EdgeColor, edgeColor);
                     _material.SetTexture(ID_FillTexture, m_FillTexture);
-                    _material.SetFloat(ID_FillTextureScale, 1f/m_FillTextureScale);
-                    _material.SetVector(ID_FillTextureFlow, m_FillTextureFlow);
+                    _material.SetFloat(ID_FillTextureScale, 1f/fillTextureScale);
+                    _material.SetVector(ID_FillTextureFlow, fillTextureFlow);
                 }
             #endregion
         }
@@ -436,13 +439,13 @@ namespace Rendering.PostProcess
             //     Color = 3,
             // }
 
-            [ColorUsage(true)] public Color m_Color;
+            [ColorUsage(true)] public Color color;
             [Header("Options")]
-            [Range(.1f, 3f)] public float m_Width;
-            // public EConvolution m_Convolution;
-            // public EDetectType m_DetectType;
-            [Range(0, 10f)] public float m_Strength;
-            [Range(0.01f, 5f)] public float m_Bias;
+            [Range(.1f, 3f)] public float width;
+            // public EConvolution convolution;
+            // public EDetectType detectType;
+            [Range(0, 10f)] public float strength;
+            [Range(0.01f, 5f)] public float bias;
 
             #region ShaderProperties
             static readonly int ID_EdgeColor = Shader.PropertyToID("_OutlineColor");
@@ -451,14 +454,14 @@ namespace Rendering.PostProcess
             // static readonly string[] KW_DetectType = new string[3] { "_DETECT_DEPTH", "_DETECT_NORMAL", "_DETECT_COLOR" };
             static readonly int ID_Strength = Shader.PropertyToID("_Strength");
             static readonly int ID_Bias = Shader.PropertyToID("_Bias");
-            public void Apply(Material m_Material)
+            public void Validate(Material m_Material)
             {
-                m_Material.SetColor(ID_EdgeColor, m_Color);
-                m_Material.SetFloat(ID_OutlineWidth, m_Width);
-                // m_Material.EnableKeywords(KW_Convolution, (int)m_Convolution);
-                // m_Material.EnableKeywords(KW_DetectType, (int)m_DetectType);
-                m_Material.SetFloat(ID_Strength, m_Strength);
-                m_Material.SetFloat(ID_Bias, m_Bias);
+                m_Material.SetColor(ID_EdgeColor, color);
+                m_Material.SetFloat(ID_OutlineWidth, width);
+                // m_Material.EnableKeywords(KW_Convolution, (int)convolution);
+                // m_Material.EnableKeywords(KW_DetectType, (int)detectType);
+                m_Material.SetFloat(ID_Strength, strength);
+                m_Material.SetFloat(ID_Bias, bias);
             }
             #endregion
         }
@@ -466,48 +469,48 @@ namespace Rendering.PostProcess
         [Serializable]
         public struct DHighlight
         {
-            [ColorUsage(true,true)] public Color m_Color;
-            public MaskTextureData m_Mask;
-            public DBlurs m_Blur;
+            [ColorUsage(true,true)] public Color color;
+            public MaskTextureData mask;
+            public DBlurs blur;
             
             #region Properties
             static readonly int ID_EdgeColor = Shader.PropertyToID("_HighlightColor");
-            public void Apply(Material _material,FBlursCore _blur)
+            public void Validate(ref RenderingData _renderingData,FBlursCore _blur,Material _material)
             {
-                _material.SetColor(ID_EdgeColor,m_Color);
-                _blur.OnValidate(ref m_Blur);
+                _material.SetColor(ID_EdgeColor,color);
+                _blur.Validate(ref _renderingData,ref blur);
             }
             #endregion
-            public static readonly DHighlight kDefault = new DHighlight()
+            public static readonly DHighlight kDefault = new()
             {
-                m_Color = Color.white,
-                m_Mask = MaskTextureData.kDefault,
-                m_Blur = DBlurs.kDefault
+                color = Color.white,
+                mask = MaskTextureData.kDefault,
+                blur = DBlurs.kDefault
             };
         }
         
         [Serializable]
         public struct DVolumetricCloud
         {
-            [Title]public bool m_Shape;
-            [Foldout(nameof(m_Shape),true)] [CullingMask] public int m_CullingMask;
-            [Foldout(nameof(m_Shape),false)] public float m_VerticalStart;
-            [Foldout(nameof(m_Shape),false)] public float m_VerticalLength;
+            [Title]public bool shape;
+            [Foldout(nameof(shape),true)] [CullingMask] public int cullingMask;
+            [Foldout(nameof(shape),false)] public float verticalStart;
+            [Foldout(nameof(shape),false)] public float verticalLength;
             
-            [Title] public Texture3D m_MainNoise;
-            [Fold(nameof(m_MainNoise)), RangeVector(0f, 1000f)] public Vector3 m_MainNoiseScale;
-            [Fold(nameof(m_MainNoise)), RangeVector(0f, 10f)] public Vector3 m_MainNoiseFlow;
+            [Title] public Texture3D mainNoise;
+            [Fold(nameof(mainNoise)), RangeVector(0f, 1000f)] public Vector3 mainNoiseScale;
+            [Fold(nameof(mainNoise)), RangeVector(0f, 10f)] public Vector3 mainNoiseFlow;
             
-            [Range(0f, 100f)] public float m_Density;
-            [Range(0, 1)] public float m_DensityClip;
-            [Range(0, 1)] public float m_DensitySmooth;
-            public float m_Distance;
-            [IntEnum(16,32,64,128)]public int m_MarchTimes ;
-            [Range(0, 1)] public float m_Opacity;
+            [Range(0f, 100f)] public float density;
+            [Range(0, 1)] public float densityClip;
+            [Range(0, 1)] public float densitySmooth;
+            public float distance;
+            [IntEnum(16,32,64,128)]public int marchTimes ;
+            [Range(0, 1)] public float opacity;
 
             [Header("Light Setting")] 
-            public Texture2D m_ColorRamp;
-            [Range(0, 1)] public float m_LightAbsorption;
+            public Texture2D colorRamp;
+            [Range(0, 1)] public float lightAbsorption;
             #region ShaderProperties
 
             private const string KW_Shape = "_SHAPE";
@@ -530,20 +533,20 @@ namespace Rendering.PostProcess
             static readonly int ID_LightAbsorption = Shader.PropertyToID("_LightAbsorption");
             public  void Apply(Material _material)
             {
-                _material.EnableKeyword(KW_Shape, m_Shape);
-                _material.SetFloat(ID_VerticalStart, m_VerticalStart);
-                _material.SetFloat(ID_VerticalEnd, m_VerticalStart+m_VerticalLength);
-                _material.SetFloat(ID_Opacity, m_Opacity);
-                _material.SetFloat(ID_Density, m_Density);
-                _material.SetFloat(ID_DensityClip, m_DensityClip);
-                _material.SetFloat(ID_DensitySmooth, m_DensitySmooth/2f*m_Distance);
-                _material.SetFloat(ID_Distance, m_Distance);
-                _material.SetInt(ID_MarchTimes, (int)m_MarchTimes);
-                _material.SetTexture(ID_ColorRamp, m_ColorRamp);
-                _material.SetTexture(ID_MainNoise, m_MainNoise);
-                _material.SetVector(ID_MainNoiseScale, m_MainNoiseScale);
-                _material.SetVector(ID_MainNoiseFlow, m_MainNoiseFlow);
-                _material.SetFloat(ID_LightAbsorption, m_LightAbsorption);
+                _material.EnableKeyword(KW_Shape, shape);
+                _material.SetFloat(ID_VerticalStart, verticalStart);
+                _material.SetFloat(ID_VerticalEnd, verticalStart+verticalLength);
+                _material.SetFloat(ID_Opacity, opacity);
+                _material.SetFloat(ID_Density, density);
+                _material.SetFloat(ID_DensityClip, densityClip);
+                _material.SetFloat(ID_DensitySmooth, densitySmooth/2f*distance);
+                _material.SetFloat(ID_Distance, distance);
+                _material.SetInt(ID_MarchTimes, (int)marchTimes);
+                _material.SetTexture(ID_ColorRamp, colorRamp);
+                _material.SetTexture(ID_MainNoise, mainNoise);
+                _material.SetVector(ID_MainNoiseScale, mainNoiseScale);
+                _material.SetVector(ID_MainNoiseFlow, mainNoiseFlow);
+                _material.SetFloat(ID_LightAbsorption, lightAbsorption);
             }
             #endregion
         }

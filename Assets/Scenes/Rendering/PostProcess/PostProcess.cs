@@ -1,8 +1,6 @@
-﻿using System;
-using Rendering.PostProcess;
+﻿using Rendering.PostProcess;
 using UnityEngine;
 using Runtime.TouchTracker;
-using UnityEngine.UIElements;
 using System.Linq.Extensions;
 
 namespace Examples.Rendering.PostProcess
@@ -11,68 +9,41 @@ namespace Examples.Rendering.PostProcess
     {
         PostProcess_Opaque m_Controller;
         Camera m_ControlCamera;
-        SingleCoroutine m_AreaCoroutine;
         Vector3 m_AreaOrigin;
         float m_AreaRadius;
         private void Awake()
         {
-            m_AreaCoroutine = CoroutineHelper.CreateSingleCoroutine();
             m_Controller = GetComponentInChildren<PostProcess_Opaque>();
             m_ControlCamera = m_Controller.GetComponent<Camera>();
             TouchConsole.InitDefaultCommands();
             foreach(var postEffects in GetComponentsInChildren<MonoBehaviour>().CollectAs<MonoBehaviour,IPostProcessBehaviour>())
             {
                 TouchConsole.NewPage(postEffects.GetType(). Name);
-                TouchConsole.InitSerializeCommands(postEffects,effect=>effect.ValidateParameters());
+                TouchConsole.InitSerializeCommands(postEffects,null);
             }
         }
 
         private void Update()
         {
             var tracks = TouchTracker.Execute(Time.unscaledDeltaTime);
+            if (tracks.Input_SingleDrag(out var output))
+            {
+                if (m_ControlCamera.InputRayCheck(output.origin, out RaycastHit hit1) && m_ControlCamera.InputRayCheck(output.current,out var hit2))
+                {
+                    var data = m_Controller.GetData();
+                    m_AreaOrigin = (hit1.point + hit2.point) / 2;
+                    m_AreaRadius = Vector3.Distance( hit2.point,hit1.point)/2f;
+                    data.areaData.radius = m_AreaRadius;
+                    data.areaData.origin = m_AreaOrigin;
+                    m_Controller.SetEffectData(data);
+                }
+            }
+            
             foreach (var click in tracks.ResolveClicks())
             {
                 if (m_ControlCamera.InputRayCheck(click, out RaycastHit _hit))
                     m_Controller.StartDepthScanCircle(_hit.point, 10f, 1f);
             }
-            
-        }
-
-        void OnTouchCheck(bool down, Vector2 stretch1Pos,Vector2 strech2Pos)
-        {
-            m_AreaCoroutine.Stop();
-            if (down)
-            {
-                m_AreaRadius= 0f;
-                m_AreaOrigin = Vector3.zero;
-                return;
-            }
-            
-            if (m_AreaRadius == 0)
-                return;
-            m_Controller.m_Data.m_ScanData.m_Origin = m_AreaOrigin;
-            m_AreaCoroutine.Start(TIEnumerators.ChangeValueTo((float value) =>
-            {
-                m_Controller.m_Data.m_Area = true;
-                m_Controller.m_Data.m_AreaData.m_Radius = m_AreaRadius * value;
-                m_Controller.ValidateParameters();
-            }, 1,0, .2f, () =>
-            {
-                m_Controller.m_Data.m_Area = false;
-                m_Controller.ValidateParameters();
-            }));
-        }
-        void OnPressCheck(Vector2 stretch1Pos, Vector2 strech2Pos)
-        {
-            if (m_ControlCamera.InputRayCheck(stretch1Pos, out RaycastHit _hit1)&&m_ControlCamera.InputRayCheck(strech2Pos,out RaycastHit _hit2))
-            {
-                m_AreaOrigin = (_hit1.point + _hit2.point) / 2;
-                m_AreaRadius = Vector3.Distance( _hit2.point,_hit1.point)/2f;
-                m_Controller.m_Data.m_AreaData.m_Radius = m_AreaRadius;
-                m_Controller.m_Data.m_AreaData.m_Origin = m_AreaOrigin;
-                m_Controller.ValidateParameters();
-            }
-
         }
     }
 }

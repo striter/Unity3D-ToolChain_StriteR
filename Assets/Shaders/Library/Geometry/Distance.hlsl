@@ -10,6 +10,10 @@ float Distance(GPlane _plane, GRay _ray)
     float nrD = dot(_plane.normal, _ray.direction);
     return (_plane.distance - nrO) / nrD;
 }
+float Distance(GRay _ray,GPlane _plane)
+{
+    return Distance(_plane, _ray);
+}
 
 float Distance(GAxis _axis,GRay _ray)
 {

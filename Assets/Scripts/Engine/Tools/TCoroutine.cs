@@ -152,7 +152,7 @@ public class SingleCoroutine
 
 public static class CoroutineHelper
 {
-    public static SingleCoroutine CreateSingleCoroutine() => new SingleCoroutine(CoroutineHelperManager.Instance);
+    public static SingleCoroutine CreateSingleCoroutine() => new(CoroutineHelperManager.Instance);
     //Main Coroutine Manager
     class CoroutineHelperManager : SingletonMono<CoroutineHelperManager>
     {

@@ -10,7 +10,7 @@ public static class UDebug
     public static object GetType(string _className) => Type.GetType(_className);
     public static object GetInstanceType(object _instance) => _instance.GetType();
     
-    private static readonly BindingFlags kInstanceBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+    private static readonly BindingFlags kInstanceBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy;
     private static readonly BindingFlags kStaticBindingFlags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
     static object CheckArgsValue(object _value,Type _type)
     {

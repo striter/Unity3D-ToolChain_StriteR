@@ -3,8 +3,8 @@
 namespace UnityEditor.Extensions
 {
 
-    [CustomPropertyDrawer(typeof(Readonly))]
-    public class ReadonlyPropertyDrawer : AAttributePropertyDrawer<Readonly>
+    [CustomPropertyDrawer(typeof(ReadonlyAttribute))]
+    public class ReadonlyPropertyDrawer : AAttributePropertyDrawer<ReadonlyAttribute>
     {
         public override float GetPropertyHeight(SerializedProperty _property, GUIContent _label) => EditorGUI.GetPropertyHeight(_property, _label, true);
 

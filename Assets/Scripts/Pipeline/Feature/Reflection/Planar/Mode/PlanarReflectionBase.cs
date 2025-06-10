@@ -114,7 +114,7 @@ namespace Rendering.Pipeline
              var cmd = CommandBufferPool.Get($"Planar Reflection Pass ({m_Index})");
              
              Execute(ref m_Data,_context,ref _renderingData,cmd,ref m_Compnent,ref m_ColorDescriptor,ref m_ColorTarget);
-             if (m_Data.m_BlurParam.m_BlurType!=EBlurType.None)
+             if (m_Data.m_BlurParam.blurType!=EBlurType.None)
                  FBlursCore.Instance.Execute(m_ColorDescriptor ,ref m_Data.m_BlurParam,cmd, m_ColorTarget, m_ReflectionTextureID,_context,ref _renderingData); 
             
              _context.ExecuteCommandBuffer(cmd);

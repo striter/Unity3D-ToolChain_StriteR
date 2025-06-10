@@ -6,10 +6,10 @@ using UnityEngine;
 namespace Rendering.PostProcess
 {
     [ExecuteInEditMode]
-    public class PostProcessGlobalVolume : MonoBehaviour
+    public class PostProcessVolume : MonoBehaviour
     {        
         public int m_Priority=0;
-        public static List<PostProcessGlobalVolume> kVolumes { get; private set; }= new List<PostProcessGlobalVolume>();
+        public static List<PostProcessVolume> kVolumes { get; private set; }= new List<PostProcessVolume>();
         private void OnValidate()
         {
             Sort();

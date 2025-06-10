@@ -8,7 +8,7 @@ namespace Rendering.PostProcess
 {
     public class PostProcess_Atmosphere : APostProcessBehaviour<FAtmosphereCore, DAtmosphere>
     {
-        public override bool m_OpaqueProcess => false;
+        public override bool OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.Volumetric;
     }
     
@@ -24,43 +24,43 @@ namespace Rendering.PostProcess
             _128=128,
         }
 
-        [Title]public bool m_VolumetricLight;
-        [Foldout(nameof(m_VolumetricLight),true)] public DVolumetricLight m_VolumetricLightData;
+        [Title]public bool volumetricLight;
+        [Foldout(nameof(volumetricLight),true)] public DVolumetricLight volumetricLightData;
         [Header("Optimize")]
-        [Range(1, 4)] public int m_VolumetricDownSample;
-        [Title] public bool m_EnableVolumetricBlur;
-        [Foldout(nameof(m_EnableVolumetricBlur), true)] public DBlurs m_VolumetricBlur;
-        [Title] public bool m_MultiScattering;
-        [Foldout(nameof(m_MultiScattering), true)] public DMultiScattering m_MultiScatteringData;
-        public bool Validate() => m_MultiScattering || m_VolumetricLight;
+        [Range(1, 4)] public int volumetricDownSample;
+        [Title] public bool enableVolumetricBlur;
+        [Foldout(nameof(enableVolumetricBlur), true)] public DBlurs volumetricBlur;
+        [Title] public bool multiScattering;
+        [Foldout(nameof(multiScattering), true)] public DMultiScattering multiScatteringData;
+        public bool Validate() => (multiScattering || volumetricLight) && volumetricDownSample > 0;
         public static readonly DAtmosphere kDefault = new DAtmosphere()
         {
-            m_VolumetricLight = true,
-            m_VolumetricLightData = new DVolumetricLight()
+            volumetricLight = true,
+            volumetricLightData = new DVolumetricLight()
             {
-                m_Strength = 1f,
-                m_Pow = 2,
-                m_MarchStrength = .3f,
-                m_Distance = 20f,
-                m_MarchTimes = EMarchTimes._64,
-                m_Dither=false,
+                strength = 1f,
+                pow = 2,
+                marchStrength = .3f,
+                distance = 20f,
+                marchTimes = EMarchTimes._64,
+                dither=false,
             },
-            m_VolumetricDownSample = 1,
-            m_EnableVolumetricBlur = false,
-            m_VolumetricBlur = DBlurs.kDefault,
-            m_MultiScattering = false,
-            m_MultiScatteringData = DMultiScattering.kDefault,
+            volumetricDownSample = 1,
+            enableVolumetricBlur = false,
+            volumetricBlur = DBlurs.kDefault,
+            multiScattering = false,
+            multiScatteringData = DMultiScattering.kDefault,
         };
 
         [Serializable]
         public struct DVolumetricLight
         {
-            [Range(.1f,5f)]public float m_Strength;
-            [Clamp(0f)] public float m_Distance;
-            public EMarchTimes m_MarchTimes;
-            [Range(0, 2f)] public float m_MarchStrength;
-            [Range(0.1f, 2f)] public float m_Pow;
-            public bool m_Dither;
+            [Range(.1f,5f)]public float strength;
+            [Clamp(0f)] public float distance;
+            public EMarchTimes marchTimes;
+            [Range(0, 2f)] public float marchStrength;
+            [Range(0.1f, 2f)] public float pow;
+            public bool dither;
             #region Properties
             static readonly int ID_ColorStrength = Shader.PropertyToID("_ColorStrength");
             static readonly int ID_LightPow = Shader.PropertyToID("_LightPow");
@@ -71,12 +71,12 @@ namespace Rendering.PostProcess
 
             public void Apply(Material _material)
             {
-                _material.SetFloat(ID_ColorStrength,m_Strength);
-                _material.SetInt(ID_MarchTimes, (int)m_MarchTimes);
-                _material.SetFloat(ID_MarchDistance, m_Distance);
-                _material.SetFloat(ID_LightPow, m_Pow);
-                _material.SetFloat(ID_LightStrength, m_MarchStrength);
-                _material.EnableKeyword(kW_DITHER, m_Dither);
+                _material.SetFloat(ID_ColorStrength,strength);
+                _material.SetInt(ID_MarchTimes, (int)marchTimes);
+                _material.SetFloat(ID_MarchDistance, distance);
+                _material.SetFloat(ID_LightPow, pow);
+                _material.SetFloat(ID_LightStrength, marchStrength);
+                _material.EnableKeyword(kW_DITHER, dither);
             }
             #endregion
         }
@@ -151,20 +151,20 @@ namespace Rendering.PostProcess
         private static int kParticleDensityLUT = Shader.PropertyToID("_AtmosphereDensityLUT");
         private RenderTargetIdentifier kParticleDensityLUTRT = new RenderTargetIdentifier(kParticleDensityLUT);
     #endregion
-        public override void OnValidate(ref DAtmosphere _data)
+        public override bool Validate(ref RenderingData _renderingData,ref DAtmosphere _data)
         {
-            base.OnValidate(ref _data);
-            if(m_Material.EnableKeyword(kVolumetricLight, _data.m_VolumetricLight))
-                _data.m_VolumetricLightData.Apply(m_Material);
+            if(m_Material.EnableKeyword(kVolumetricLight, _data.volumetricLight))
+                _data.volumetricLightData.Apply(m_Material);
             
-            if(_data.m_MultiScattering)
-                _data.m_MultiScatteringData.Apply(m_Material);
+            if(_data.multiScattering)
+                _data.multiScatteringData.Apply(m_Material);
+            return base.Validate(ref _renderingData,ref _data);
         }
 
         public override void Execute(RenderTextureDescriptor _descriptor, ref DAtmosphere _data, CommandBuffer _buffer,
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            if (_data.m_MultiScattering)
+            if (_data.multiScattering)
             {
                 _buffer.GetTemporaryRT(kParticleDensityLUT,_descriptor.width,_descriptor.height,0,FilterMode.Point,RenderTextureFormat.RGHalf);
                 _buffer.Blit(_src,kParticleDensityLUTRT,m_Material,2);
@@ -172,17 +172,17 @@ namespace Rendering.PostProcess
                 _buffer.ReleaseTemporaryRT(kParticleDensityLUT);
             }
 
-            if (_data.m_VolumetricLight)
+            if (_data.volumetricLight)
             {
                 var sampleDescriptor = _descriptor;
-                sampleDescriptor.width /= _data.m_VolumetricDownSample;
-                sampleDescriptor.height /= _data.m_VolumetricDownSample;
+                sampleDescriptor.width /= _data.volumetricDownSample;
+                sampleDescriptor.height /= _data.volumetricDownSample;
                 sampleDescriptor.colorFormat = RenderTextureFormat.ARGB32;
                 sampleDescriptor.depthBufferBits = 0;
             
                 _buffer.GetTemporaryRT(kVolumetricID, sampleDescriptor,FilterMode.Bilinear);
             
-                if (!_data.m_EnableVolumetricBlur)
+                if (!_data.enableVolumetricBlur)
                 {
                     _buffer.Blit(_src, kVolumetricID, m_Material, (int)EPassIndex.Sample);
                 }
@@ -190,7 +190,7 @@ namespace Rendering.PostProcess
                 {
                     _buffer.GetTemporaryRT(kBlurID, sampleDescriptor, FilterMode.Bilinear);
                     _buffer.Blit(_src, kBlurID, m_Material,  (int)EPassIndex.Sample);
-                    FBlursCore.Instance.Execute(sampleDescriptor,ref _data.m_VolumetricBlur,_buffer, kBlurID, kVolumetricID,_context,ref _renderingData ); 
+                    FBlursCore.Instance.Execute(sampleDescriptor,ref _data.volumetricBlur,_buffer, kBlurID, kVolumetricID,_context,ref _renderingData ); 
                     _buffer.ReleaseTemporaryRT(kBlurID);
                 }
             

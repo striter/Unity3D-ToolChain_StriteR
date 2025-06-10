@@ -17,6 +17,7 @@ namespace CameraController
         void DrawGizmos(AControllerInput _input);
     }
 
+    [Icon("UnityEditor.Camera")]
     public abstract class ACameraController : ScriptableObject, ICameraController
     {
         public abstract IEnumerable<IControllerInputProcessor> InputProcessor { get; }

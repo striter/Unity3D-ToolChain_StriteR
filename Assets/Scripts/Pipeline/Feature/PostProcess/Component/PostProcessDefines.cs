@@ -8,10 +8,11 @@ namespace Rendering.PostProcess
     {
         Opaque=0,
         Volumetric,
-        AntiAliasing,
         DepthOfField,
-        ColorUpgrade,
-        ColorDegrade,
+        AntiAliasing,
+        ColorGrading,
+        VideoHomeSystem,
+        UVMapping,
         Stylize,
     }
 
@@ -22,12 +23,11 @@ namespace Rendering.PostProcess
     
     public interface IPostProcessBehaviour
     {
-        bool m_OpaqueProcess { get; }
-        bool m_Enabled { get; }
+        bool OpaqueProcess { get; }
         EPostProcess Event { get; }
         void Configure( CommandBuffer _buffer, RenderTextureDescriptor _descriptor);
         void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst, RenderTextureDescriptor _executeData, ScriptableRenderContext _context, ref RenderingData _renderingData);
         void FrameCleanUp(CommandBuffer _buffer);
-        void ValidateParameters();
+        bool Validate(ref RenderingData _renderingData);
     }
 }

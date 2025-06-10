@@ -4,11 +4,15 @@ half _FocalEnd;
 TEXTURE2D(_CameraFocalMaskTexture); SAMPLER(sampler_CameraFocalMaskTexture);
 half3 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
 {
-    #if defined(_DOF)||defined(_DOF_CLIPSKY)
-        float rawDepth=SampleRawDepth(uv+offset * .5f);
-        half focal=saturate(invlerp(_FocalStart,_FocalEnd,RawToEyeDepth(rawDepth)));
+    
+    #if _DOF_DISTANCE
+        float2 sampleUV = uv + offset * .5f;
+        float rawDepth=SampleRawDepth(sampleUV);
+        half focal=saturate(invlerp(_FocalStart,_FocalEnd,RawToDistance(rawDepth,sampleUV)));
         offset*=focal;
-    #elif _DOF_MASK
+    #endif
+
+    #if _DOF_MASK
         offset *= (1-max(SAMPLE_TEXTURE2D(_CameraFocalMaskTexture,sampler_CameraFocalMaskTexture,uv+offset).r,SAMPLE_TEXTURE2D(_CameraFocalMaskTexture,sampler_CameraFocalMaskTexture,uv).r));
     #endif
 

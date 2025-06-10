@@ -7,13 +7,12 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.UI;
 
 namespace Rendering.PostProcess
 {
     public class PostProcess_Blurs : APostProcessBehaviour<FBlursCore, DBlurs>
     {
-        public override bool m_OpaqueProcess => false;
+        public override bool OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.DepthOfField;
 
         public enum_Focal m_Focal;
@@ -26,16 +25,8 @@ namespace Rendering.PostProcess
         public static readonly string kDOF_Distance = "_DOF_DISTANCE";
         public static readonly string kDOF_Mask = "_DOF_MASK";
         public static readonly RenderTargetIdentifier kFocalMaskRT = new RenderTargetIdentifier(kFocalMaskID);
-
-        public void SetFocalDistance(float _distance)
+        public override bool Validate(ref RenderingData _renderingData)
         {
-            m_FocalData = new RangeFloat(_distance, _distance);
-            SetDirty();
-        }
-        
-        protected override void ApplyParameters()
-        {
-            base.ApplyParameters();
             var material = m_Effect.m_Material;
             if (material.EnableKeyword(kDOF_Distance, m_Focal is enum_Focal._DOF_DISTANCE or enum_Focal._DOF_DISTANCE_MASK))
             {
@@ -43,8 +34,9 @@ namespace Rendering.PostProcess
                 material.SetFloat(kIDFocalEnd, m_FocalData.end);
             }
             material.EnableKeyword(kDOF_Mask, m_Focal is enum_Focal._DOF_MASK or enum_Focal._DOF_DISTANCE_MASK);
+            return base.Validate(ref _renderingData);
         }
-
+        
         public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor)
         {
             base.Configure(_buffer, _descriptor);
@@ -56,6 +48,7 @@ namespace Rendering.PostProcess
                     _descriptor.colorFormat = RenderTextureFormat.R8;
                     _descriptor.depthBufferBits = 0;
                     _buffer.GetTemporaryRT(kFocalMaskID, _descriptor);
+                    
                 }
                     break;
             }
@@ -129,6 +122,7 @@ namespace Rendering.PostProcess
         DualFiltering_UpSample,
         Grainy,
         
+        
         //Shaped
         Bokeh,
         Hexagon_Vertical,
@@ -153,44 +147,44 @@ namespace Rendering.PostProcess
     [Serializable]
     public struct DBlurs:IPostProcessParameter
     {
-        public EBlurType m_BlurType;
-        [Fold(nameof(m_BlurType), EBlurType.None)] [Range(0.05f, 2f)] public float m_BlurSize;
-        [Fold(nameof(m_BlurType),  EBlurType.None,EBlurType.Grainy)]
-        [Range(1, FBlursCore.kMaxIteration)] public int m_Iteration;
-        [Foldout(nameof(m_BlurType), EBlurType.Kawase, EBlurType.GaussianVHSeperated, EBlurType.AverageVHSeperated, EBlurType.Hexagon, EBlurType.DualFiltering,EBlurType.NextGen,EBlurType.LightStreak)]
-        [Range(1, 4)] public int m_DownSample;
-        [Foldout(nameof(m_BlurType), EBlurType.Hexagon, EBlurType.Bokeh)]
-        [Range(-1, 1)] public float m_Angle;
-        [Foldout(nameof(m_BlurType), EBlurType.LightStreak)]
-        [RangeVector(0, 1)] public Vector2 m_Vector;
-        [Foldout(nameof(m_BlurType), EBlurType.LightStreak)]
-        [Range(.9f, 1f)] public float m_Attenuation;
+        public EBlurType blurType;
+        [Fold(nameof(blurType), EBlurType.None)]
+        [Range(0.05f, 2f)] public float blurSize;
+        [Fold(nameof(blurType),  EBlurType.None,EBlurType.Grainy)]
+        [Range(1, FBlursCore.kMaxIteration)] public int iteration;
+        [Foldout(nameof(blurType), EBlurType.Kawase, EBlurType.GaussianVHSeperated, EBlurType.AverageVHSeperated, EBlurType.Hexagon, EBlurType.DualFiltering,EBlurType.NextGen,EBlurType.LightStreak)]
+        [Range(1, 4)] public int downSample;
+        [Foldout(nameof(blurType), EBlurType.Hexagon, EBlurType.Bokeh)]
+        [Range(-1, 1)] public float angle;
+        [Foldout(nameof(blurType), EBlurType.LightStreak)]
+        [RangeVector(0, 1)] public Vector2 vector;
+        [Foldout(nameof(blurType), EBlurType.LightStreak)]
+        [Range(.9f, 1f)] public float attenuation;
         
-        public bool Validate() => m_BlurType != EBlurType.None;
+        public bool Validate() => blurType != EBlurType.None && blurSize > 0 && iteration > 0 && downSample > 0;
         
         public static readonly DBlurs kDefault = new DBlurs() {
-            m_BlurSize = 1.3f,
-            m_DownSample = 2,
-            m_Iteration = 7,
-            m_BlurType = EBlurType.DualFiltering,
-            m_Angle = 0,
-            m_Vector = Vector2.one * .5f,
-            m_Attenuation =  1f,
+            blurSize = 1.3f,
+            downSample = 2,
+            iteration = 7,
+            blurType = EBlurType.DualFiltering,
+            angle = 0,
+            vector = Vector2.one * .5f,
+            attenuation =  1f,
         };
 
         public static readonly DBlurs kNone = new() {
-            m_BlurSize = 1.3f,
-            m_DownSample = 2,
-            m_Iteration = 7,
-            m_BlurType = EBlurType.None,
-            m_Angle = 0,
-            m_Vector = Vector2.one * .5f,
-            m_Attenuation =  1f,
+            blurSize = 1.3f,
+            downSample = 2,
+            iteration = 7,
+            blurType = EBlurType.None,
+            angle = 0,
+            vector = Vector2.one * .5f,
+            attenuation =  1f,
         };
     }
 
 
-    [Serializable]
     public class FBlursCore : PostProcessCore<DBlurs>
     {
         public static FBlursCore Instance => kInstance;
@@ -218,16 +212,16 @@ namespace Rendering.PostProcess
         private static readonly RenderTargetIdentifier[] kDualFilteringRTs = ConvertToRTIdentifier(kDualFilteringIDs);
         static int[] GetRenderTextureIDs(string _id,int _size)
         {
-            int[] dualFilteringIDArray = new int[_size];
-            for(int i=0;i<_size;i++)
+            var dualFilteringIDArray = new int[_size];
+            for(var i=0;i<_size;i++)
                 dualFilteringIDArray[i] = Shader.PropertyToID(_id + i);
             return dualFilteringIDArray;
         }
 
         static RenderTargetIdentifier[] ConvertToRTIdentifier(int[] _ids)
         {
-            RenderTargetIdentifier[] identifiers = new RenderTargetIdentifier[_ids.Length];
-            for (int i = 0; i < _ids.Length; i++)
+            var identifiers = new RenderTargetIdentifier[_ids.Length];
+            for (var i = 0; i < _ids.Length; i++)
                 identifiers[i] = new RenderTargetIdentifier(_ids[i]);
             return identifiers;
         }
@@ -244,38 +238,39 @@ namespace Rendering.PostProcess
                 case EBlurType.LightStreak:
                     return true;
             }
+
             return false;
         }
 
         private static readonly Dictionary<EBlurType, string> kBlurSample = UEnum.GetEnums<EBlurType>().ToDictionary(p=>p,p=>p.ToString());
         static readonly int kBlurTempID1 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp1");
-        static readonly RenderTargetIdentifier kBlurTempRT1 = new (kBlurTempID1);
+        static readonly RenderTargetIdentifier kBlurTempRT1 = new RenderTargetIdentifier(kBlurTempID1);
         static readonly int kBlurTempID2 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp2");
-        static readonly RenderTargetIdentifier kBlurTempRT2 = new (kBlurTempID2);
+        static readonly RenderTargetIdentifier kBlurTempRT2 = new RenderTargetIdentifier(kBlurTempID2);
         static readonly int kBlurTempID3 = Shader.PropertyToID("_PostProcessing_Blit_Blur_Temp3");
-        static readonly RenderTargetIdentifier kBlurTempRT3 = new (kBlurTempID3);
+        static readonly RenderTargetIdentifier kBlurTempRT3 = new RenderTargetIdentifier(kBlurTempID3);
 
         private static readonly int kBlinkingVerticalID = Shader.PropertyToID("_Blinking_Vertical");
-        static readonly RenderTargetIdentifier kBlinkingVerticalRT = new (kBlinkingVerticalID);
+        static readonly RenderTargetIdentifier kBlinkingVerticalRT = new RenderTargetIdentifier(kBlinkingVerticalID);
         private static readonly int kBlinkingHorizontalID = Shader.PropertyToID("_Blinking_Horizontal");
-        static readonly RenderTargetIdentifier kBlinkingHorizontalRT = new (kBlinkingHorizontalID);
+        static readonly RenderTargetIdentifier kBlinkingHorizontalRT = new RenderTargetIdentifier(kBlinkingHorizontalID);
         
         static readonly int kHexagonVerticalID = Shader.PropertyToID("_Hexagon_Vertical");
-        static readonly RenderTargetIdentifier kVerticalRT = new (kHexagonVerticalID);
+        static readonly RenderTargetIdentifier kVerticalRT = new RenderTargetIdentifier(kHexagonVerticalID);
         static readonly int kHexagonDiagonalID = Shader.PropertyToID("_Hexagon_Diagonal");
-        static readonly RenderTargetIdentifier kDiagonalRT = new (kHexagonDiagonalID);
+        static readonly RenderTargetIdentifier kDiagonalRT = new RenderTargetIdentifier(kHexagonDiagonalID);
 
         public override void Execute(RenderTextureDescriptor _descriptor, ref DBlurs _data, CommandBuffer _buffer,
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            var sampleName = kBlurSample[_data.m_BlurType];
-            _buffer.BeginSample(sampleName);
-            var baseDownSample = math.max(_data.m_DownSample, 1);
+            // var sampleName = kBlurSample[_data.blurType];
+            // _buffer.BeginSample(sampleName);
+            var baseDownSample = math.max(_data.downSample, 1);
             var startWidth = _descriptor.width / baseDownSample;
             var startHeight = _descriptor.height / baseDownSample;
-            m_Material.EnableKeyword(kKWEncoding,EncodingRequired(_data.m_BlurType) && _descriptor.colorFormat!=RenderTextureFormat.ARGB32);
+            m_Material.EnableKeyword(kKWEncoding,EncodingRequired(_data.blurType) && _descriptor.colorFormat!=RenderTextureFormat.ARGB32);
             
-            switch (_data.m_BlurType)
+            switch (_data.blurType)
             {
                 case EBlurType.Kawase:
                 case EBlurType.AverageVHSeperated:
@@ -284,32 +279,32 @@ namespace Rendering.PostProcess
                         _buffer.GetTemporaryRT(kBlurTempID1, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
 
                         _buffer.GetTemporaryRT(kBlurTempID2, startWidth, startHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
-                        for (int i = 0; i < _data.m_Iteration; i++)
+                        for (var i = 0; i < _data.iteration; i++)
                         {
-                            RenderTargetIdentifier blitSrc = i == 0 ? _src : (i % 2 == 0 ? kBlurTempRT1 : kBlurTempRT2);
-                            RenderTargetIdentifier blitTarget = i == _data.m_Iteration - 1 ? _dst : (i % 2 == 0 ? kBlurTempRT2 : kBlurTempRT1);
-                            m_Material.SetFloat(kIDBlurSize, _data.m_BlurSize / _data.m_DownSample * (1 + i));
-                            switch (_data.m_BlurType)
+                            var blitSrc = i == 0 ? _src : (i % 2 == 0 ? kBlurTempRT1 : kBlurTempRT2);
+                            var blitTarget = i == _data.iteration - 1 ? _dst : (i % 2 == 0 ? kBlurTempRT2 : kBlurTempRT1);
+                            m_Material.SetFloat(kIDBlurSize, _data.blurSize / _data.downSample * (1 + i));
+                            switch (_data.blurType)
                             {
                                 case EBlurType.Kawase:
                                     {
                                         int pass = (int)EBlurPass.Kawase;
                                         _buffer.EnableKeyword(kKWFirstBlur, i==0);
-                                        _buffer.EnableKeyword(kKWFinalBlur,i==_data.m_Iteration-1);
+                                        _buffer.EnableKeyword(kKWFinalBlur,i==_data.iteration-1);
                                         _buffer.Blit(blitSrc, blitTarget, m_Material, pass);
                                     }
                                     break;
                                 case EBlurType.AverageVHSeperated:
                                 case EBlurType.GaussianVHSeperated:
                                     {
-                                        int horizontalPass = -1;
-                                        int verticalPass = -1;
-                                        if (_data.m_BlurType == EBlurType.AverageVHSeperated)
+                                        var horizontalPass = -1;
+                                        var verticalPass = -1;
+                                        if (_data.blurType == EBlurType.AverageVHSeperated)
                                         {
                                             horizontalPass = (int)EBlurPass.Average_Horizontal;
                                             verticalPass = (int)EBlurPass.Average_Vertical;
                                         }
-                                        else if (_data.m_BlurType == EBlurType.GaussianVHSeperated)
+                                        else if (_data.blurType == EBlurType.GaussianVHSeperated)
                                         {
                                             horizontalPass = (int)EBlurPass.Gaussian_Horizontal;
                                             verticalPass = (int)EBlurPass.Gaussian_Vertical;
@@ -319,7 +314,7 @@ namespace Rendering.PostProcess
                                         _buffer.EnableKeyword(kKWFirstBlur, i==0);
                                         _buffer.Blit(blitSrc, kBlurTempRT3, m_Material, horizontalPass);
                                         _buffer.EnableKeyword(kKWFirstBlur, false);
-                                        _buffer.EnableKeyword(kKWFinalBlur,i==_data.m_Iteration-1);
+                                        _buffer.EnableKeyword(kKWFinalBlur,i==_data.iteration-1);
                                         _buffer.Blit(kBlurTempRT3, blitTarget, m_Material, verticalPass);
                                         _buffer.EnableKeyword(kKWFinalBlur,false);
                                         _buffer.ReleaseTemporaryRT(kBlurTempID3);
@@ -334,46 +329,46 @@ namespace Rendering.PostProcess
                     break;
                 case EBlurType.DualFiltering:
                     {
-                        int downSamplePass = (int)EBlurPass.DualFiltering_DownSample;
-                        int upSamplePass = (int)EBlurPass.DualFiltering_UpSample;
+                        var downSamplePass = (int)EBlurPass.DualFiltering_DownSample;
+                        var upSamplePass = (int)EBlurPass.DualFiltering_UpSample;
 
-                        int downSampleCount = Mathf.FloorToInt(_data.m_Iteration / 2f);
-                        m_Material.SetFloat(kIDBlurSize, _data.m_BlurSize / _data.m_DownSample*4f);
+                        var downSampleCount = Mathf.FloorToInt(_data.iteration / 2f);
+                        m_Material.SetFloat(kIDBlurSize, _data.blurSize / _data.downSample*4f);
 
-                        for (int i = 0; i < _data.m_Iteration - 1; i++)
+                        for (var i = 0; i < _data.iteration - 1; i++)
                         {
-                            int filterSample = downSampleCount - Mathf.CeilToInt(Mathf.Abs(_data.m_Iteration / 2f - (i + 1))) + 1 + _data.m_Iteration % 2;
-                            int filterWidth = startWidth / filterSample;
-                            int filterHeight = startHeight / filterSample;
+                            var filterSample = downSampleCount - Mathf.CeilToInt(Mathf.Abs(_data.iteration / 2f - (i + 1))) + 1 + _data.iteration % 2;
+                            var filterWidth = startWidth / filterSample;
+                            var filterHeight = startHeight / filterSample;
                             _buffer.GetTemporaryRT(kDualFilteringIDs[i], filterWidth, filterHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
                         }
-                        for (int i = 0; i < _data.m_Iteration; i++)
+                        for (var i = 0; i < _data.iteration; i++)
                         {
                             _buffer.EnableKeyword(kKWFirstBlur, i==0);
-                            _buffer.EnableKeyword(kKWFinalBlur,i==_data.m_Iteration-1);
-                            int filterPass = i <= downSampleCount ? downSamplePass : upSamplePass;
-                            RenderTargetIdentifier blitSrc = i == 0 ? _src : kDualFilteringRTs[i - 1];
-                            RenderTargetIdentifier blitTarget = i == _data.m_Iteration - 1 ? _dst : kDualFilteringRTs[i];
+                            _buffer.EnableKeyword(kKWFinalBlur,i==_data.iteration-1);
+                            var filterPass = i <= downSampleCount ? downSamplePass : upSamplePass;
+                            var blitSrc = i == 0 ? _src : kDualFilteringRTs[i - 1];
+                            var blitTarget = i == _data.iteration - 1 ? _dst : kDualFilteringRTs[i];
                             _buffer.Blit(blitSrc, blitTarget, m_Material, filterPass);
                         }
-                        for (int i = 0; i < _data.m_Iteration - 1; i++)
+                        for (var i = 0; i < _data.iteration - 1; i++)
                             _buffer.ReleaseTemporaryRT(kDualFilteringIDs[i]);
                         _buffer.EnableKeyword(kKWFinalBlur,false);
                     }
                     break;
                 case EBlurType.Grainy:
                     {
-                        int grainyPass = (int)EBlurPass.Grainy;
-                        m_Material.SetFloat(kIDBlurSize, _data.m_BlurSize * 32);
+                        var grainyPass = (int)EBlurPass.Grainy;
+                        m_Material.SetFloat(kIDBlurSize, _data.blurSize * 32);
                         _buffer.Blit(_src, _dst, m_Material, grainyPass);
                     }
                     break;
                 case EBlurType.Bokeh:
                     {
-                        int bokehPass = (int)EBlurPass.Bokeh;
-                        m_Material.SetFloat(kIDBlurSize, _data.m_BlurSize);
-                        m_Material.SetInt(kIDIteration, _data.m_Iteration * 32);
-                        m_Material.SetFloat(kIDAngle, _data.m_Angle);
+                        var bokehPass = (int)EBlurPass.Bokeh;
+                        m_Material.SetFloat(kIDBlurSize, _data.blurSize);
+                        m_Material.SetInt(kIDIteration, _data.iteration * 32);
+                        m_Material.SetFloat(kIDAngle, _data.angle);
                         _buffer.Blit(_src, _dst, m_Material, bokehPass);
                     }
                     break;
@@ -383,9 +378,9 @@ namespace Rendering.PostProcess
                         var diagonalPass = (int)EBlurPass.Hexagon_Diagonal;
                         var rhomboidPass = (int)EBlurPass.Hexagon_Rhomboid;
 
-                        m_Material.SetFloat(kIDBlurSize, _data.m_BlurSize * 2);
-                        m_Material.SetFloat(kIDIteration, _data.m_Iteration * 2);
-                        m_Material.SetFloat(kIDAngle, _data.m_Angle);
+                        m_Material.SetFloat(kIDBlurSize, _data.blurSize * 2);
+                        m_Material.SetFloat(kIDIteration, _data.iteration * 2);
+                        m_Material.SetFloat(kIDAngle, _data.angle);
                         _buffer.GetTemporaryRT(kHexagonVerticalID, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
                         _buffer.GetTemporaryRT(kHexagonDiagonalID, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
 
@@ -419,8 +414,8 @@ namespace Rendering.PostProcess
                         }
                     };
 
-                    DoRadialBlur(_data.m_Iteration,_data.m_Vector,_data.m_BlurSize,_data.m_DownSample,_data.m_Attenuation,kBlinkingVerticalRT);
-                    DoRadialBlur(_data.m_Iteration, KRotation.kRotateCW90.mul(_data.m_Vector),_data.m_BlurSize,_data.m_DownSample,_data.m_Attenuation,kBlinkingHorizontalRT);
+                    DoRadialBlur(_data.iteration,_data.vector,_data.blurSize,_data.downSample,_data.attenuation,kBlinkingVerticalRT);
+                    DoRadialBlur(_data.iteration, KRotation.kRotateCW90.mul(_data.vector),_data.blurSize,_data.downSample,_data.attenuation,kBlinkingHorizontalRT);
                     
                     _buffer.EnableKeyword(kKWFirstBlur, false);
                     _buffer.EnableKeyword(kKWFinalBlur,true);
@@ -436,19 +431,12 @@ namespace Rendering.PostProcess
                     break;
                 case EBlurType.NextGen:
                     {
-                        var maxIteration = (int)Mathf.Log(Mathf.ClosestPowerOfTwo(Mathf.Min(startWidth,startHeight)) -1,2);
-                        if (maxIteration <= 2)
-                        {
-                            _buffer.EndSample(sampleName);
-                            return;
-                        }
-                        
-                        var iteration = Mathf.Clamp(_data.m_Iteration,2,maxIteration);
+                        var iteration = Mathf.Clamp(_data.iteration,2,(int)Mathf.Log(Mathf.ClosestPowerOfTwo(Mathf.Min(startWidth,startHeight)) -1,2));
                         var downSamplePass = (int)EBlurPass.NextGen_DownSample;
                         var upSamplePass = (int)EBlurPass.NextGen_UpSample;
                         var upSampleFinalPass = (int) EBlurPass.NextGen_UpSampleFinal;
 
-                        m_Material.SetFloat(kIDBlurSize, _data.m_BlurSize / _data.m_DownSample*4f);
+                        m_Material.SetFloat(kIDBlurSize, _data.blurSize / _data.downSample*4f);
 
                         for (var i = 0; i < iteration; i++)
                         {
@@ -464,8 +452,8 @@ namespace Rendering.PostProcess
                         for (var i = 0 ; i < iteration ; i++)
                         {
                             _buffer.EnableKeyword(kKWFirstBlur, i==0);
-                            RenderTargetIdentifier blitSrc = i == 0 ? _src : kNextGenDownIDs[i - 1];
-                            RenderTargetIdentifier blitTarget = kNextGenDownIDs[i];
+                            var blitSrc = i == 0 ? _src : kNextGenDownIDs[i - 1];
+                            var blitTarget = kNextGenDownIDs[i];
                             _buffer.Blit(blitSrc, blitTarget, m_Material, downSamplePass);
                         }
                         _buffer.EndSample("Next Gen Down");
@@ -473,8 +461,8 @@ namespace Rendering.PostProcess
                         _buffer.BeginSample("Next Gen Up");
                         for (var i = 0 ; i < iteration -1 ; i++)
                         {
-                            RenderTargetIdentifier blitSrc = i == 0 ? kNextGenDownIDs[iteration-1] : kNextGenUpIDs[i - 1];
-                            RenderTargetIdentifier blitTarget = kNextGenUpIDs[i];
+                            var blitSrc = i == 0 ? kNextGenDownIDs[iteration-1] : kNextGenUpIDs[i - 1];
+                            var blitTarget = kNextGenUpIDs[i];
                             _buffer.SetGlobalTexture("_PreDownSample",kNextGenDownIDs[iteration-2-i]);
                             _buffer.Blit(blitSrc, blitTarget, m_Material, upSamplePass);
                         }
@@ -493,7 +481,7 @@ namespace Rendering.PostProcess
                     }
                     break;
             }
-            _buffer.EndSample(sampleName);
+            // _buffer.EndSample(sampleName);
         }
     }
 }

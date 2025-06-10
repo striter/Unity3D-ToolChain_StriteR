@@ -18,6 +18,7 @@ MonoBehaviour:
     m_AnchorMode: 1
     m_OriginDamper:
       mode: 0
+      constant: 0
       halfLife: 0.1
       stiffness: 80
       damping: 14.2
@@ -28,6 +29,7 @@ MonoBehaviour:
         poleMatching: 1
     m_OriginExtraDamper:
       mode: 2
+      constant: 0
       halfLife: 0.3
       stiffness: 20
       damping: 4
@@ -38,6 +40,7 @@ MonoBehaviour:
         poleMatching: 1
     m_OriginExtraDamper2:
       mode: 2
+      constant: 0
       halfLife: 0.1
       stiffness: 20
       damping: 4
@@ -50,6 +53,7 @@ MonoBehaviour:
     m_RotationMode: 0
     m_PlayerInputDamper:
       mode: 2
+      constant: 0
       halfLife: 0.02
       stiffness: 20
       damping: 4
@@ -59,17 +63,19 @@ MonoBehaviour:
         r: -0.5
         poleMatching: 1
     m_RotationDamper:
-      mode: 2
+      mode: 6
+      constant: 0
       halfLife: 0.2
       stiffness: 200
-      damping: 30
+      damping: 23.9
       secondOrderDynamics:
-        f: 5
-        z: 0.35
+        f: 1.7
+        z: 0.62
         r: -0.5
         poleMatching: 1
   m_DistanceDamper:
-    mode: 2
+    mode: 3
+    constant: 0
     halfLife: 0.1
     stiffness: 200
     damping: 8
@@ -80,6 +86,7 @@ MonoBehaviour:
       poleMatching: 1
   m_ViewportDamper:
     mode: 2
+    constant: 0
     halfLife: 0.1
     stiffness: 88.6
     damping: 17.3
@@ -94,6 +101,7 @@ MonoBehaviour:
       x: 0
       y: 0
       z: 0
+    anchorBeforeRotation: 0
     childName: 
     useTransformPosition: 0
     anchorY: 0
@@ -110,6 +118,7 @@ MonoBehaviour:
       x: 0
       y: 0
       z: 0
+    anchorBeforeRotation: 0
     childName: 
     useTransformPosition: 0
     anchorY: 0

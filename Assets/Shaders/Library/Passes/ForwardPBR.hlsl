@@ -68,13 +68,13 @@ BRDFSurface InitializeFragmentSurface(BRDFInitializeInput input)
 #endif
 	
 	half3 emission =0;
-	#if !defined(_EMISSIONOFF)
-		#if defined(GET_EMISSION)
-			emission = GET_EMISSION(input); 
-		#else
-			emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,input.uv).rgb*INSTANCE(_EmissionColor).rgb;
-		#endif
+#if !defined(_EMISSIONOFF)
+	#if defined(GET_EMISSION)
+		emission = GET_EMISSION(input); 
+	#else
+		emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,input.uv).rgb*INSTANCE(_EmissionColor).rgb;
 	#endif
+#endif
 
 float smoothness=0.5,metallic=0,ao =1;
 #if !defined(_PBROFF)
@@ -183,7 +183,7 @@ f2of ForwardFragment(v2ff i)
 		finalCol+=BRDFLighting(surface, GetAdditionalLight(lightIndex,i.positionWS));
 	#endif
 	FOG_MIX(i,finalCol);
-	// finalCol+=surface.emission;
+	finalCol+=surface.emission;
 
 	AlphaClip(surface.alpha);
 	o.result = float4(finalCol,surface.alpha);

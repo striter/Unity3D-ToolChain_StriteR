@@ -61,7 +61,8 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: 2293182620490409217}
   - {fileID: -8412092488474686701}
-  m_RendererFeatureMap: 01256e8b7105d31f130bbc6e733e428b
+  - {fileID: 7143400366182278927}
+  m_RendererFeatureMap: 01256e8b7105d31f130bbc6e733e428b0fa7b022c9742263
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -120,21 +121,25 @@ MonoBehaviour:
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
   m_Data:
     m_Features: 25
-    m_MaskData:
-      renderMask: 2147483647
-      color: {r: 1, g: 1, b: 1, a: 1}
-      inheritDepth: 1
-      outline: 0
-      extendWidth: 0.1
-      outlineVertex: 0
-    m_PlanarReflection:
-      maxPlanarReflectionTexture: 4
-    m_AntiAliasing:
-      mode: 1
-      fxaa: 2
-      m_AdditionalSample: 1
-      m_UseDepth: 0
-      m_ContrastSkip: 0.1
-      m_RelativeSkip: 0.2
-      m_SubPixelBlend: 1
-      blend: 0.1
+--- !u!114 &7143400366182278927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73a36542a2a2406bb20ceb87b0f8ea59, type: 3}
+  m_Name: PostProcessFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  m_AntiAliasing:
+    mode: 1
+    fxaa: 2
+    additionalSample: 1
+    useDepth: 0
+    contrastSkip: 0.1
+    relativeSkip: 0.2
+    subPixelBlend: 1
+    blend: 0

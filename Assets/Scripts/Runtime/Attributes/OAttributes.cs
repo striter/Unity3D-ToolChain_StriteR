@@ -23,13 +23,13 @@ public class ScriptableObjectEditAttribute : PropertyAttribute
 
 
 [AttributeUsage(AttributeTargets.GenericParameter | AttributeTargets.Field,AllowMultiple = true)]
-public class Readonly:PropertyAttribute{ }
+public class ReadonlyAttribute:PropertyAttribute{ }
 
 [AttributeUsage(AttributeTargets.Field)]
-public class Rename : PropertyAttribute
+public class RenameAttribute : PropertyAttribute
 {
     public string name;
-    public Rename(string _name)
+    public RenameAttribute(string _name)
     {
         name = _name;
     }

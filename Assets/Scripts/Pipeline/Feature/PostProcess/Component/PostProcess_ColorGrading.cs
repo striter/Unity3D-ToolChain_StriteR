@@ -7,22 +7,28 @@ using UnityEngine.Rendering.Universal;
 
 namespace Rendering.PostProcess
 {
-    public class PostProcess_ColorUpgrade : APostProcessBehaviour<FColorUpgradeCore, DColorUpgrade>
+    public class PostProcess_ColorGrading : APostProcessBehaviour<FColorGradingCore, DColorGrading>
     {
-        public override bool m_OpaqueProcess => false;
-        public override EPostProcess Event => EPostProcess.ColorUpgrade;
+        public override bool OpaqueProcess => false;
+        public override EPostProcess Event => EPostProcess.ColorGrading;
 
         [InspectorButton]
         void SepiaToneFilter()
         {
-            m_Data = DColorUpgrade.kDefault;
-            m_Data.m_MixRed = new Vector3(0.393f, 0.349f, 0.272f)-Vector3.right;
-            m_Data.m_MixGreen = new Vector3(0.769f, 0.686f, 0.534f)-Vector3.up;
-            m_Data.m_MixBlue = new Vector3(0.189f, 0.168f, 0.131f)-Vector3.forward;
-            ValidateParameters();
+            var data = GetData();
+            data.mixRed = new Vector3(0.393f, 0.349f, 0.272f) - Vector3.right;
+            data.mixGreen = new Vector3(0.769f, 0.686f, 0.534f) - Vector3.up;
+            data.mixBlue = new Vector3(0.189f, 0.168f, 0.131f) - Vector3.forward;
+            SetEffectData(data);
         }
     }
 
+    public enum EToneMapping
+    {
+        NONE,
+        _TONEMAP_ACES
+    }
+    
     public enum EBloomSample
     {
         Luminance,
@@ -30,47 +36,51 @@ namespace Rendering.PostProcess
     }
 
     [Serializable]
-    public struct DColorUpgrade:IPostProcessParameter
+    public struct DColorGrading:IPostProcessParameter
     {
-        [Title] public Texture2D m_LUTTex ;
-        [Fold(nameof(m_LUTTex),null)] public bool m_64LUT;
-        [Fold(nameof(m_LUTTex),null)] [Range(0,1)] public float m_LUTWeight;
+        [Title] public Texture2D LUTTex ;
+        [Fold(nameof(LUTTex),null)] public bool LUT64;
+        [Fold(nameof(LUTTex),null)] [Range(0,1)] public float LUTWeight;
         [Title] public bool m_BSC;
-        [Foldout(nameof(m_BSC),true)] [Range(0, 2)]public float m_Brightness ;
-        [Foldout(nameof(m_BSC),true)] [Range(0, 2)] public float m_Saturation ;
-        [Foldout(nameof(m_BSC),true)] [Range(0, 2)]public float m_Contrast ;
+        [Foldout(nameof(m_BSC),true),Range(0, 2)] public float brightness ;
+        [Foldout(nameof(m_BSC),true),Range(0, 2)] public float saturation ;
+        [Foldout(nameof(m_BSC),true),Range(0, 2)] public float contrast ;
 
-        [Title]public bool m_ChannelMix;
-        [Foldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixRed;
-        [Foldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixGreen;
-        [Foldout(nameof(m_ChannelMix),true)] [RangeVector(-1, 1)] public Vector3 m_MixBlue;
+        [Title]public bool channelMix;
+        [Foldout(nameof(channelMix),true),RangeVector(-1, 1)] public Vector3 mixRed;
+        [Foldout(nameof(channelMix),true),RangeVector(-1, 1)] public Vector3 mixGreen;
+        [Foldout(nameof(channelMix),true),RangeVector(-1, 1)] public Vector3 mixBlue;
+        
+        [Title] public EToneMapping toneMapping;
 
-        [Title]public bool m_Bloom;
-        [Foldout(nameof(m_Bloom),true)] public Data_Bloom m_BloomData;
+        [Title] public bool bloom;
+        [Foldout(nameof(bloom),true)] public Data_Bloom bloomData;
 
         [Title] public bool motionBlur;
         [Foldout(nameof(motionBlur), true)] [Clamp(1,8)]public int iteration;
         [Foldout(nameof(motionBlur), true)] [Range(-5,5)] public float intensity;
-        public bool Validate() => motionBlur || m_LUTTex != null || m_BSC || m_ChannelMix || m_Bloom;
+        public bool Validate() => motionBlur || LUTTex != null || m_BSC || channelMix || (bloom && bloomData.Validate());
         
-        public static readonly DColorUpgrade kDefault = new DColorUpgrade()
+        public static readonly DColorGrading kDefault = new DColorGrading()
         {
-            m_LUTTex = null,
-            m_64LUT = false,
-            m_LUTWeight = 1f,
+            LUTTex = null,
+            LUT64 = false,
+            LUTWeight = 1f,
             
             m_BSC = false,
-            m_Brightness = 1,
-            m_Saturation = 1,
-            m_Contrast = 1,
+            brightness = 1,
+            saturation = 1,
+            contrast = 1,
             
-            m_ChannelMix = false,
-            m_MixRed = Vector3.zero,
-            m_MixGreen = Vector3.zero,
-            m_MixBlue = Vector3.zero,
+            channelMix = false,
+            mixRed = Vector3.zero,
+            mixGreen = Vector3.zero,
+            mixBlue = Vector3.zero,
             
-            m_Bloom = false,
-            m_BloomData = new Data_Bloom()
+            toneMapping = EToneMapping._TONEMAP_ACES,
+            
+            bloom = false,
+            bloomData = new Data_Bloom()
             {
                 m_SampleMode = EBloomSample.Luminance,
                 m_Threshold = 0.25f,
@@ -79,6 +89,7 @@ namespace Rendering.PostProcess
                 m_Blur = DBlurs.kDefault,
                 m_BloomDebug = false,
             },
+            
             
             motionBlur =  false,
             iteration = 2,
@@ -96,20 +107,23 @@ namespace Rendering.PostProcess
             public bool m_BloomDebug;
 
             #region Properties
-            static readonly int ID_Threshold = Shader.PropertyToID("_BloomThreshold");
-            static readonly int ID_Color = Shader.PropertyToID("_BloomColor");
+            static readonly int kThreshold = Shader.PropertyToID("_BloomThreshold");
+            static readonly int kColor = Shader.PropertyToID("_BloomColor");
 
             public void Apply(Material _material)
             {
                 var threshold = UColor.GammaToLinear(m_Threshold);
-                _material.SetVector(ID_Threshold, new Vector4(threshold,threshold * .5f,0,0));
-                _material.SetColor(ID_Color, m_Color);
+                _material.SetVector(kThreshold, new Vector4(threshold,threshold * .5f,0,0));
+                _material.SetColor(kColor, m_Color);
             }
+
+            public bool Validate() => m_Blur.Validate();
+
             #endregion
         }
     }
 
-    public class FColorUpgradeCore : PostProcessCore<DColorUpgrade>
+    public class FColorGradingCore : PostProcessCore<DColorGrading>
     {
         #region ShaderProperties
         const string kLUT = "_LUT";
@@ -138,7 +152,8 @@ namespace Rendering.PostProcess
         static readonly RenderTargetIdentifier RT_Sample = new RenderTargetIdentifier(kSampleID);
         static readonly RenderTargetIdentifier RT_Blur = new RenderTargetIdentifier(kBlurID);
         #endregion
-        
+
+        private FBlursCore m_BloomBlur = new();
         enum EPassIndex
         {
             Process = 0,
@@ -157,59 +172,63 @@ namespace Rendering.PostProcess
             return new float4(horizontalCellCount, 1, cellPixelSize, horizontalCellCount);
         }
         
-        public override void OnValidate(ref DColorUpgrade _data)
+        public override bool Validate(ref RenderingData _renderingData,ref DColorGrading _data)
         {
-            base.OnValidate(ref _data);
-
-            if (m_Material.EnableKeyword(kLUT, _data.m_LUTTex!=null))
+            if (m_Material.EnableKeyword(kLUT, _data.LUTTex!=null))
             {
-                m_Material.SetTexture(kLUTTex, _data.m_LUTTex);
-                m_Material.SetVector(kLUTCellCount, GetLUTParameters(_data.m_64LUT ? 64:32,_data.m_LUTTex.width, _data.m_LUTTex.height));
-                m_Material.SetFloat(kLUTWeight,_data.m_LUTWeight);
+                m_Material.SetTexture(kLUTTex, _data.LUTTex);
+                m_Material.SetVector(kLUTCellCount, GetLUTParameters(_data.LUT64 ? 64:32,_data.LUTTex.width, _data.LUTTex.height));
+                m_Material.SetFloat(kLUTWeight,_data.LUTWeight);
             }
 
             if ( m_Material.EnableKeyword(kBSC, _data.m_BSC))
             {
-                m_Material.SetFloat(kBrightness, _data.m_Brightness);
-                m_Material.SetFloat(kSaturation, _data.m_Saturation);
-                m_Material.SetFloat(kContrast, _data.m_Contrast);
+                m_Material.SetFloat(kBrightness, _data.brightness);
+                m_Material.SetFloat(kSaturation, _data.saturation);
+                m_Material.SetFloat(kContrast, _data.contrast);
             }
 
-            if ( m_Material.EnableKeyword(kMixChannel, _data.m_ChannelMix))
+            if ( m_Material.EnableKeyword(kMixChannel, _data.channelMix))
             {
-                m_Material.SetVector(kMixRed, _data.m_MixRed + Vector3.right);
-                m_Material.SetVector(kMixGreen, _data.m_MixGreen + Vector3.up);
-                m_Material.SetVector(kMixBlue, _data.m_MixBlue + Vector3.forward);
+                m_Material.SetVector(kMixRed, _data.mixRed + Vector3.right);
+                m_Material.SetVector(kMixGreen, _data.mixGreen + Vector3.up);
+                m_Material.SetVector(kMixBlue, _data.mixBlue + Vector3.forward);
             }
 
-            if (m_Material.EnableKeyword(kBloom, _data.m_Bloom))
-                _data.m_BloomData.Apply(m_Material);
+            if (m_Material.EnableKeyword(kBloom, _data.bloom) && m_BloomBlur.Validate(ref _renderingData,ref _data.bloomData.m_Blur))
+            {
+                _data.bloomData.Apply(m_Material);
+                m_BloomBlur.m_Material.EnableKeyword(kBloom, true);
+            }
 
             if (m_Material.EnableKeyword(kMotionBlur, _data.motionBlur))
             {
                 m_Material.SetInt(kMotionBlurIteration,_data.iteration);
                 m_Material.SetFloat(kMotionBlurIntensity,_data.intensity);
             }
+
+            m_Material.EnableKeywords(_data.toneMapping);
+            return base.Validate(ref _renderingData,ref _data);
         }
 
 
-        public override void Execute(RenderTextureDescriptor _descriptor, ref DColorUpgrade _data, CommandBuffer _buffer,
+        public override void Execute(RenderTextureDescriptor _descriptor, ref DColorGrading _data, CommandBuffer _buffer,
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            if (!_data.m_Bloom || !_data.m_BloomData.m_Blur.Validate())
+            if (!_data.bloom)
             {
                 _buffer.Blit(_src, _dst, m_Material, (int)EPassIndex.Process);
                 return;
             }
 
-            ref var bloomData = ref _data.m_BloomData;
+            ref var bloomData = ref _data.bloomData;
             
             if (bloomData.m_SampleMode == EBloomSample.Mask)
                 MaskTexturePass.DrawMask(RT_Sample, _context, ref _renderingData, bloomData.m_MaskData);
             else if(bloomData.m_SampleMode == EBloomSample.Luminance)
                 _buffer.Blit(_src, RT_Sample, m_Material, (int)EPassIndex.BloomSample);
 
-            FBlursCore.Instance.Execute(_descriptor, ref bloomData.m_Blur,_buffer, RT_Sample, RT_Blur,_context,ref _renderingData);
+            m_BloomBlur.Execute(_descriptor, ref bloomData.m_Blur,_buffer, RT_Sample, RT_Blur,_context,ref _renderingData);
 
             if(bloomData.m_BloomDebug)
                 _buffer.Blit(RT_Blur,_dst);
@@ -217,11 +236,11 @@ namespace Rendering.PostProcess
                 _buffer.Blit(_src, _dst, m_Material, (int)EPassIndex.Process);
         }
 
-        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, ref DColorUpgrade _data)
+        public override void Configure(CommandBuffer _buffer, RenderTextureDescriptor _descriptor, ref DColorGrading _data)
         {
-            if (!_data.m_Bloom)
+            if (!_data.bloom)
                 return;
-            ref var data = ref _data.m_BloomData;
+            ref var data = ref _data.bloomData;
             _descriptor.mipCount = 0;
             _descriptor.depthBufferBits = 0;
 
@@ -230,9 +249,9 @@ namespace Rendering.PostProcess
         }
 
 
-        public override void FrameCleanUp(CommandBuffer _buffer, ref DColorUpgrade _data)
+        public override void FrameCleanUp(CommandBuffer _buffer, ref DColorGrading _data)
         {
-            if (!_data.m_Bloom)
+            if (!_data.bloom)
                 return;
             _buffer.ReleaseTemporaryRT(kSampleID);
             _buffer.ReleaseTemporaryRT(kBlurID);

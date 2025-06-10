@@ -110,7 +110,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
-    - _AnisotropicValue: 0.839
+    - _AnisotropicValue: 1
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0

@@ -221,8 +221,8 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 0
 --- !u!4 &5342889711345314656
 Transform:
   m_ObjectHideFlags: 0
@@ -251,11 +251,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UID: -657570493
-  color: {r: 1, g: 0.99754715, b: 0.9386792, a: 1}
+  color: {r: 1, g: 0.99659157, b: 0.9009434, a: 1}
   intensity: 1
   shadowSpread: 0.05
   cutoff: 10
-  realisticFalloff: 0
+  realisticFalloff: 1
   legacySampling: 0
   samples: 128
   projMode: 0
@@ -268,8 +268,8 @@ MonoBehaviour:
   bakeToIndirect: 0
   shadowmask: 0
   shadowmaskFalloff: 0
-  indirectIntensity: 1000
-  falloffMinRadius: 1
+  indirectIntensity: 1
+  falloffMinRadius: 0.01
   shadowmaskGroupID: 0
   directionMode: 0
   maskChannel: -1
@@ -327,7 +327,7 @@ Light:
   m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1000
+  m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}

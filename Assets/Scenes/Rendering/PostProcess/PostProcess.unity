@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17178309, g: 0.21486773, b: 0.28718734, a: 1}
+  m_IndirectSpecularColor: {r: 0.18386948, g: 0.22901496, b: 0.3031123, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -248,75 +248,81 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 289594994}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b0d691f066f07e4fbd5e0dba44664e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_Scan: 1
-    m_ScanData:
-      m_Origin: {x: 1.3977985, y: 0, z: 1.063673}
-      m_Color: {r: 1.8672283, g: 3.992802, b: 5.278032, a: 1}
-      m_Elapse: 5
-      m_Width: 3.3
-      m_FadingPow: 2
+    scan: 1
+    scanData:
+      origin: {x: 1.3977985, y: 0, z: 1.063673}
+      color: {r: 1.8672283, g: 3.992802, b: 5.278032, a: 1}
+      elapse: 5
+      width: 3.3
+      fadingPow: 2
       m_MaskTexture: {fileID: 2800000, guid: 535377a4a1285c444b6c6deccd399e3c, type: 3}
-      m_MaskTextureScale: 1
-    m_Area: 1
-    m_AreaData:
-      m_Origin: {x: 0.73, y: 0, z: 7.2996597}
-      m_Radius: 5
-      m_Width: 1
-      m_FillColor: {r: 1, g: 1, b: 1, a: 1}
-      m_EdgeColor: {r: 0.94498324, g: 1.4398783, b: 2.0236006, a: 1}
+      maskTextureScale: 1
+    area: 1
+    areaData:
+      origin: {x: 0.73, y: 0, z: 7.2996597}
+      radius: 5
+      width: 1
+      fillColor: {r: 1, g: 1, b: 1, a: 1}
+      edgeColor: {r: 0.94498324, g: 1.4398783, b: 2.0236006, a: 1}
       m_FillTexture: {fileID: 2800000, guid: 1467931b7e4385a458a348bd49d691fb, type: 3}
-      m_FillTextureFlow: {x: 1, y: 0}
-      m_FillTextureScale: 3.4
-    m_Outline: 1
-    m_OutlineData:
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
-      m_Width: 0.86
-      m_Strength: 2
-      m_Bias: 0.5
-    m_MaskedHighlight: 1
-    m_HighlightData:
-      m_Color: {r: 1.6379936, g: 0.6567427, b: 0.7420689, a: 1}
-      m_Blur:
-        m_BlurType: 3
-        m_BlurSize: 0.82
-        m_Iteration: 7
-        m_DownSample: 2
-        m_Angle: 0
-        m_Vector: {x: 0.5, y: 0.5}
-        m_Attenuation: 0
-    m_DownSample: 2
-    m_SSAO: 1
-    m_SSAOData:
-      m_Color: {r: 0, g: 0, b: 0, a: 1}
-      m_Intensity: 1.38
-      m_Radius: 0.21
-      m_Bias: 0.117
-      m_SampleCount: 8
-      m_Dither: 1
-      m_RandomVectorKeywords: Default1
-    m_VolumetricCloud: 0
-    m_VolumetricCloudData:
-      m_Shape: 0
-      m_CullingMask: 16
-      m_VerticalStart: 8.8
-      m_VerticalLength: 107.8
-      m_MainNoise: {fileID: 11700000, guid: d7cdc3d1f96e777489126e46f6ca72c0, type: 2}
-      m_MainNoiseScale: {x: 50, y: 50, z: 50}
-      m_MainNoiseFlow: {x: 5, y: 0.1, z: 0.1}
-      m_Density: 0.7
-      m_DensityClip: 0.66
-      m_DensitySmooth: 1
-      m_Distance: 22.18
-      m_MarchTimes: 32
-      m_Opacity: 1
-      m_ColorRamp: {fileID: 2800000, guid: 034f12e5c34ba414fbcbfa5900814c89, type: 3}
-      m_LightAbsorption: 0.13
+      fillTextureFlow: {x: 1, y: 0}
+      fillTextureScale: 3.4
+    outline: 1
+    outlineData:
+      color: {r: 0, g: 0, b: 0, a: 1}
+      width: 1.15
+      strength: 2
+      bias: 0.5
+    maskedHighlight: 1
+    highlightData:
+      color: {r: 1.6379936, g: 0.6567427, b: 0.7420689, a: 1}
+      mask:
+        mode: 2
+        renderMask: 32
+        overrideMaterial: {fileID: 0}
+        overrideShader: {fileID: 0}
+        inheritDepth: 1
+      blur:
+        blurType: 3
+        blurSize: 1.67
+        iteration: 8
+        downSample: 4
+        angle: 0
+        vector: {x: 0.5, y: 0.5}
+        attenuation: 0
+    downSample: 2
+    SSAO: 1
+    SSAOData:
+      color: {r: 0, g: 0, b: 0, a: 1}
+      intensity: 5
+      radius: 0.381
+      bias: 0.177
+      sampleCount: 16
+      dither: 1
+      randomVectorKeywords: 17:23
+    volumetricCloud: 0
+    volumetricCloudData:
+      shape: 0
+      cullingMask: 16
+      verticalStart: 8.8
+      verticalLength: 107.8
+      mainNoise: {fileID: 11700000, guid: d7cdc3d1f96e777489126e46f6ca72c0, type: 2}
+      mainNoiseScale: {x: 50, y: 50, z: 50}
+      mainNoiseFlow: {x: 5, y: 0.1, z: 0.1}
+      density: 0.7
+      densityClip: 0.66
+      densitySmooth: 1
+      distance: 22.18
+      marchTimes: 32
+      opacity: 1
+      colorRamp: {fileID: 2800000, guid: 034f12e5c34ba414fbcbfa5900814c89, type: 3}
+      lightAbsorption: 0.13
   m_Opaque: 1
   m_DrawGizmos: 1
 --- !u!20 &289594998
@@ -585,6 +591,7 @@ MonoBehaviour:
   m_YAnchor: 0
   m_RotationDamper:
     mode: 1
+    constant: 0
     halfLife: 0.5
     stiffness: 20
     damping: 4
@@ -595,6 +602,7 @@ MonoBehaviour:
       poleMatching: 1
   m_OriginDistanceDamper:
     mode: 1
+    constant: 0
     halfLife: 0.5
     stiffness: 20
     damping: 4
@@ -693,10 +701,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.65
-    y: -0.65
-    width: 1
-    height: 1
+    x: 0.67
+    y: 0.01
+    width: 0.32
+    height: 0.32
   near clip plane: 0.3
   far clip plane: 99.62
   field of view: 60
@@ -746,18 +754,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Data:
     m_Stylize: 1
-    m_DownSample: 7
-    m_PixelGrid: 0
-    m_GridWidth: 0.1
-    m_PixelGridColor: {r: 1, g: 1, b: 1, a: 0.5}
-    m_OilPaintKernel: 7
-    m_OilPaintSize: 1.02
-    m_ObraDitherScale: 0.689
-    m_ObraDitherStrength: 0.406
-    m_ObraDitherColor: {r: 0.3, g: 0.2764706, b: 0.0047058826, a: 0.3}
-    m_ObraDitherStep: 0
-    m_BilaterailSize: 1.86
-    m_BilateralFactor: 0.91
+    downSample: 7
+    pixelGrid: 0
+    gridWidth: 0.1
+    pixelGridColor: {r: 1, g: 1, b: 1, a: 0.5}
+    oilPaintKernel: 13
+    oilPaintSize: 2.57
+    obraDitherScale: 0.33
+    obraDitherStrength: 0.5
+    obraDitherColor: {r: 0.3, g: 0.2764706, b: 0.0047058826, a: 0.3}
+    obraDitherStep: 0
+    bilaterailSize: 5
+    bilateralFactor: 0.5
 --- !u!1 &526198351
 GameObject:
   m_ObjectHideFlags: 0
@@ -911,6 +919,7 @@ Transform:
   - {fileID: 1230212948}
   - {fileID: 2086077257}
   - {fileID: 520397186}
+  - {fileID: 1786818586}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 5, y: 0, z: 0}
 --- !u!114 &559505671
@@ -1586,7 +1595,7 @@ GameObject:
   - component: {fileID: 1230212951}
   - component: {fileID: 1230212950}
   m_Layer: 0
-  m_Name: ColorDegrade
+  m_Name: VideoHomeSystem
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1619,10 +1628,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.65
-    y: 0.65
-    width: 1
-    height: 1
+    x: 0.67
+    y: 0.67
+    width: 0.32
+    height: 0.32
   near clip plane: 0.3
   far clip plane: 99.62
   field of view: 60
@@ -1716,37 +1725,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Data:
     m_ScreenCut: 1
-    m_ScreenCutDistance: {x: 0.1, y: 0.1}
-    m_PixelDistort: 1
-    m_PixelDistortScale: {x: 0.1, y: 0.1}
-    m_PixelDistortStrength: 0.1
-    m_PixelDistortClip: 0.95
-    m_PixelDistortFrequency: 10
-    m_LineDistort: 1
-    m_LineDistortSpeed: 1
-    m_LineDistortStrength: 0.005
-    m_LineDistortClip: 0.8
-    m_LineDistortFrequency: 0.5
-    m_VortexDistort: 1
-    m_VortexCenter: {x: 0.5, y: 0.5}
-    m_VortexStrength: 0.1
-    m_ColorBleed: 1
-    m_ColorBleedStrength: 1
-    m_ColorBleedIteration: 2
-    m_ColorBleedSize: 0.8
-    m_ColorBleedR: {x: 1, y: 1}
-    m_ColorBleedG: {x: -1, y: -1}
-    m_ColorBleedB: {x: 0, y: 0}
-    m_Grain: 1
-    m_GrainColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-    m_GrainScale: {x: 1, y: 1}
-    m_GrainClip: 0.5
-    m_GrainFrequency: 10
-    m_GrainCirlce: 1
-    m_GrainCircleWidth: 0.3
-    m_Vignette: 1
-    m_VignetteColor: {r: 0, g: 0, b: 0, a: 1}
-    m_VignetteValue: 2
+    screenCutDistance: {x: 0.1, y: 0.1}
+    pixelDistort: 1
+    pixelDistortScale: {x: 0.1, y: 0.1}
+    pixelDistortStrength: 0.1
+    pixelDistortClip: 0.95
+    pixelDistortFrequency: 10
+    lineDistort: 1
+    lineDistortSpeed: 1
+    lineDistortStrength: 0.005
+    lineDistortClip: 0.8
+    lineDistortFrequency: 0.5
+    colorBleed: 1
+    colorBleedStrength: 1
+    colorBleedIteration: 2
+    colorBleedSize: 0.8
+    colorBleedR: {x: 1, y: 1}
+    colorBleedG: {x: -1, y: -1}
+    colorBleedB: {x: 0, y: 0}
+    grain: 1
+    grainColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    grainScale: {x: 1, y: 1}
+    grainClip: 0.929
+    grainFrequency: 10
+    grainCircle: 1
+    grainCircleWidth: 0.3
+    vignette: 1
+    vignetteColor: {r: 0, g: 0, b: 0, a: 1}
+    vignetteValue: 2
 --- !u!1 &1397122141
 GameObject:
   m_ObjectHideFlags: 0
@@ -1804,6 +1810,7 @@ MonoBehaviour:
   m_YAnchor: 0
   m_RotationDamper:
     mode: 1
+    constant: 0
     halfLife: 0.5
     stiffness: 20
     damping: 4
@@ -1814,6 +1821,7 @@ MonoBehaviour:
       poleMatching: 1
   m_OriginDistanceDamper:
     mode: 1
+    constant: 0
     halfLife: 0.5
     stiffness: 20
     damping: 4
@@ -2000,6 +2008,154 @@ Transform:
   m_Children: []
   m_Father: {fileID: 374659048}
   m_LocalEulerAnglesHint: {x: -7.311, y: 0, z: 0}
+--- !u!1 &1786818585
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1786818586}
+  - component: {fileID: 1786818589}
+  - component: {fileID: 1786818588}
+  - component: {fileID: 1786818590}
+  m_Layer: 0
+  m_Name: UVMapping
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1786818586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786818585}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 559505670}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1786818588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786818585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 0
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: 2
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
+--- !u!20 &1786818589
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786818585}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0.67
+    y: 0.34
+    width: 0.32
+    height: 0.32
+  near clip plane: 0.3
+  far clip plane: 99.62
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 4
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967279
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 0
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!114 &1786818590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786818585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d6bd560f0ce4a48824ba0bf9617d244, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Data:
+    vortexDistort: 1
+    vortexCenter: {x: 0.5, y: 0.5}
+    vortexStrength: -0.11
+    paniniProjection: 1
+    paniniDistance: 1
+    paniniCropToFit: 1
 --- !u!1 &1941222562
 GameObject:
   m_ObjectHideFlags: 0
@@ -2013,7 +2169,7 @@ GameObject:
   - component: {fileID: 1941222566}
   - component: {fileID: 1941222565}
   m_Layer: 0
-  m_Name: ColorUpgrade
+  m_Name: ColorGrading
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2076,32 +2232,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_LUTTex: {fileID: 2800000, guid: a0fb9abcbebf1304081947afc184b7c7, type: 3}
-    m_64LUT: 0
-    m_LUTWeight: 0.5
-    m_BSC: 1
-    m_Brightness: 0.77
-    m_Saturation: 1.19
-    m_Contrast: 1
-    m_ChannelMix: 0
-    m_MixRed: {x: 0, y: 0, z: 0}
-    m_MixGreen: {x: 0, y: 0, z: 0}
-    m_MixBlue: {x: 0, y: 0, z: 0}
-    m_UseMaskTexture: 0
-    m_Bloom: 1
-    m_BloomData:
+    LUTTex: {fileID: 2800000, guid: a0fb9abcbebf1304081947afc184b7c7, type: 3}
+    LUT64: 0
+    LUTWeight: 1
+    m_BSC: 0
+    brightness: 0.77
+    saturation: 1.19
+    contrast: 1
+    channelMix: 0
+    mixRed: {x: 0, y: 0, z: 0}
+    mixGreen: {x: 0, y: 0, z: 0}
+    mixBlue: {x: 0, y: 0, z: 0}
+    toneMapping: 1
+    toneMappinType: 1
+    bloom: 1
+    bloomData:
       m_SampleMode: 0
-      m_Threshold: 1.22
-      m_LayerMask: 0
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
+      m_Threshold: 1.4
+      m_MaskData:
+        mode: 0
+        renderMask: 0
+        overrideMaterial: {fileID: 0}
+        overrideShader: {fileID: 0}
+        inheritDepth: 0
+      m_Color: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
       m_Blur:
-        m_BlurType: 3
-        m_BlurSize: 0.99
-        m_Iteration: 7
-        m_DownSample: 2
-        m_Angle: 0
-        m_Vector: {x: 0, y: 0}
-        m_Attenuation: 0
+        blurType: 8
+        blurSize: 1.22
+        iteration: 3
+        downSample: 2
+        angle: 0
+        vector: {x: 0, y: 0}
+        attenuation: 0
       m_BloomDebug: 0
     motionBlur: 0
     iteration: 0
@@ -2133,10 +2295,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0.65
-    width: 0.35
-    height: 0.35
+    x: 0.01
+    y: 0.67
+    width: 0.32
+    height: 0.32
   near clip plane: 0.3
   far clip plane: 99.62
   field of view: 60
@@ -2205,17 +2367,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_BlurType: 2
-    m_BlurSize: 0.69
-    m_Iteration: 4
-    m_DownSample: 1
-    m_Angle: 0
-    m_Vector: {x: 0.5, y: 0.5}
-    m_Attenuation: 0
+    blurType: 2
+    blurSize: 0.69
+    iteration: 4
+    downSample: 1
+    angle: 0
+    vector: {x: 0, y: 0}
+    attenuation: 0
   m_Focal: 1
   m_FocalData:
-    m_Begin: 6.05
-    m_Width: 25.03
+    start: 6.05
+    length: 25.03
+  m_FocalMaskData:
+    mode: 0
+    renderMask: 0
+    overrideMaterial: {fileID: 0}
+    overrideShader: {fileID: 0}
+    inheritDepth: 0
 --- !u!20 &2086077256
 Camera:
   m_ObjectHideFlags: 0
@@ -2243,10 +2411,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: -0.65
-    y: -0.65
-    width: 1
-    height: 1
+    x: 0.01
+    y: 0.01
+    width: 0.32
+    height: 0.32
   near clip plane: 0.3
   far clip plane: 99.62
   field of view: 60
@@ -2339,33 +2507,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_VolumetricLight: 1
-    m_VolumetricLightData:
-      m_Strength: 2.61
-      m_Distance: 20
-      m_MarchTimes: 64
-      m_MarchStrength: 0.3
-      m_Pow: 2
-      m_Dither: 0
-    m_VolumetricDownSample: 1
-    m_EnableVolumetricBlur: 1
-    m_VolumetricBlur:
-      m_BlurType: 3
-      m_BlurSize: 1.3
-      m_Iteration: 7
-      m_DownSample: 2
-      m_Angle: 0
-      m_Vector: {x: 0.5, y: 0.5}
-      m_Attenuation: 0
-    m_MultiScattering: 0
-    m_MultiScatteringData:
-      distanceScale: 0
-      sunItensity: 0
-      rayleighScatterCofficients: 0
-      rayleighExtinctionCofficients: 0
-      mieScatterCofficients: 0
-      mieExtinctionCofficients: 0
-      mieG: 0
+    volumetricLight: 1
+    volumetricLightData:
+      strength: 1.97
+      distance: 20
+      marchTimes: 64
+      marchStrength: 0.22
+      pow: 2
+      dither: 1
+    volumetricDownSample: 1
+    enableVolumetricBlur: 0
+    volumetricBlur:
+      blurType: 3
+      blurSize: 1.3
+      iteration: 7
+      downSample: 2
+      angle: 0
+      vector: {x: 0.5, y: 0.5}
+      attenuation: 1
+    multiScattering: 0
+    multiScatteringData:
+      distanceScale: 1
+      sunItensity: 0.1
+      rayleighScatterCofficients: 1
+      rayleighExtinctionCofficients: 1
+      mieScatterCofficients: 1
+      mieExtinctionCofficients: 1
+      mieG: 0.76
 --- !u!1 &2142251302
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,7 +10,21 @@ namespace Runtime.TouchTracker
 {
     public static class TouchTracker_Extension
     {
-        public static IEnumerable<Vector2> ResolveClicks(this List<TrackData> _tracks,float _distanceSQR = 100,float _clickSenseTime=.3f)=>_tracks.Collect(p => p.phase == TouchPhase.Ended && (p.origin - p.current).SqrMagnitude()< _distanceSQR  && p.lifeTime < _clickSenseTime).Select(p=>p.origin);
+        public static IEnumerable<Vector2> ResolveClicks(this List<TrackData> _tracks, float _distanceSQR = 100, float _clickSenseTime = .3f,bool _removeTracker = true)
+        {
+            for (var i = _tracks.Count - 1; i >= 0; i--)
+            {
+                var p = _tracks[i];
+                if (p.phase != TouchPhase.Ended 
+                    || !((p.origin - p.current).SqrMagnitude() < _distanceSQR) 
+                    || !(p.lifeTime < _clickSenseTime)
+                    ) 
+                    continue;
+                if(_removeTracker)
+                    _tracks.RemoveAt(i);
+                yield return p.origin;
+            }
+        }
         public static IEnumerable<TrackData> ResolvePress(this List<TrackData> _tracks)=>_tracks.Collect(p => p.phase == TouchPhase.Stationary);
         public static IEnumerable<Vector2> ResolveTouch(this List<TrackData> _tracks, float _senseTime=.3f, TouchPhase tp = TouchPhase.Stationary)=>_tracks.Collect(p => p.phase == tp && p.lifeTime > _senseTime).Select(p=>p.origin);
         public static float2 CombinedDrag(this List<TrackData> _tracks)
@@ -100,38 +114,28 @@ namespace Runtime.TouchTracker
         #endregion
         
         #region Single Drag
-        private static int m_DragID=-1;
-        private static Vector2 m_LastDrag = Vector2.zero;
-        public static void Input_SingleDrag(this List<TrackData> _tracks,Action<float2,bool> _onDragStatus,Action<float2> _onDrag,float _senseTime=.1f,bool _removeTacker=true)
+
+        public static int kDragId = -1;
+        public static bool Input_SingleDrag(this List<TrackData> _tracks,out TrackData _output,bool _removeTacker=true)
         {
-            if (m_DragID == -1)
+            _output = default;
+            if (kDragId == -1)
             {
-                if (_tracks.Count != 1)
-                    return;
-                var dragTrack = _tracks[0];
-                if (dragTrack.phase != TouchPhase.Stationary&&dragTrack.phase!=TouchPhase.Moved)
-                    return;
-                if (dragTrack.phaseDuration < _senseTime)
-                    return;
-                    
-                m_DragID = dragTrack.id;
-                m_LastDrag = dragTrack.current;
-                _onDragStatus(dragTrack.current, true);
-                return;
+                if (_tracks.Count == 0)
+                    return false;
+                _output = _tracks[0];
+                kDragId = _output.id;
             }
 
-            if (!_tracks.TryFind(p => p.id == m_DragID, out var dragging) || _tracks[0].phase == TouchPhase.Ended)
+            if (kDragId == -1 || !_tracks.TryFind(p => p.id == kDragId, out  _output) || _output.phase is TouchPhase.Ended or TouchPhase.Canceled)
             {
-                m_DragID = -1;
-                m_LastDrag = Vector2.zero;
-                _onDragStatus?.Invoke(m_LastDrag, false);
-                return;
+                kDragId = -1;
+                return false;
             }
 
             if (_removeTacker)
-                _tracks.Remove(dragging);
-            m_LastDrag = dragging.current;
-            _onDrag?.Invoke(m_LastDrag);
+                _tracks.Remove(_output);
+            return true;
         }
         #endregion
     }

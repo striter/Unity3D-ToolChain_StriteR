@@ -24,7 +24,7 @@ namespace Rendering.PostProcess
 
     public class PostProcess_Stylize : APostProcessBehaviour<FStylizeCore, DStylize>
     {
-        public override bool m_OpaqueProcess => false;
+        public override bool OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.Stylize;
     }
     
@@ -32,34 +32,34 @@ namespace Rendering.PostProcess
     public struct DStylize:IPostProcessParameter
     {
         [Title]public EStylize m_Stylize;
-        [Foldout(nameof(m_Stylize),EStylize.Pixel)] [ Range(2,20)] public int m_DownSample;
-        [Foldout(nameof(m_Stylize), EStylize.Pixel)] public EPixelBound m_PixelGrid;
-        [Foldout(nameof(m_Stylize), EStylize.Pixel)] [Fold(nameof(m_PixelGrid), EPixelBound.None)] [Range(0.01f, 0.49f)] public float m_GridWidth;
-        [Foldout(nameof(m_Stylize), EStylize.Pixel)] [Fold(nameof(m_PixelGrid), EPixelBound.None)] public Color m_PixelGridColor;
-        [Foldout(nameof(m_Stylize), EStylize.OilPaint)] [Range(1,20)]public int m_OilPaintKernel;
-        [Foldout(nameof(m_Stylize), EStylize.OilPaint)] [Range(0.1f, 5f)] public float m_OilPaintSize;
-        [Foldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0.001f,1f)]public float m_ObraDitherScale;
-        [Foldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0.001f,1f)]public float m_ObraDitherStrength;
-        [Foldout(nameof(m_Stylize), EStylize.ObraDithering)] public Color m_ObraDitherColor;
-        [Foldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0,1f)] public float m_ObraDitherStep;
-        [Foldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.1f, 5f)] public float m_BilaterailSize;
-        [Foldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.01f, 1f)] public float m_BilateralFactor;
+        [Foldout(nameof(m_Stylize),EStylize.Pixel)] [ Range(2,20)] public int downSample;
+        [Foldout(nameof(m_Stylize), EStylize.Pixel)] public EPixelBound pixelGrid;
+        [Foldout(nameof(m_Stylize), EStylize.Pixel)] [Fold(nameof(pixelGrid), EPixelBound.None)] [Range(0.01f, 0.49f)] public float gridWidth;
+        [Foldout(nameof(m_Stylize), EStylize.Pixel)] [Fold(nameof(pixelGrid), EPixelBound.None)] public Color pixelGridColor;
+        [Foldout(nameof(m_Stylize), EStylize.OilPaint)] [Range(1,20)]public int oilPaintKernel;
+        [Foldout(nameof(m_Stylize), EStylize.OilPaint)] [Range(0.1f, 5f)] public float oilPaintSize;
+        [Foldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0.001f,1f)]public float obraDitherScale;
+        [Foldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0.001f,1f)]public float obraDitherStrength;
+        [Foldout(nameof(m_Stylize), EStylize.ObraDithering)] public Color obraDitherColor;
+        [Foldout(nameof(m_Stylize), EStylize.ObraDithering)] [Range(0,1f)] public float obraDitherStep;
+        [Foldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.1f, 5f)] public float bilaterailSize;
+        [Foldout(nameof(m_Stylize), EStylize.BilateralFilter)] [Range(0.01f, 1f)] public float bilateralFactor;
         public bool Validate() => m_Stylize != EStylize.None;
         public static readonly DStylize kDefault = new DStylize()
         {
             m_Stylize = EStylize.Pixel,
-            m_DownSample = 7,
-            m_PixelGrid = EPixelBound.None,
-            m_GridWidth = .1f,
-            m_PixelGridColor = Color.white.SetA(.5f),
-            m_OilPaintKernel = 10,
-            m_OilPaintSize = 2f,
-            m_ObraDitherColor = Color.yellow * .3f,
-            m_ObraDitherScale = .33f,
-            m_ObraDitherStrength = .5f,
-            m_BilaterailSize = 5f,
-            m_BilateralFactor=.5f,
-            m_ObraDitherStep = 0f,
+            downSample = 7,
+            pixelGrid = EPixelBound.None,
+            gridWidth = .1f,
+            pixelGridColor = Color.white.SetA(.5f),
+            oilPaintKernel = 10,
+            oilPaintSize = 2f,
+            obraDitherColor = Color.yellow * .3f,
+            obraDitherScale = .33f,
+            obraDitherStrength = .5f,
+            bilaterailSize = 5f,
+            bilateralFactor=.5f,
+            obraDitherStep = 0f,
         };
 
     }
@@ -83,39 +83,39 @@ namespace Rendering.PostProcess
         static readonly int ID_BilateralSize = Shader.PropertyToID("_BilateralSize");
         static readonly int ID_BilateralFactor = Shader.PropertyToID("_BilateralFactor");
         #endregion
-        public override void OnValidate(ref DStylize _ssaoData)
+        public override bool Validate(ref RenderingData _renderingData,ref DStylize _data)
         {
-            base.OnValidate(ref _ssaoData);
-            switch (_ssaoData.m_Stylize)
+            switch (_data.m_Stylize)
             {
                 case EStylize.Pixel:
                 {
-                    if (m_Material.EnableKeywords(_ssaoData.m_PixelGrid))
+                    if (m_Material.EnableKeywords(_data.pixelGrid))
                     {
-                        m_Material.SetColor(ID_PixelGridColor,_ssaoData.m_PixelGridColor);
-                        m_Material.SetVector(ID_PixelGridWidth, new Vector2(_ssaoData.m_GridWidth, 1f - _ssaoData.m_GridWidth));
+                        m_Material.SetColor(ID_PixelGridColor,_data.pixelGridColor);
+                        m_Material.SetVector(ID_PixelGridWidth, new Vector2(_data.gridWidth, 1f - _data.gridWidth));
                     }
 
                 } break;
                 case EStylize.BilateralFilter:
                 {
-                    m_Material.SetFloat(ID_BilateralSize, _ssaoData.m_BilaterailSize);
-                    m_Material.SetFloat(ID_BilateralFactor, _ssaoData.m_BilateralFactor);
+                    m_Material.SetFloat(ID_BilateralSize, _data.bilaterailSize);
+                    m_Material.SetFloat(ID_BilateralFactor, _data.bilateralFactor);
                 } break;
                 case EStylize.ObraDithering:
                 {
-                    m_Material.SetFloat(ID_ObraDitherScale, _ssaoData.m_ObraDitherScale);
-                    m_Material.SetFloat(ID_ObraDitherStrength, _ssaoData.m_ObraDitherStrength);
-                    m_Material.SetColor(ID_ObraDitherColor, _ssaoData.m_ObraDitherColor);
-                    m_Material.SetFloat(ID_ObraDitherStep,_ssaoData.m_ObraDitherStep);
+                    m_Material.SetFloat(ID_ObraDitherScale, _data.obraDitherScale);
+                    m_Material.SetFloat(ID_ObraDitherStrength, _data.obraDitherStrength);
+                    m_Material.SetColor(ID_ObraDitherColor, _data.obraDitherColor);
+                    m_Material.SetFloat(ID_ObraDitherStep,_data.obraDitherStep);
                 } break;
                 case EStylize.OilPaint:
                 {
-                    int kernel = _ssaoData.m_OilPaintKernel / 2;
+                    int kernel = _data.oilPaintKernel / 2;
                     m_Material.SetVector(ID_OilPaintKernel, new Vector2(-kernel, kernel+ 1));
-                    m_Material.SetFloat(ID_OilPaintSize, _ssaoData.m_OilPaintSize);
+                    m_Material.SetFloat(ID_OilPaintSize, _data.oilPaintSize);
                 } break;
             }
+            return base.Validate(ref _renderingData,ref _data);
         }
 
         public override void Execute(RenderTextureDescriptor _descriptor, ref DStylize _data, CommandBuffer _buffer,
@@ -128,7 +128,7 @@ namespace Rendering.PostProcess
                     base.Execute(_descriptor, ref _data, _buffer, _src, _dst, _context, ref _renderingData);
                     break;
                 case EStylize.Pixel:
-                    _buffer.GetTemporaryRT(ID_PixelizeDownSample, _descriptor.width / _data.m_DownSample, _descriptor.height / _data.m_DownSample, 0, FilterMode.Point, _descriptor.colorFormat);
+                    _buffer.GetTemporaryRT(ID_PixelizeDownSample, _descriptor.width / _data.downSample, _descriptor.height / _data.downSample, 0, FilterMode.Point, _descriptor.colorFormat);
                     _buffer.Blit(_src, RT_PixelizeDownSample);
                     _buffer.Blit(RT_PixelizeDownSample, _dst, m_Material, 0);
                     _buffer.ReleaseTemporaryRT(ID_PixelizeDownSample);

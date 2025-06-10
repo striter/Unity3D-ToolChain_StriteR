@@ -318,7 +318,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 64
   m_IsActive: 1
 --- !u!4 &8257315314949086827
 Transform:
@@ -935,36 +935,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_LUTTex: {fileID: 0}
-    m_64LUT: 0
-    m_LUTWeight: 1
+    LUTTex: {fileID: 0}
+    LUT64: 0
+    LUTWeight: 1
     m_BSC: 0
-    m_Brightness: 1
-    m_Saturation: 1
-    m_Contrast: 1
-    m_ChannelMix: 0
-    m_MixRed: {x: 0, y: 0, z: 0}
-    m_MixGreen: {x: 0, y: 0, z: 0}
-    m_MixBlue: {x: 0, y: 0, z: 0}
-    m_Bloom: 1
-    m_BloomData:
+    brightness: 1
+    saturation: 1
+    contrast: 1
+    channelMix: 0
+    mixRed: {x: 0, y: 0, z: 0}
+    mixGreen: {x: 0, y: 0, z: 0}
+    mixBlue: {x: 0, y: 0, z: 0}
+    toneMapping: 1
+    toneMappinType: 1
+    bloom: 1
+    bloomData:
       m_SampleMode: 0
-      m_Threshold: 0.65
+      m_Threshold: 0.79
       m_MaskData:
-        mode: 0
-        renderMask: 0
+        mode: 1
+        renderMask: -1
         overrideMaterial: {fileID: 0}
         overrideShader: {fileID: 0}
-        inheritDepth: 0
-      m_Color: {r: 0.122641504, g: 0.122641504, b: 0.122641504, a: 1}
+        inheritDepth: 1
+      m_Color: {r: 0.745283, g: 0.745283, b: 0.745283, a: 1}
       m_Blur:
-        m_BlurType: 8
-        m_BlurSize: 0.38
-        m_Iteration: 5
-        m_DownSample: 1
-        m_Angle: 0
-        m_Vector: {x: 0.5, y: 0.5}
-        m_Attenuation: 0.9
+        blurType: 8
+        blurSize: 0.39
+        iteration: 7
+        downSample: 1
+        angle: 0
+        vector: {x: 0.5, y: 0.5}
+        attenuation: 1
       m_BloomDebug: 0
     motionBlur: 0
     iteration: 2
@@ -982,26 +984,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_VolumetricLight: 1
-    m_VolumetricLightData:
+    volumetricLight: 1
+    volumetricLightData:
       m_Strength: 0.2
       m_Distance: 6.94
       m_MarchTimes: 64
       m_MarchStrength: 0.27
-      m_Pow: 0.89
+      m_Pow: 1
       m_Dither: 1
-    m_VolumetricDownSample: 1
-    m_EnableVolumetricBlur: 0
-    m_VolumetricBlur:
-      m_BlurType: 3
-      m_BlurSize: 1.3
-      m_Iteration: 7
-      m_DownSample: 2
-      m_Angle: 0
-      m_Vector: {x: 0.5, y: 0.5}
-      m_Attenuation: 0.9
-    m_MultiScattering: 0
-    m_MultiScatteringData:
+    volumetricDownSample: 1
+    enableVolumetricBlur: 0
+    volumetricBlur:
+      blurType: 3
+      blurSize: 1.3
+      iteration: 7
+      downSample: 2
+      angle: 0
+      vector: {x: 0.5, y: 0.5}
+      attenuation: 0.9
+    multiScattering: 0
+    multiScatteringData:
       distanceScale: 1
       sunItensity: 0.1
       rayleighScatterCofficients: 1
@@ -1414,7 +1416,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 64
   m_IsActive: 1
 --- !u!4 &2274166961590987091
 Transform:
@@ -1450,7 +1452,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 64
   m_IsActive: 1
 --- !u!4 &345911424777255276
 Transform:
@@ -2208,6 +2210,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 51c4094b71e538140a7f0e2bd55cebc7,
         type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 51c4094b71e538140a7f0e2bd55cebc7,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
@@ -2396,10 +2403,10 @@ MonoBehaviour:
     m_IncludeTransparent: 1
     m_DownSample: 1
     m_BlurParam:
-      m_BlurType: 8
-      m_BlurSize: 0.22
-      m_Iteration: 7
-      m_DownSample: 1
-      m_Angle: 0
-      m_Vector: {x: 0.5, y: 0.5}
-      m_Attenuation: 0.9
+      blurType: 8
+      blurSize: 0.22
+      iteration: 7
+      downSample: 1
+      angle: 0
+      vector: {x: 0.5, y: 0.5}
+      attenuation: 0.9
