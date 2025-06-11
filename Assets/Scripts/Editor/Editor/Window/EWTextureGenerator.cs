@@ -25,7 +25,6 @@ namespace UnityEditor.Extensions
     [Serializable]
     public struct FTextureGenerateData
     {
-        public bool 
         [DefaultAsset("Assets/Shaders/TextureOutput/ColorPalette.mat")] public Material material;
         public EResolution resolutionX;
         public EResolution resolutionY;
