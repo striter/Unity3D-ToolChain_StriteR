@@ -149,7 +149,7 @@ Shader "Game/Lit/Transparecy/Glass"
             		float3 baseCol = lerp(SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,screenUV).rgb,albedo*indirectDiffuse,opacityFresnel);
 	                return float4(baseCol+specularColor,1);
 				#else
-					return float4(albedo*indirectDiffuse+specularColor,max(opacityFresnel,specular,rim));
+					return float4(albedo*indirectDiffuse+specularColor,saturate(max(opacityFresnel,specular,rim)));
 				#endif
             }
             ENDHLSL

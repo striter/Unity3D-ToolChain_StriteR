@@ -170,7 +170,7 @@ namespace UnityEditor.Extensions
             HorizontalScope.NextLine(2, 20);
             if (GUI.Button(HorizontalScope.NextRect(0, 80), "Export"))
             {
-                if (UEAsset.SaveFilePath(out string filePath, "png", m_Input.noiseType.ToString()))
+                if (UEAsset.SaveFilePath(out var filePath, "png", m_Input.noiseType.ToString()))
                     UEAsset.CreateOrReplaceFile<Texture2D>(filePath, m_Texture.EncodeToPNG());
             }
         }

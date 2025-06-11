@@ -101,6 +101,9 @@ namespace UnityEditor.Extensions
         [MenuItem("Work Flow/Asset/Noise Texture Generator", false, 304)]
         static void ShowNoiseGenerator() => EditorWindow.GetWindow(typeof(EWNoiseTextureGenerator)).titleContent = new GUIContent("Noise Texture Generator", EditorGUIUtility.IconContent("CustomTool").image);
 
+        [MenuItem("Work Flow/Asset/Texture Generator", false, 305)]
+        static void ShowTextureGenerator() => EditorWindow.GetWindow(typeof(EWTextureGenerator)).titleContent = new GUIContent("Texture Generator", EditorGUIUtility.IconContent("CustomTool").image);
+        
         [MenuItem("Work Flow/Asset/(Optimize)Animation Clip Optimize", false, 401)]
         static void ShowAssetOptimizeWindow() => EditorWindow.GetWindow(typeof(AnimationClipOptimize)).titleContent = new GUIContent("Asset Optimize", EditorGUIUtility.IconContent("Toolbar Plus More").image);
 

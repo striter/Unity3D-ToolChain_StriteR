@@ -507,6 +507,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1104164580989734072, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.volumetricLightData.pow
+      value: 1.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104164580989734072, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.volumetricBlur.attenuation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104164580989734072, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.volumetricLightData.dither
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104164580989734072, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.volumetricLightData.distance
+      value: 5.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104164580989734072, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.volumetricLightData.strength
+      value: 0.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104164580989734072, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.volumetricLightData.marchTimes
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 1104164580989734072, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.volumetricLightData.marchStrength
+      value: 0.45
+      objectReference: {fileID: 0}
     - target: {fileID: 3400050958276052324, guid: 40d3c7889ab36274f91b885e1f3c514d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -556,6 +591,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6504454812007486818, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.bloomData.m_Color.b
+      value: 0.5283019
+      objectReference: {fileID: 0}
+    - target: {fileID: 6504454812007486818, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.bloomData.m_Color.g
+      value: 0.5283019
+      objectReference: {fileID: 0}
+    - target: {fileID: 6504454812007486818, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.bloomData.m_Color.r
+      value: 0.5283019
+      objectReference: {fileID: 0}
+    - target: {fileID: 6504454812007486818, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.bloomData.m_Threshold
+      value: 0.98
+      objectReference: {fileID: 0}
+    - target: {fileID: 6504454812007486818, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.bloomData.m_BloomDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6504454812007486818, guid: 40d3c7889ab36274f91b885e1f3c514d,
+        type: 3}
+      propertyPath: m_Data.bloomData.m_Blur.blurSize
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 8612688320289451123, guid: 40d3c7889ab36274f91b885e1f3c514d,
         type: 3}

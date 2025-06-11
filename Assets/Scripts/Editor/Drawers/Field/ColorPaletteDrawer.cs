@@ -12,15 +12,6 @@ namespace UnityEditor.Extensions
         private const float kButtonSize = 50f;
         
         private int kPreset = -1;
-        private static ColorPalette[] kPalettePresets = {
-            new () {a = new Color(.5f, .5f, .5f), b = new Color(.5f, .5f, .5f), c = new Color(1f, 1f, 1f), d = new Color(0, 0.33f, 0.67f)},   
-            new () {a = new Color(.5f, .5f, .5f), b = new Color(.5f, .5f, .5f), c = new Color(1f, 1f, 1f), d = new Color(0, 0.1f, 0.2f)},   
-            new () {a = new Color(.5f, .5f, .5f), b = new Color(.5f, .5f, .5f), c = new Color(1f, 1f, 1f), d = new Color(0.3f, 0.2f, 0.2f)},   
-            new () {a = new Color(.5f, .5f, .5f), b = new Color(.5f, .5f, .5f), c = new Color(1f, 1f, .5f), d = new Color(0.8f, 0.9f, 0.3f)},  
-            new () {a = new Color(.5f, .5f, .5f), b = new Color(.5f, .5f, .5f), c = new Color(1f, .7f, .4f), d = new Color(0, 0.15f, 0.2f)},   
-            new () {a = new Color(.5f, .5f, .5f), b = new Color(.5f, .5f, .5f), c = new Color(2f, 1f, 1f), d = new Color(0.5f, 0.2f, 0.25f)},   
-            new () { a = new Color(.8f, .5f, .4f), b = new Color(.2f, .4f, .2f), c = new Color(2f, 1f, 1f), d = new Color(0, 0.25f, 0.25f)},
-        };
         
         public override float GetPropertyHeight(SerializedProperty _property, GUIContent _label) => EditorGUI.GetPropertyHeight(_property, _label,true) + kSize + kSpacing;
         public override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
@@ -37,7 +28,7 @@ namespace UnityEditor.Extensions
             if (GUI.Button(_position.Move(_position.size.x - kButtonSize, 0f).ResizeY(20).ResizeX(kButtonSize), "Preset"))
             {
                 kPreset++;
-                fieldInfo.SetValue(parentObject,kPalettePresets[kPreset%kPalettePresets.Length]);
+                fieldInfo.SetValue(parentObject,ColorPalette.kPresets[kPreset%ColorPalette.kPresets.Length]);
                 Undo.RegisterCompleteObjectUndo(_property.serializedObject.targetObject, "Color Palette Preset");
             }
             

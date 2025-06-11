@@ -17,16 +17,11 @@ namespace UnityEditor.Extensions
             return height;
         }
 
-        static Object LoadDefaultAsset(Type _type,string _path)
-        {
-            switch (_type)
-            {
-                case not null when _type == typeof(Shader): return Shader.Find(_path);
-                case not null when _type.IsSubclassOf(typeof(ScriptableObject)): return AssetDatabase.LoadAssetAtPath<ScriptableObject>(_path);
-            }
-
-            return null;
-        }
+        static Object LoadDefaultAsset(Type _type,string _path) => _type switch {
+                not null when _type == typeof(Shader) => Shader.Find(_path),
+                not null when _type.IsSubclassOf(typeof(Object)) => AssetDatabase.LoadAssetAtPath<Object>(_path),
+                _ => null
+            };
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

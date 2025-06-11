@@ -8,13 +8,6 @@ public static partial class UColor
     public static float RoughnessToPerceptualSmoothness(float roughness) => 1.0f - sqrt(roughness);
     public static float PerceptualSmoothnessToRoughness(float perceptualSmoothness) => (1.0f - perceptualSmoothness) * (1.0f - perceptualSmoothness);
     public static float PerceptualSmoothnessToPerceptualRoughness(float perceptualSmoothness) => 1.0f - perceptualSmoothness;
-    public static float3 SRGBToLinear(float3 rgba) {
-        return new float3(lerp(rgba.xyz / 12.92f, pow((rgba.xyz + 0.055f) / 1.055f, 2.4f), step(0.04045f, rgba.xyz)));
-    }
-    
-    public static float4 SRGBToLinear(float4 rgba) {
-        return new float4(lerp(rgba.xyz / 12.92f, pow((rgba.xyz + 0.055f) / 1.055f, 2.4f), step(0.04045f, rgba.xyz)),rgba.w);
-    }
     public static float GammaToLinear_Accurate(float value)
     {
         if (value <= 0.04045F)

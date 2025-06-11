@@ -40,6 +40,24 @@ half3 HSVtoRGB(half3 hsv)
     // }
 }
 
+float LinearToGamma_Accurate(float col)
+{
+    if (col <= 0.0031308)
+        col *= 12.92;
+    else
+        col = 1.055 * pow(col, 0.4166667) - 0.055;
+    return col;
+}
+
+float4 LinearToGamma_Accurate(float4 _col)
+{
+    return float4(LinearToGamma_Accurate(_col.r),
+        LinearToGamma_Accurate(_col.g),
+        LinearToGamma_Accurate(_col.b),
+        LinearToGamma_Accurate(_col.a)
+    );
+}
+
 half3 RGBtoHSV(half3 rgb)
 {
     half cmax = max(rgb);
