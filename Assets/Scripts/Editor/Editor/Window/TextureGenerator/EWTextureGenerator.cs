@@ -120,15 +120,28 @@ namespace UnityEditor.Extensions
         {
             m_SerializedWindow = new SerializedObject(this);
             m_DataProperty = m_SerializedWindow.FindProperty(nameof(m_Data));
+            Undo.undoRedoPerformed += OnUndoRedo;
         }
 
         private void OnDisable()
         {
+            Undo.undoRedoPerformed -= OnUndoRedo;
+            m_SerializedWindow.Dispose();
+            m_SerializedWindow = null;
             if(m_Generator != null)
                 m_Generator.Dispose();
             m_Generator = null;
         }
 
+        private void OnUndoRedo()
+        {
+            if (m_SerializedWindow != null)
+            {
+                m_SerializedWindow.Update();
+                Repaint();
+            }
+        }
+        
         private void OnGUI()
         {
             EditorGUILayout.PropertyField(m_DataProperty);
@@ -136,8 +149,8 @@ namespace UnityEditor.Extensions
             HorizontalScope.Begin(5,5,propertyHeight,Screen.width);
             if (EditorGUI.EndChangeCheck())
             {
-                m_SerializedWindow.ApplyModifiedPropertiesWithoutUndo();
-                Undo.RecordObject(this, "Noise Generator Change");
+                m_SerializedWindow.ApplyModifiedProperties();
+                Undo.RecordObject(this, "Texture Generator");                
             }
 
             var generator = m_Data.Generator;
@@ -152,10 +165,16 @@ namespace UnityEditor.Extensions
             generator.Setup(m_Data.config);
             var aspect = (float)m_Data.config.resolutionY / (float)m_Data.config.resolutionX;
             var width = math.min(position.width,(position.height - propertyHeight - 20) / aspect) - kTexturePadding;
+            HorizontalScope.NextLine(0f,20);
+            var previewRect = HorizontalScope.NextRect(0,width);
+            GUI.Label(previewRect,"Texture Preview",UEGUIStyle_Window.m_TitleLabel);
             HorizontalScope.NextLine(0f,aspect * width);
-            var textureRect = HorizontalScope.NextRect(kTexturePadding / 2, width);
+            
+            var textureRect = HorizontalScope.NextRect((position.width - width - kTexturePadding) / 2,0);
+            textureRect = HorizontalScope.NextRect(0, width);
             GUI.DrawTexture(textureRect,Texture2D.whiteTexture);
-            generator.Preview(textureRect.Collapse(Vector2.one * kTextureCollapse,Vector2.one * .5f));
+            textureRect = textureRect.Collapse(Vector2.one * kTextureCollapse,Vector2.one * .5f);
+            generator.Preview(textureRect);
             HorizontalScope.NextLine(2, 20);
             if (GUI.Button(HorizontalScope.NextRect(0, 80), "Export"))
                 generator.Output();

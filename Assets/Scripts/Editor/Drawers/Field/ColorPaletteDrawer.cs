@@ -12,8 +12,14 @@ namespace UnityEditor.Extensions
         private const float kButtonSize = 50f;
         
         private int kPreset = -1;
-        
-        public override float GetPropertyHeight(SerializedProperty _property, GUIContent _label) => EditorGUI.GetPropertyHeight(_property, _label,true) + kSize + kSpacing;
+
+        public override float GetPropertyHeight(SerializedProperty _property, GUIContent _label)
+        {
+            var size = EditorGUI.GetPropertyHeight(_property, _label, true);
+            if(_property.IsExpanded())
+                size += kSize + kSpacing;
+            return size;
+        }
         public override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
         {
             if (_position.size.x < kSize)
@@ -28,16 +34,17 @@ namespace UnityEditor.Extensions
             if (GUI.Button(_position.Move(_position.size.x - kButtonSize, 0f).ResizeY(20).ResizeX(kButtonSize), "Preset"))
             {
                 kPreset++;
-                fieldInfo.SetValue(parentObject,ColorPalette.kPresets[kPreset%ColorPalette.kPresets.Length]);
-                Undo.RegisterCompleteObjectUndo(_property.serializedObject.targetObject, "Color Palette Preset");
+                _property.boxedValue = ColorPalette.kPresets[kPreset % ColorPalette.kPresets.Length];
             }
             
             EditorGUI.PropertyField(propertyField, _property, _label, true);
-
+            if (!_property.IsExpanded())
+                return;
+            
             var imageField = _position.MoveY(_position.size.y - kSize).ResizeY(kSize).Collapse(new Vector2(kXCollapse * 2,0f));
             EditorGUI.DrawRect(imageField,Color.black);
 
-            var textureField = imageField.Collapse(new Vector2(kAxisPadding*2,kAxisPadding*2));
+            var textureField = imageField.Collapse(new Vector2(kAxisPadding*2,kAxisPadding*2),Vector2.one * .5f);
             var sizeX = (int) textureField.width*4; 
             var sizeY = (int) textureField.height*2;
 

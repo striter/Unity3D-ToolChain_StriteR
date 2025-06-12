@@ -9,7 +9,7 @@ namespace UnityEditor.Extensions
 {
     public static class UEGUI
     {
-        public static bool IsExpanded(SerializedProperty _property,float _comparer =0)
+        public static bool IsExpanded(this SerializedProperty _property,float _comparer =0)
         {
             _comparer = _comparer > 0 ? _comparer : EditorGUIUtility.singleLineHeight;
             return EditorGUI.GetPropertyHeight(_property) > _comparer;
@@ -24,10 +24,10 @@ namespace UnityEditor.Extensions
         public static FieldInfo GetFieldInfo(this SerializedProperty _property,out object _parentObject)
         {
             _parentObject = _property.serializedObject.targetObject;
-            string[] paths = _property.propertyPath.Split('.');
+            var paths = _property.propertyPath.Split('.');
             object targetObject = _property.serializedObject.targetObject;
             FieldInfo fieldInfo = null;
-            bool array = false;
+            var array = false;
             foreach (var fieldName in paths)
             {
 
@@ -60,10 +60,10 @@ namespace UnityEditor.Extensions
 
         public static IEnumerable<(FieldInfo,object)> AllRelativeFields(this SerializedProperty _property,BindingFlags _flags = BindingFlags.Instance |  BindingFlags.Public | BindingFlags.NonPublic)
         {
-            string[] paths = _property.propertyPath.Split('.');
+            var paths = _property.propertyPath.Split('.');
             object targetObject = _property.serializedObject.targetObject;
-            Type targetType = targetObject.GetType();
-            for(int i=0;i< paths.Length - 1; i++)       //Iterate till it reaches the root
+            var targetType = targetObject.GetType();
+            for(var i=0;i< paths.Length - 1; i++)       //Iterate till it reaches the root
             {
                 var pathName = paths[i];
                 if (targetType.IsArray || targetType.IsGenericType)
@@ -114,15 +114,14 @@ namespace UnityEditor.Extensions
             GUILayout.BeginVertical();
             if (_title != "")
                 EditorGUILayout.LabelField(_title, UEGUIStyle_Window.m_TitleLabel);
-            if (_src == null)
-                _src = Array.Empty<T>();
-            int length = Mathf.Clamp(EditorGUILayout.IntField("Array Length", _src.Length), 0, 128);
+            _src ??= Array.Empty<T>();
+            var length = Mathf.Clamp(EditorGUILayout.IntField("Array Length", _src.Length), 0, 128);
             if (length != _src.Length)
                 _src = _src.Resize(length);
 
-            Type type = typeof(T);
-            T[] modifiedField = _src.DeepCopy();
-            for (int i = 0; i < modifiedField.Length; i++)
+            var type = typeof(T);
+            var modifiedField = _src.DeepCopy();
+            for (var i = 0; i < modifiedField.Length; i++)
             {
                 GUILayout.BeginHorizontal();
                 string name = _getElementName == null ? $"  Element {i}" : _getElementName(i);
@@ -131,7 +130,7 @@ namespace UnityEditor.Extensions
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
-            for (int i = 0; i < modifiedField.Length; i++)
+            for (var i = 0; i < modifiedField.Length; i++)
                 if (modifiedField[i] != _src[i])
                     return modifiedField;
             return _src;
