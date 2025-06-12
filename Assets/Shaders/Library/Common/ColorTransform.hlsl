@@ -49,6 +49,18 @@ float LinearToGamma_Accurate(float col)
     return col;
 }
 
+float2 LinearToGamma_Accurate(float2 _col)
+{
+    return float2(LinearToGamma_Accurate(_col.r),
+        LinearToGamma_Accurate(_col.g));
+}
+float3 LinearToGamma_Accurate(float3 _col)
+{
+    return float3(LinearToGamma_Accurate(_col.r),
+        LinearToGamma_Accurate(_col.g),
+        LinearToGamma_Accurate(_col.b)
+    );
+}
 float4 LinearToGamma_Accurate(float4 _col)
 {
     return float4(LinearToGamma_Accurate(_col.r),

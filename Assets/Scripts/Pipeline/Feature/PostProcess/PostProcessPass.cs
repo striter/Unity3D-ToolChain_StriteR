@@ -33,38 +33,43 @@ namespace Rendering.Pipeline
             ConfigureTarget(colorAttachmentHandle,depthAttachmentHandle);
         }
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
-        {            
+        {
             var cmd = CommandBufferPool.Get("Post Process");
             var descriptor = _renderingData.cameraData.cameraTargetDescriptor;
             descriptor.msaaSamples = 1;
+            descriptor.depthBufferBits = 0;
+            var colorTarget = _renderingData.cameraData.renderer.cameraColorTargetHandle;
+            var buffer2Required = m_Effects.Count > 2; 
             cmd.GetTemporaryRT(ID_Blit_Temp1, descriptor);
-            cmd.GetTemporaryRT(ID_Blit_Temp2, descriptor);
-            var renderer = _renderingData.cameraData.renderer;
+            if(buffer2Required)
+                cmd.GetTemporaryRT(ID_Blit_Temp2, descriptor);
             var lastIndex = m_Effects.Count - 1;
             var blitIndex = 0;
-            var blitSwap = true;
+            var swap = false;
             foreach (var effect in m_Effects)
             {
-                var src = blitSwap ? m_BlitTemp1 : m_BlitTemp2;
-                var dst = blitSwap ? m_BlitTemp2 : m_BlitTemp1;
+                var src = swap ? m_BlitTemp1 : m_BlitTemp2;
+                var dst = swap ? m_BlitTemp2 : m_BlitTemp1;
                 if (blitIndex == 0)
-                    src = renderer.cameraColorTargetHandle;
+                    src = colorTarget;
                 else if (blitIndex == lastIndex)
-                    dst = renderer.cameraColorTargetHandle;
-                blitSwap = !blitSwap;
+                    dst = colorTarget;
+                swap = !swap;
 
                 var name = effect.GetType().Name;
                 cmd.BeginSample(name);
                 effect.Execute(cmd, src, dst, descriptor, _context, ref _renderingData);
                 cmd.EndSample(name);
-                
+            
                 blitIndex++;
             }
-            if (lastIndex == 0)
-                cmd.Blit(m_BlitTemp2, renderer.cameraColorTargetHandle);
+            if(lastIndex == 0)
+                cmd.Blit(m_BlitTemp1, colorTarget);
             
-            cmd.ReleaseTemporaryRT(ID_Blit_Temp1);
             cmd.ReleaseTemporaryRT(ID_Blit_Temp2);
+            if(buffer2Required)
+                cmd.ReleaseTemporaryRT(ID_Blit_Temp1);
+            
             _context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }

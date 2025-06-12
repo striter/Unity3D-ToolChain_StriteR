@@ -54,7 +54,7 @@ namespace UnityEditor.Extensions
             }
 
             if (_texture == null)
-                _texture = UnityEngine.RenderTexture.GetTemporary((int)resolutionX, (int)resolutionY, 0, RenderTextureFormat.ARGB32);
+                _texture = UnityEngine.RenderTexture.GetTemporary((int)resolutionX, (int)resolutionY, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
 
             _texture.filterMode = filterMode;
             return _texture;
@@ -164,7 +164,7 @@ namespace UnityEditor.Extensions
             
             generator.Setup(m_Data.config);
             var aspect = (float)m_Data.config.resolutionY / (float)m_Data.config.resolutionX;
-            var width = math.min(position.width,(position.height - propertyHeight - 20) / aspect) - kTexturePadding;
+            var width = math.min(position.width,(position.height - propertyHeight - 20 - 20) / aspect) - kTexturePadding;
             HorizontalScope.NextLine(0f,20);
             var previewRect = HorizontalScope.NextRect(0,width);
             GUI.Label(previewRect,"Texture Preview",UEGUIStyle_Window.m_TitleLabel);

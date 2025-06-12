@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/ColorPalette"
+Shader "Hidden/TextureOutput/ColorPalette"
 {
     Properties
     {
@@ -30,7 +30,6 @@ Shader "Game/Unfinished/ColorPalette"
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
             INSTANCING_BUFFER_START
                 INSTANCING_PROP(float4,_A)
                 INSTANCING_PROP(float4,_B)
