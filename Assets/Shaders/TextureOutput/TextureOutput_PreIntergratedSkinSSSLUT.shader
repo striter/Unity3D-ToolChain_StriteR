@@ -11,6 +11,8 @@ Shader "Hidden/TextureOutput/PreIntergratedSkinSSSLUT"
             #pragma vertex vert
             #pragma fragment frag
             #include "Assets/Shaders/Library/Common.hlsl"
+            #include "TextureOutputInclude.hlsl"
+            #pragma shader_feature_fragment _TEXTURE_OUTPUT_SRGB
 
             struct a2v
             {
@@ -81,7 +83,7 @@ Shader "Hidden/TextureOutput/PreIntergratedSkinSSSLUT"
             {
 				UNITY_SETUP_INSTANCE_ID(i);
                 float2 uv = i.uv;
-                return float4(LinearToGamma_Accurate(BakeSkinLUT(uv)),1);
+                return float4(Output(BakeSkinLUT(uv)),1);
             }
             ENDHLSL
         }

@@ -140,7 +140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_AntiAliasing:
-    mode: 0
+    mode: 2
     fxaa: 2
     additionalSample: 1
     useDepth: 0

@@ -14,8 +14,8 @@ namespace UnityEditor.Extensions
         private Texture2D m_Texture;
         public void Setup(TextureGeneratorData _data)
         {
-            m_RenderTexture = _data.RenderTexture(m_RenderTexture);
-            m_Texture = _data.Texture2D(m_Texture);
+            m_RenderTexture = _data.RenderTexture(m_RenderTexture,false);
+            m_Texture = _data.Texture2D(m_Texture,false);
         }
 
         public void Preview(Rect _rect)

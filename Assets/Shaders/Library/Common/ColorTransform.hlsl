@@ -45,7 +45,7 @@ float LinearToGamma_Accurate(float col)
     if (col <= 0.0031308)
         col *= 12.92;
     else
-        col = 1.055 * pow(col, 0.4166667) - 0.055;
+        col = 1.055 * pow(abs(col), 0.4166667) - 0.055;
     return col;
 }
 
@@ -68,6 +68,11 @@ float4 LinearToGamma_Accurate(float4 _col)
         LinearToGamma_Accurate(_col.b),
         LinearToGamma_Accurate(_col.a)
     );
+}
+
+float3 GammaToLinear(float3 _col)
+{
+    return pow(abs(_col),2.2);
 }
 
 half3 RGBtoHSV(half3 rgb)

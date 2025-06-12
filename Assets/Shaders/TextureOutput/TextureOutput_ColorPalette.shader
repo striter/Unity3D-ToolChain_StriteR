@@ -3,9 +3,9 @@ Shader "Hidden/TextureOutput/ColorPalette"
     Properties
     {
         [ColorUsage(false,false)]_A ("A", Color) = (0.5, 0.5, 0.5, 1)
-        [ColorUsage(false,false)]_B ("B",Color) = (0.5,0.5,0.5,1)
-        [ColorUsage(false,false)]_C ("C",Color) = (1,1,1,1)
-        [ColorUsage(false,false)]_D ("D",Color) = (0,0.1,0.2,1)
+        [ColorUsage(false,false)]_B ("B", Color) = (0.5,0.5,0.5,1)
+        [ColorUsage(false,false)]_C ("C", Color) = (1,1,1,1)
+        [ColorUsage(false,false)]_D ("D", Color) = (0,0.1,0.2,1)
     }
     SubShader
     {
@@ -15,6 +15,8 @@ Shader "Hidden/TextureOutput/ColorPalette"
             #pragma vertex vert
             #pragma fragment frag
             #include "Assets/Shaders/Library/Common.hlsl"
+            #include "TextureOutputInclude.hlsl"
+            #pragma shader_feature_fragment _TEXTURE_OUTPUT_SRGB
 
             struct a2v
             {
@@ -61,7 +63,11 @@ Shader "Hidden/TextureOutput/ColorPalette"
                     d = LinearToGamma_Accurate(d);
                 #endif
                 float4 output = a + b * cos(kPI2*(c*i.uv.x+d));
-                return float4(output.rgb,1);
+                
+                #if !UNITY_COLORSPACE_GAMMA
+                    output.rgb = GammaToLinear(output.rgb);
+                #endif
+                return float4(Output(output.rgb),1);
             }
             ENDHLSL
         }

@@ -45,7 +45,7 @@ namespace UnityEditor.Extensions
                 _reference = new Color[length];
             return _reference;
         }
-        public RenderTexture RenderTexture(RenderTexture _texture)
+        public RenderTexture RenderTexture(RenderTexture _texture,bool sRGB = true)
         {
             if (_texture != null && (_texture.width != (int)resolutionX || _texture.height != (int)resolutionY))
             {
@@ -54,12 +54,12 @@ namespace UnityEditor.Extensions
             }
 
             if (_texture == null)
-                _texture = UnityEngine.RenderTexture.GetTemporary((int)resolutionX, (int)resolutionY, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+                _texture = UnityEngine.RenderTexture.GetTemporary((int)resolutionX, (int)resolutionY, 0, RenderTextureFormat.ARGB32, sRGB ? RenderTextureReadWrite.sRGB : RenderTextureReadWrite.Linear);
 
             _texture.filterMode = filterMode;
             return _texture;
         }
-        public Texture2D Texture2D(Texture2D _texture)
+        public Texture2D Texture2D(Texture2D _texture,bool sRGB = true)
         {
             if (_texture != null && (_texture.width != (int)resolutionX || _texture.height != (int)resolutionY))
             {
@@ -68,7 +68,7 @@ namespace UnityEditor.Extensions
             }
 
             if (_texture == null)
-                _texture = new Texture2D((int)resolutionX,(int)resolutionY,TextureFormat.ARGB32,false);
+                _texture = new Texture2D((int)resolutionX,(int)resolutionY,TextureFormat.ARGB32,false,!sRGB);
 
             _texture.filterMode = filterMode;
             return _texture;
@@ -116,6 +116,7 @@ namespace UnityEditor.Extensions
         private const float kTextureCollapse = 6f;
         private const float kTexturePadding = 10f;
         private ITextureGenerator m_Generator;
+        private static readonly string kKeyword = "_TEXTURE_OUTPUT_SRGB";
         private void OnEnable()
         {
             m_SerializedWindow = new SerializedObject(this);
@@ -144,6 +145,7 @@ namespace UnityEditor.Extensions
         
         private void OnGUI()
         {
+            Shader.DisableKeyword(kKeyword);
             EditorGUILayout.PropertyField(m_DataProperty);
             var propertyHeight = EditorGUI.GetPropertyHeight(m_DataProperty, true);
             HorizontalScope.Begin(5,5,propertyHeight,Screen.width);
@@ -162,6 +164,7 @@ namespace UnityEditor.Extensions
             if (generator is not { Valid: true })
                 return;
             
+            Shader.EnableKeyword(kKeyword);
             generator.Setup(m_Data.config);
             var aspect = (float)m_Data.config.resolutionY / (float)m_Data.config.resolutionX;
             var width = math.min(position.width,(position.height - propertyHeight - 20 - 20) / aspect) - kTexturePadding;
@@ -178,6 +181,7 @@ namespace UnityEditor.Extensions
             HorizontalScope.NextLine(2, 20);
             if (GUI.Button(HorizontalScope.NextRect(0, 80), "Export"))
                 generator.Output();
+            Shader.DisableKeyword(kKeyword);
         }
     }
 }
