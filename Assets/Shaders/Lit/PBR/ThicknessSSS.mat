@@ -7,15 +7,16 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Grass
-  m_Shader: {fileID: 4800000, guid: a3ed444ff715cb6458df4360304125a6, type: 3}
+  m_Name: ThicknessSSS
+  m_Shader: {fileID: 4800000, guid: 5b54c00f3931488095671762849255d4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _ANISOTROPIC
+  m_ValidKeywords: []
   m_InvalidKeywords:
+  - _ANISOTROPIC
   - _DEPTHMAP
   - _NDF_GGX
+  - _NORMALMAP
   - _PARALLAX
   - _SPECULARHIGHLIGHTS_OFF
   - _VF_GGX
@@ -185,6 +186,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ThicknessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _UpperBlendTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -273,6 +278,8 @@ Material:
     - _ReceiveShadow: 1
     - _ReceiveShadows: 1
     - _RimIntensity: 0.5
+    - _SSSIntensity: 1
+    - _SSSNormalInfluence: 1
     - _ShellDelta: 0
     - _Smoothness: 0
     - _Smoothness0: 0.5

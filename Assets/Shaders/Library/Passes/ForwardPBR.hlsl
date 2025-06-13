@@ -57,14 +57,15 @@ BRDFSurface InitializeFragmentSurface(BRDFInitializeInput input)
 #else
 	SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,input.uv)*INSTANCE(_Color);
 #endif
-	
+	float3 normalTS = float3(0,0,1);
+	float3 normalWS = input.normalWS;
 #if !defined (_NORMALOFF)
 	#if defined(GET_NORMAL)
-		input.normalTS = GET_NORMAL(input);
+		normalTS = GET_NORMAL(input);
 	#else
-		input.normalTS = DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,input.uv));
+		normalTS = DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,input.uv));
 	#endif
-	input.normalWS = normalize(mul(transpose(input.TBNWS), input.normalTS));
+	normalWS = normalize(mul(transpose(input.TBNWS), normalTS));
 #endif
 	
 	half3 emission =0;
@@ -101,7 +102,7 @@ float smoothness=0.5,metallic=0,ao =1;
 	surface.metallic = metallic;
 	surface.ao = ao;
     
-	surface.normal = input.normalWS;
+	surface.normal = normalWS;
 	surface.tangent = input.tangentWS;
 	surface.biTangent = input.biTangentWS;
 	surface.viewDir = input.viewDirWS;
@@ -116,7 +117,7 @@ float smoothness=0.5,metallic=0,ao =1;
 	surface.roughness = max(HALF_MIN_SQRT, surface.perceptualRoughness * surface.perceptualRoughness);
 	surface.roughness2 = max(HALF_MIN, surface.roughness * surface.roughness);
     
-	surface.normalTS = input.normalTS;
+	surface.normalTS = normalTS;
     
 	#if defined(BRDF_SURFACE_ADDITIONAL_TRANSFER)
 		BRDF_SURFACE_ADDITIONAL_TRANSFER(input,surface);
@@ -176,7 +177,6 @@ f2of ForwardFragment(v2ff i)
 	#endif
 	finalCol+=BRDFLighting(surface,mainLight);
 
-	
 	#if _ADDITIONAL_LIGHTS
 		uint pixelLightCount = GetAdditionalLightsCount();
 		for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)

@@ -7,7 +7,7 @@ namespace UnityEditor.Extensions
     [Serializable]
     public class FTextureGeneratorMaterial : ITextureGenerator
     {
-        [DefaultAsset("Assets/Shaders/TextureOutput/ColorPalette.mat")] public Material material;
+        [DefaultAsset("Assets/Shaders/TextureOutput/TextureOutput_ColorPalette.mat")] public Material material;
         public bool Valid => material != null;
         public static readonly FTextureGeneratorMaterial kDefault = new();
         private RenderTexture m_RenderTexture;

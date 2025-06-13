@@ -1,4 +1,4 @@
-Shader "Game/Lit/PBR/SSS"
+Shader "Game/Lit/PBR/ThicknessSSS"
 {
     Properties
 	{

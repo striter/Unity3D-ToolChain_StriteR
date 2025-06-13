@@ -20,9 +20,9 @@ BRDFLight BRDFLight_Ctor(BRDFSurface surface,BRDFLightInput input)
     light.color = input.lightColor;
    
 #if defined(GET_GEOMETRYSHADOW)
-    float geometryShadow = GET_GEOMETRYSHADOW(surface,input);
+    float3 geometryShadow = GET_GEOMETRYSHADOW(surface,input);
 #else
-    float geometryShadow = input.NDL;
+    float3 geometryShadow = input.NDL;
 #endif
     light.radiance = input.lightColor * (input.distanceAttenuation*input.shadowAttenuation * geometryShadow);
     

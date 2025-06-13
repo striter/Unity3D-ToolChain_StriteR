@@ -43,11 +43,6 @@ namespace Rendering.Pipeline
             if (_renderingData is { postProcessingEnabled: true, cameraData: { postProcessEnabled: true } })
             {
                 var antiAliasing = m_AntiAliasing.mode;
-                #if UNITY_EDITOR
-                if (_renderingData.cameraData.isSceneViewCamera && UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() != null)
-                    antiAliasing = EAntiAliasing.None;
-                #endif
-                
                 if(antiAliasing != EAntiAliasing.None)
                     m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
                 if(antiAliasing == EAntiAliasing.TAA)
@@ -73,7 +68,7 @@ namespace Rendering.Pipeline
             m_ScreenProcessing.Clear();
 
             var postProcessCount = m_PostprocessQueue.Count;
-            for (int i = 0; i < postProcessCount; i++)
+            for (var i = 0; i < postProcessCount; i++)
             {
                 var postProcess = m_PostprocessQueue[i];
                 if (!postProcess.Validate(ref _renderingData))
