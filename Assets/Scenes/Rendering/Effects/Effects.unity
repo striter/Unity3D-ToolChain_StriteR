@@ -961,6 +961,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 702874594434719031, guid: fccaf719df321b64c883fa036ce0a9cd,
+        type: 3}
+      propertyPath: m_Data.m_BlurParam.blurSize
+      value: 0.39
+      objectReference: {fileID: 0}
+    - target: {fileID: 702874594434719031, guid: fccaf719df321b64c883fa036ce0a9cd,
+        type: 3}
+      propertyPath: m_Data.m_BlurParam.blurType
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 702874594434719031, guid: fccaf719df321b64c883fa036ce0a9cd,
+        type: 3}
+      propertyPath: m_Data.m_BlurParam.iteration
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 702874594434719031, guid: fccaf719df321b64c883fa036ce0a9cd,
+        type: 3}
+      propertyPath: m_Data.m_BlurParam.downSample
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2926810310747978068, guid: fccaf719df321b64c883fa036ce0a9cd,
         type: 3}
       propertyPath: m_LocalRotation.w
