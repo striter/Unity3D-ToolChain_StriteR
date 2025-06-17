@@ -14,7 +14,7 @@
 		{
 			NAME "UberColorProcess"
 			HLSLPROGRAM
-			#pragma vertex vert_img
+			#pragma vertex vert_blit
 			#pragma fragment frag
 			#pragma multi_compile_local_fragment _ _LUT
 			#pragma multi_compile_local_fragment _ _BSC
@@ -102,11 +102,10 @@
 			half3 Bloom(half3 col,float2 uv)
             {
 				#if _BLOOM
-					col += SAMPLE_TEXTURE2D(_Bloom_Blur,sampler_Bloom_Blur, uv).rgb *_BloomColor.rgb*_BloomColor.a;
+					col += SAMPLE_TEXTURE2D(_Bloom_Blur,sampler_Bloom_Blur, uv).rgb *_BloomColor.rgb;
 				#endif
 	            return col;
             }
-
 			
 			half4 frag (v2f_img i) : SV_Target
 			{
@@ -121,7 +120,7 @@
 		
         Pass{
 	        HLSLPROGRAM
-	            #pragma vertex vert_img
+	            #pragma vertex vert_blit
 	            #pragma fragment frag
 		       
 		        half4 _BloomThreshold;

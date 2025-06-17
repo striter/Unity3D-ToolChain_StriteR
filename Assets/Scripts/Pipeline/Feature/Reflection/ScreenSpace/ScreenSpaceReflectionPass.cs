@@ -24,7 +24,7 @@ namespace Rendering.Pipeline
         public override void Configure(CommandBuffer _cmd, RenderTextureDescriptor _cameraTextureDescriptor)
         {
             _cmd.GetTemporaryRT(kSSRTex, _cameraTextureDescriptor.width / m_Data.downSample, _cameraTextureDescriptor.height / m_Data.downSample, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
-            ConfigureTarget(RTHandles.Alloc(kSSRTexID));
+            ConfigureTarget(kSSRTexID);
             base.Configure(_cmd, _cameraTextureDescriptor);
         }
 

@@ -15,7 +15,7 @@ Shader "Hidden/PostProcess/AntiAliasing"
 		{
 			NAME "FXAA"
 			HLSLPROGRAM
-			#pragma vertex vert_img
+			#pragma vertex vert_blit
 			#pragma fragment frag
 			
 			//FXAA
@@ -142,7 +142,7 @@ Shader "Hidden/PostProcess/AntiAliasing"
 		{
 			Name "TAA Blend Pass"
 			HLSLPROGRAM
-			#pragma vertex vert_img
+			#pragma vertex vert_blit
 			#pragma fragment frag
 			TEXTURE2D(_HistoryBuffer); SAMPLER(sampler_HistoryBuffer);
 			float _Blend;

@@ -10,9 +10,8 @@ Shader "Hidden/NormalsFromDepth"
         Pass
         {
             HLSLPROGRAM
-            #pragma vertex vert_img
+            #pragma vertex vert_blit
             #pragma fragment frag
-            #define IDEPTH
             #include "Assets/Shaders/Library/PostProcess.hlsl"
 
             half3 WorldSpaceNormalFromDepth(float2 uv)

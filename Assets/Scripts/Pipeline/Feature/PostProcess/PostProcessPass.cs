@@ -34,15 +34,15 @@ namespace Rendering.Pipeline
         }
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            var cmd = CommandBufferPool.Get("Post Process");
+            var buffer = CommandBufferPool.Get("Post Process");
             var descriptor = _renderingData.cameraData.cameraTargetDescriptor;
             descriptor.msaaSamples = 1;
             descriptor.depthBufferBits = 0;
             var colorTarget = _renderingData.cameraData.renderer.cameraColorTargetHandle;
             var buffer2Required = m_Effects.Count > 2; 
-            cmd.GetTemporaryRT(ID_Blit_Temp1, descriptor);
+            buffer.GetTemporaryRT(ID_Blit_Temp1, descriptor);
             if(buffer2Required)
-                cmd.GetTemporaryRT(ID_Blit_Temp2, descriptor);
+                buffer.GetTemporaryRT(ID_Blit_Temp2, descriptor);
             var lastIndex = m_Effects.Count - 1;
             var blitIndex = 0;
             var swap = false;
@@ -57,21 +57,21 @@ namespace Rendering.Pipeline
                 swap = !swap;
 
                 var name = effect.GetType().Name;
-                cmd.BeginSample(name);
-                effect.Execute(cmd, src, dst, descriptor, _context, ref _renderingData);
-                cmd.EndSample(name);
+                buffer.BeginSample(name);
+                effect.Execute(buffer, src, dst, descriptor, _context, ref _renderingData);
+                buffer.EndSample(name);
             
                 blitIndex++;
             }
             if(lastIndex == 0)
-                cmd.Blit(m_BlitTemp1, colorTarget);
+                buffer.Blit(m_BlitTemp1, colorTarget);
             
-            cmd.ReleaseTemporaryRT(ID_Blit_Temp2);
+            buffer.ReleaseTemporaryRT(ID_Blit_Temp2);
             if(buffer2Required)
-                cmd.ReleaseTemporaryRT(ID_Blit_Temp1);
+                buffer.ReleaseTemporaryRT(ID_Blit_Temp1);
             
-            _context.ExecuteCommandBuffer(cmd);
-            CommandBufferPool.Release(cmd);
+            _context.ExecuteCommandBuffer(buffer);
+            CommandBufferPool.Release(buffer);
         }
         public override void FrameCleanup(CommandBuffer cmd)
         {

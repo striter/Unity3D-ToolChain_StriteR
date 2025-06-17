@@ -162,14 +162,14 @@ namespace Rendering.PostProcess
                 buffer.ClearRenderTarget(RTClearFlags.ColorDepth,Color.clear,0,0);
                 _context.ExecuteCommandBuffer(buffer);
 
-                DrawingSettings drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
+                var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
                 if (_renderingData.cameraData.camera.TryGetCullingParameters(out var parameters))
                 {
                     parameters.cullingOptions = CullingOptions.None;
                     parameters.cullingMask = (uint)_data.volumetricCloudData.cullingMask;
                     
                     
-                    FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = volumetricData.cullingMask };
+                    var filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = volumetricData.cullingMask };
                     drawingSettings.overrideMaterialPassIndex=1;
                     drawingSettings.overrideMaterial = m_RenderBackDepth;
                     _context.DrawRenderers(_context.Cull(ref parameters), ref drawingSettings, ref filterSettings);
@@ -186,7 +186,7 @@ namespace Rendering.PostProcess
 
             if (_data.maskedHighlight)
             {
-                MaskTexturePass.DrawMask(kHighlightMaskRT,_context,ref _renderingData,_data.highlightData.mask);
+                MaskTexturePass.DrawMask(_buffer,kHighlightMaskRT,_context,ref _renderingData,_data.highlightData.mask);
                 m_HighlightBlur.Execute(_descriptor,ref _data.highlightData.blur,_buffer, kHighlightMaskRT, kHighlightMaskBlurRT,_context,ref _renderingData);
             }
 

@@ -46,12 +46,14 @@ namespace Rendering.Pipeline.GrabPass
             cameraTextureDescriptor.width /= downSample;
             m_TargetDescriptor = cameraTextureDescriptor;
             cmd.GetTemporaryRT(m_TextureID, cameraTextureDescriptor);
-            m_TargetRT = RTHandles.Alloc(m_TextureRT);
+            var targetRT = m_TextureRT;
             if (m_Data.blurData.Validate())
             {
                 cmd.GetTemporaryRT(m_BlurTextureID, m_TargetDescriptor, FilterMode.Bilinear);
-                m_TargetRT = RTHandles.Alloc(m_BlurTextureRT);
+                targetRT = m_BlurTextureRT;
             }
+
+            m_TargetRT = RTHandles.Alloc(targetRT);
             ConfigureTarget(m_TargetRT);
             ConfigureClear(ClearFlag.All, Color.black);
         }
@@ -94,6 +96,9 @@ namespace Rendering.Pipeline.GrabPass
             if (m_Data.blurData.Validate())
                 _cmd.ReleaseTemporaryRT(m_BlurTextureID);
             _cmd.ReleaseTemporaryRT(m_TextureID);
+            m_TargetRT?.Release();
+            m_TargetRT = null;
+            
             TObjectPool.ObjectPool<GrabTexturePass>.Recycle(this);
         }
     }

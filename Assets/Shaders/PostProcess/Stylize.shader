@@ -17,7 +17,7 @@ Shader "Hidden/PostProcess/Stylize"
         {
             Name "Pixelize"
             HLSLPROGRAM
-            #pragma vertex vert_img
+            #pragma vertex vert_blit
             #pragma fragment frag
             #pragma multi_compile_local_fragment _ _PIXEL_GRID _PIXEL_CIRCLE
             float4 _PixelGridColor;
@@ -44,7 +44,7 @@ Shader "Hidden/PostProcess/Stylize"
         {   
             Name "Oil Paint"
             HLSLPROGRAM
-            #pragma vertex vert_img
+            #pragma vertex vert_blit
             #pragma fragment frag
             int2 _OilPaintKernel;
             float _OilPaintSize;
@@ -109,7 +109,7 @@ Shader "Hidden/PostProcess/Stylize"
         {
             Name "Obra Dithering"
             HLSLPROGRAM
-            #pragma vertex vert_img
+            #pragma vertex vert_blit
             #pragma fragment frag
             TEXTURE2D(_DitherMap);SAMPLER(sampler_DitherMap);
             float _ObraDitherScale;
@@ -136,7 +136,7 @@ Shader "Hidden/PostProcess/Stylize"
         {
             Name "Bilateral Filter"
             HLSLPROGRAM
-            #pragma vertex vert_img
+            #pragma vertex vert_blit
             #pragma fragment frag
             
 			static const float gaussianWeight4[4]= {0.37004,0.31718,0.19823,0.11453};

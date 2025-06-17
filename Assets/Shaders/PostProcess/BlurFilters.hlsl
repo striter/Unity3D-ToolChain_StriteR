@@ -1,10 +1,12 @@
-#define IDEPTH
 half _FocalStart;
 half _FocalEnd;
+half _Encode;
+half _Decode;
 TEXTURE2D(_CameraFocalMaskTexture); SAMPLER(sampler_CameraFocalMaskTexture);
+TEXTURE2D(_BlurTex);SAMPLER(sampler_BlurTex);
+float4 _BlurTex_TexelSize;
 half3 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
 {
-    
     #if _DOF_DISTANCE
         float2 sampleUV = uv + offset * .5f;
         float rawDepth=SampleRawDepth(sampleUV);
@@ -18,23 +20,23 @@ half3 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
 
     float4 color = SAMPLE_TEXTURE2D(_tex,_sampler,uv+offset);
 
-    #if defined(_FIRSTBLUR) || !defined(_ENCODE)
+    if(_Decode <= .9)
         return color.rgb;
-    #endif
+    
     return DecodeFromRGBM(color);
 }
 
 half4 RecordBlurTex(float3 _color)
 {
-    #if defined(_FINALBLUR) || !defined(_ENCODE)
+    if(_Encode <= .9)
         return float4(_color,1);
-    #endif
+    
     return EncodeToRGBM(_color.rgb);
 }
     
 half3 SampleMainBlur(float2 _uv,float2 _offset)
 {
-    return SampleBlurTex(TEXTURE2D_ARGS(_MainTex,sampler_MainTex),_uv,_offset);
+    return SampleBlurTex(TEXTURE2D_ARGS(_BlurTex,sampler_BlurTex),_uv,_offset);
 }
 
 half3 DualFilteringDownFilter(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv,float4 _texelSize,half _blurSize)

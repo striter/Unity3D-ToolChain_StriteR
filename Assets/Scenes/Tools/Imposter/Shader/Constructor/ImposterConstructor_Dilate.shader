@@ -77,7 +77,7 @@ Shader "Hidden/Imposter_Dilate"
 		Pass
 		{
 			HLSLPROGRAM
-				#pragma vertex vert_img
+				#pragma vertex vert_blit
 				#pragma fragment frag
 
 				float4 frag( v2f_img i ) : SV_target
@@ -90,7 +90,7 @@ Shader "Hidden/Imposter_Dilate"
 		Pass
 		{
 			HLSLPROGRAM
-				#pragma vertex vert_img
+				#pragma vertex vert_blit
 				#pragma fragment frag
 
 				float4 frag( v2f_img i ) : SV_target

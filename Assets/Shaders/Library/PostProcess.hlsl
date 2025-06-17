@@ -12,7 +12,7 @@ float4 SampleMainTex(float2 uv){return  SAMPLE_TEXTURE2D(_MainTex,sampler_MainTe
 
 struct a2v_img
 {
-    half3 positionOS : POSITION;
+    float4 positionOS : POSITION;
     float2 uv : TEXCOORD0;
 };
 
@@ -22,10 +22,25 @@ struct v2f_img
     float2 uv : TEXCOORD0;
 };
 
-v2f_img vert_img(a2v_img v)
+v2f_img vert_blit(a2v_img v)
 {
     v2f_img o;
-    o.positionCS = TransformObjectToHClip(v.positionOS);
+    o.positionCS = v.positionOS;
+    o.positionCS.xy = float2(o.positionCS.xy * 2 - 1);
+    #if UNITY_UV_STARTS_AT_TOP
+        o.positionCS.y = -o.positionCS.y;
+    #endif
+    o.uv = v.uv;
+    return o;
+}
+
+v2f_img vert_fullScreenMesh(a2v_img v)
+{
+    v2f_img o;
+    o.positionCS = v.positionOS;
+    #if UNITY_UV_STARTS_AT_TOP
+        o.positionCS.y = -o.positionCS.y;
+    #endif
     o.uv = v.uv;
     return o;
 }

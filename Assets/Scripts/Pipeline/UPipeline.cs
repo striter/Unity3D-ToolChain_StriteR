@@ -13,21 +13,19 @@ namespace Rendering
         public static PassiveInstance<List<ShaderTagId>> kDefaultShaderTags => new(() =>
             new List<ShaderTagId>()
             {
-                new ShaderTagId("SRPDefaultUnlit"),
-                new ShaderTagId("UniversalForward"),
-                new ShaderTagId("UniversalForwardOnly"),
-                new ShaderTagId("LightweightForward"),
+                new("SRPDefaultUnlit"),
+                new("UniversalForward"),
+                new("UniversalForwardOnly"),
+                new("LightweightForward"),
             });
 
-        public static readonly PassiveInstance<ShaderTagId> kLightVolumeTag =new(()=>new ShaderTagId("LightVolume"));
-        
         public static readonly Mesh kFullscreenMesh = GetFullScreenMesh();
         private static Mesh GetFullScreenMesh()
         {
-            float topV = 1.0f;
-            float bottomV = 0.0f;
+            var topV = 1.0f;
+            var bottomV = 0.0f;
 
-            var fullScreenMesh = new Mesh { name = "Fullscreen Quad" };
+            var fullScreenMesh = new Mesh { name = "Fullscreen Quad" ,hideFlags = HideFlags.HideAndDontSave};
             fullScreenMesh.SetVertices(new List<Vector3> {
                 new (-1.0f, -1.0f, 0.0f),
                 new (-1.0f,  1.0f, 0.0f),
@@ -211,8 +209,18 @@ namespace Rendering
             bl = startPos - toRight - toTop;
             br = startPos + toRight - toTop;
         }
-        
-    
+
+        public static void BlitFullScreenMesh(this CommandBuffer _buffer, RenderTargetIdentifier _source, RenderTargetIdentifier _destination, Material _material = null, int _pass = 0)
+        {
+            if (_material == null || _material.passCount < _pass + 1)
+                _pass = 0;
+            
+            _buffer.SetGlobalTexture("_BlurTex", _source);
+            _buffer.SetRenderTarget(_destination,
+                RenderBufferLoadAction.DontCare,RenderBufferStoreAction.Store,
+                RenderBufferLoadAction.DontCare,RenderBufferStoreAction.DontCare);
+            _buffer.DrawMesh(kFullscreenMesh, Matrix4x4.identity, _material, 0, _pass);
+        }
 
     }
 }

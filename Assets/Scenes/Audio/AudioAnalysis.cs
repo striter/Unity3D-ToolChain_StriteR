@@ -321,7 +321,7 @@ public class AudioAnalysis : MonoBehaviour
                 visualizeTransform.GetComponentInChildren<Renderer>().material.color = m_ColorPalette.Evaluate((colorValue + i / (float)size) % 1f).SetA(colorValue);
             }
             
-            RenderSettings.skybox.SetFloat("_Exposure",m_ColorDamper.value.x);
+            // RenderSettings.skybox.SetFloat("_Exposure",m_ColorDamper.value.x);
         }
     }
 

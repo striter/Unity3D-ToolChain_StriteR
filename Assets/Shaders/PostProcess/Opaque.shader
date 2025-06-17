@@ -17,7 +17,7 @@
 			{
 				NAME "SAMPLE"
 				HLSLPROGRAM
-				#pragma vertex vert_img
+				#pragma vertex vert_blit
 				#pragma fragment frag
 				
 				#pragma multi_compile_local_fragment _ _SCAN
@@ -176,7 +176,7 @@
 		{
 			NAME "Volumetric Sample"
 			HLSLPROGRAM
-			#pragma vertex vert_img
+			#pragma vertex vert_blit
 			#pragma fragment frag
 			
 			#pragma multi_compile_local_fragment _ _DITHER

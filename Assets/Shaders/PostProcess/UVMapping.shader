@@ -10,7 +10,7 @@
         Pass
         {
             HLSLPROGRAM
-            #pragma vertex vert_img
+            #pragma vertex vert_blit
             #pragma fragment frag
             
             #include "Assets/Shaders/Library/PostProcess.hlsl"

@@ -4136,6 +4136,7 @@ GameObject:
   - component: {fileID: 1313486581}
   - component: {fileID: 1313486584}
   - component: {fileID: 1313486583}
+  - component: {fileID: 1313486585}
   m_Layer: 0
   m_Name: Volume
   m_TagString: Untagged
@@ -4179,9 +4180,9 @@ MonoBehaviour:
     saturation: 1
     contrast: 1
     channelMix: 0
-    mixRed: {x: 0, y: 0, z: 0}
-    mixGreen: {x: 0, y: 0, z: 0}
-    mixBlue: {x: 0, y: 0, z: 0}
+    mixRed: {x: -0.607, y: 0.349, z: 0.272}
+    mixGreen: {x: 0.769, y: -0.314, z: 0.534}
+    mixBlue: {x: 0.189, y: 0.168, z: -0.869}
     toneMapping: 0
     bloom: 1
     bloomData:
@@ -4200,7 +4201,6 @@ MonoBehaviour:
         iteration: 6
         downSample: 1
         angle: -0.21
-        vector: {x: 1, y: 1}
         attenuation: 1
       m_BloomDebug: 0
     motionBlur: 0
@@ -4219,6 +4219,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Priority: 0
+--- !u!114 &1313486585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313486580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 416756d6fe5a98042a0feb4feb778b27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Data:
+    blurType: 2
+    blurSize: 0.94
+    iteration: 6
+    downSample: 1
+    angle: 0
+    attenuation: 1
+  m_Focal: 1
+  m_FocalData:
+    start: 22
+    length: -33.7
+  m_FocalMaskData:
+    mode: 0
+    renderMask: 0
+    overrideMaterial: {fileID: 0}
+    overrideShader: {fileID: 0}
+    inheritDepth: 0
 --- !u!1 &1314644219
 GameObject:
   m_ObjectHideFlags: 0

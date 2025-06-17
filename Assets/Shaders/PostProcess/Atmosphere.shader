@@ -16,7 +16,7 @@ Shader "Hidden/PostProcess/Atmosphere"
         {
             Name "Combine"
             HLSLPROGRAM
-            #pragma vertex vert_img
+            #pragma vertex vert_blit
             #pragma fragment frag
             #pragma multi_compile_local_fragment _ _VOLUMETRICLIGHT
             TEXTURE2D(_Volumetric_Sample);SAMPLER(sampler_Volumetric_Sample);
@@ -45,7 +45,7 @@ Shader "Hidden/PostProcess/Atmosphere"
         {
             Name "SAMPLE"
             HLSLPROGRAM
-            #pragma vertex vert_img
+            #pragma vertex vert_blit
             #pragma fragment frag
             #pragma multi_compile_local_fragment _ _VOLUMETRICLIGHT
 
@@ -110,7 +110,7 @@ Shader "Hidden/PostProcess/Atmosphere"
         {
             Name "Multi Scatter-Precompute Particle Density"
             HLSLPROGRAM
-            #pragma vertex vert_img
+            #pragma vertex vert_blit
             #pragma fragment frag
 
             float2 frag(v2f_img i):SV_TARGET
@@ -149,7 +149,7 @@ Shader "Hidden/PostProcess/Atmosphere"
         {
             Name "Multi Scatter-Integrate"
             HLSLPROGRAM
-            #pragma vertex vert_img
+            #pragma vertex vert_blit
             #pragma fragment frag
             
             float _DistanceScale;

@@ -21,8 +21,8 @@ namespace Rendering.Pipeline.Mask
             return renderMaterial;
         },GameObject.DestroyImmediate);
         
-        public static readonly int kCameraMaskTexture = Shader.PropertyToID("_CameraMaskTexture");
-        public static readonly RenderTargetIdentifier kCameraMaskTextureRT = new RenderTargetIdentifier(kCameraMaskTexture);
+        private static readonly int kCameraMaskTexture = Shader.PropertyToID("_CameraMaskTexture");
+        private RTHandle kCameraMaskTextureRTHandle;
         public MaskTexturePass Setup(MaskTextureData _data)
         {
             m_Data = _data;
@@ -34,7 +34,8 @@ namespace Rendering.Pipeline.Mask
             cameraTextureDescriptor.colorFormat = RenderTextureFormat.R8;
             cameraTextureDescriptor.depthBufferBits = 0;
             cmd.GetTemporaryRT(kCameraMaskTexture, cameraTextureDescriptor);
-            ConfigureTarget(RTHandles.Alloc(kCameraMaskTexture));
+            kCameraMaskTextureRTHandle = RTHandles.Alloc(kCameraMaskTexture);
+            ConfigureTarget(kCameraMaskTextureRTHandle);
             base.Configure(cmd, cameraTextureDescriptor);
         }
         
@@ -42,14 +43,18 @@ namespace Rendering.Pipeline.Mask
         {
             base.FrameCleanup(_cmd);
             _cmd.ReleaseTemporaryRT(kCameraMaskTexture);
+            kCameraMaskTextureRTHandle?.Release();
+            kCameraMaskTextureRTHandle = null;
         }
 
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            DrawMask(kCameraMaskTextureRT,_context,ref _renderingData,m_Data);
+            var buffer = CommandBufferPool.Get("Mask Texture Pass");
+            DrawMask(buffer,kCameraMaskTextureRTHandle,_context,ref _renderingData,m_Data);
+            CommandBufferPool.Release(buffer);
         }
 
-        private static readonly List<Renderer> kMaskRenderers = new List<Renderer>();
+        private static readonly List<Renderer> kMaskRenderers = new();
         public static bool Validate(MaskTextureData _data,Camera _camera)
         {
             if (_data.mode != EMaskTextureMode.ProviderMaterialReplacement)
@@ -70,20 +75,20 @@ namespace Rendering.Pipeline.Mask
             return kMaskRenderers.Count != 0;
         }
         
-        public static void DrawMask(RenderTargetIdentifier _maskTextureId,ScriptableRenderContext _context,ref RenderingData _renderingData, MaskTextureData _data)
+        public static void DrawMask(CommandBuffer _buffer,RenderTargetIdentifier _maskTextureId,ScriptableRenderContext _context,ref RenderingData _renderingData, MaskTextureData _data)
         {
             if(!Validate(_data, _renderingData.cameraData.camera))
                 return;
 
-            var buffer = CommandBufferPool.Get("Render Mask");
+            _buffer.BeginSample("Mask Texture");
             if(_data.inheritDepth)
-                buffer.SetRenderTarget(_maskTextureId,  _renderingData.cameraData.renderer.cameraDepthTargetHandle);
+                _buffer.SetRenderTarget(_maskTextureId,  _renderingData.cameraData.renderer.cameraDepthTargetHandle);
             else
-                buffer.SetRenderTarget(_maskTextureId);
+                _buffer.SetRenderTarget(_maskTextureId);
             
-            buffer.ClearRenderTarget(false, true, Color.black);
-            _context.ExecuteCommandBuffer(buffer);
-            buffer.Clear();
+            _buffer.ClearRenderTarget(false, true, Color.black);
+            _context.ExecuteCommandBuffer(_buffer);
+            _buffer.Clear();
 
             switch (_data.mode)
             {
@@ -118,15 +123,14 @@ namespace Rendering.Pipeline.Mask
                     var renderMaterial = _data.overrideMaterial != null ? _data.overrideMaterial : m_MaskMaterial;
                     foreach (var renderer in kMaskRenderers)
                         for (var i = 0; i < renderer.sharedMaterials.Length; i++)
-                            buffer.DrawRenderer(renderer,renderMaterial,i);
-                    _context.ExecuteCommandBuffer(buffer);
+                            _buffer.DrawRenderer(renderer,renderMaterial,i);
                 }
                     break;
             }
 
-            buffer.SetRenderTarget(_renderingData.cameraData.renderer.cameraColorTargetHandle);
-            _context.ExecuteCommandBuffer(buffer);
-            CommandBufferPool.Release(buffer);
+            _buffer.SetRenderTarget(_renderingData.cameraData.renderer.cameraColorTargetHandle);
+            _buffer.EndSample("Mask Texture");
+            _context.ExecuteCommandBuffer(_buffer);
         }
 
     }

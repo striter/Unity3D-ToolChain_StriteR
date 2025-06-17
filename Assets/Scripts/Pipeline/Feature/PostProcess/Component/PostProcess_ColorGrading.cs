@@ -102,7 +102,7 @@ namespace Rendering.PostProcess
             public EBloomSample m_SampleMode;
             [Foldout(nameof(m_SampleMode),EBloomSample.Luminance)] [Range(0.0f, 3f)] public float m_Threshold;
             [Foldout(nameof(m_SampleMode),EBloomSample.Mask)] public MaskTextureData m_MaskData;
-            [ColorUsage(true,true)] public Color m_Color;
+            [ColorUsage(false,true)] public Color m_Color;
             public DBlurs m_Blur;
             public bool m_BloomDebug;
 
@@ -222,14 +222,16 @@ namespace Rendering.PostProcess
             }
 
             ref var bloomData = ref _data.bloomData;
-            
+            _buffer.BeginSample("Bloom Sample");
             if (bloomData.m_SampleMode == EBloomSample.Mask)
-                MaskTexturePass.DrawMask(RT_Sample, _context, ref _renderingData, bloomData.m_MaskData);
+                MaskTexturePass.DrawMask(_buffer,RT_Sample, _context, ref _renderingData, bloomData.m_MaskData);
             else if(bloomData.m_SampleMode == EBloomSample.Luminance)
                 _buffer.Blit(_src, RT_Sample, m_Material, (int)EPassIndex.BloomSample);
 
             m_BloomBlur.Execute(_descriptor, ref bloomData.m_Blur,_buffer, RT_Sample, RT_Blur,_context,ref _renderingData);
 
+            _buffer.EndSample("Bloom Sample");
+            
             if(bloomData.m_BloomDebug)
                 _buffer.Blit(RT_Blur,_dst);
             else
@@ -247,7 +249,6 @@ namespace Rendering.PostProcess
             _buffer.GetTemporaryRT(kSampleID, _descriptor, FilterMode.Bilinear);
             _buffer.GetTemporaryRT(kBlurID, _descriptor ,FilterMode.Bilinear);
         }
-
 
         public override void FrameCleanUp(CommandBuffer _buffer, ref DColorGrading _data)
         {
