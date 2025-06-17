@@ -4136,7 +4136,6 @@ GameObject:
   - component: {fileID: 1313486581}
   - component: {fileID: 1313486584}
   - component: {fileID: 1313486583}
-  - component: {fileID: 1313486585}
   m_Layer: 0
   m_Name: Volume
   m_TagString: Untagged
@@ -4219,35 +4218,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Priority: 0
---- !u!114 &1313486585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1313486580}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 416756d6fe5a98042a0feb4feb778b27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Data:
-    blurType: 2
-    blurSize: 0.94
-    iteration: 6
-    downSample: 1
-    angle: 0
-    attenuation: 1
-  m_Focal: 1
-  m_FocalData:
-    start: 22
-    length: -33.7
-  m_FocalMaskData:
-    mode: 0
-    renderMask: 0
-    overrideMaterial: {fileID: 0}
-    overrideShader: {fileID: 0}
-    inheritDepth: 0
 --- !u!1 &1314644219
 GameObject:
   m_ObjectHideFlags: 0
