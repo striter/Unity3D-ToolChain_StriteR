@@ -42,12 +42,10 @@ namespace UnityEditor.Extensions
     public class FNoiseTextureGenerator : ITextureGenerator
     {
         public NoiseTextureData m_Data;
-        private Texture2D m_Texture;
         public static FNoiseTextureGenerator kDefault = new() { m_Data = NoiseTextureData.kDefault };
-        public void Setup(TextureGeneratorData _data) => m_Texture = _data.Texture2D(m_Texture);
         public bool Valid => true;
 
-        void Apply()
+        void Apply(Texture2D m_Texture)
         {
             var colors = m_Texture.GetPixelData<Color32>(0);
             var size = new int2(m_Texture.width, m_Texture.height);
@@ -56,23 +54,23 @@ namespace UnityEditor.Extensions
             m_Texture.Apply();
             colors.Dispose();
         }
-        public void Output()
+
+        public void Preview(Rect _rect, ref FTextureHelper helper)
         {
-            Apply();
-            if (UEAsset.SaveFilePath(out string filePath, "png", $"{m_Data.noiseType}_{m_Data.noiseSample}"))
-                UEAsset.CreateOrReplaceFile<Texture2D>(filePath, m_Texture.EncodeToPNG());
+            var texture = helper.texture;
+            Apply(texture);
+            EditorGUI.DrawPreviewTexture(_rect, texture);
         }
-        public void Preview(Rect _rect)
+
+        public void Output(ref FTextureHelper _helper)
         {
-            Apply();
-            EditorGUI.DrawPreviewTexture(_rect, m_Texture);
+            Apply(_helper.texture);
+            if (UEAsset.SaveFilePath(out string filePath, "png", $"{m_Data.noiseType}_{m_Data.noiseSample}"))
+                UEAsset.CreateOrReplaceFile<Texture2D>(filePath, _helper.texture.EncodeToPNG());
         }
 
         public void Dispose()
         {
-            if(m_Texture != null)
-                GameObject.DestroyImmediate(m_Texture);
-            m_Texture = null;
         }
     }
 

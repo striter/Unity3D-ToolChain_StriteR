@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TextureOutput_PreIntergratedSkinSSSLUT
-  m_Shader: {fileID: 4800000, guid: 23c5e2d25eac22a43aa1a58cc5760b61, type: 3}
+  m_Name: ColorPalette
+  m_Shader: {fileID: 4800000, guid: acffc26b7bf2f624d823fba05146539b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []

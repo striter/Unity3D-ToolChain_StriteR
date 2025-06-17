@@ -27,49 +27,41 @@ namespace UnityEditor.Extensions
     {
         public GradientTextureData m_Data = GradientTextureData.kDefault;
         public bool Valid => true;
-        private Texture2D m_Texture;
-        private Color[] m_Colors;
-        public void Setup(TextureGeneratorData _data)
-        {
-            m_Texture = _data.Texture2D(m_Texture);
-            m_Colors = _data.Colors(m_Colors);
-        }
 
-        void Apply()
+        void Apply(ref FTextureHelper helper)
         {
-            for (var i = 0; i < m_Texture.width; i++)
+            var texture = helper.texture;
+            var colors = helper.colors;
+            for (var i = 0; i < texture.width; i++)
             {
-                var normalize = (float)i / m_Texture.width;
+                var normalize = (float)i / texture.width;
                 var color = m_Data.Evaluate(normalize);
-                for (var j = 0; j < m_Texture.height; j++)
+                for (var j = 0; j < texture.height; j++)
                 {
-                    var index = new int2(i, j).ToIndex(m_Texture.width);
-                    m_Colors[index] = color;
+                    var index = new int2(i, j).ToIndex(texture.width);
+                    colors[index] = color;
                 }
             }
             
-            m_Texture.SetPixels(m_Colors);
-            m_Texture.Apply();
+            texture.SetPixels(colors);
+            texture.Apply();
         }
         
-        public void Preview(Rect _rect)
+        public void Preview(Rect _rect, ref FTextureHelper helper)
         {
-            Apply();
-            EditorGUI.DrawPreviewTexture(_rect,m_Texture);
+            Apply(ref helper);
+            EditorGUI.DrawPreviewTexture(_rect,helper.texture);
         }
 
-        public void Output()
+        public void Output(ref FTextureHelper helper)
         {
-            Apply();
+            Apply(ref helper);
             if (UEAsset.SaveFilePath(out string filePath, "png", $"Gradient"))
-                UEAsset.CreateOrReplaceFile<Texture2D>(filePath, m_Texture.EncodeToPNG());
+                UEAsset.CreateOrReplaceFile<Texture2D>(filePath, helper.texture.EncodeToPNG());
         }
 
         public void Dispose()
         {
-            if (m_Texture != null)
-                GameObject.DestroyImmediate(m_Texture);
-            m_Texture = null;
         }
     }
 }

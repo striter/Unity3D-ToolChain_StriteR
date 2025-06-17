@@ -1,4 +1,4 @@
-Shader "Hidden/TextureOutput/ColorPalette"
+Shader "Hidden/Baking/Gradient/ColorPalette"
 {
     Properties
     {
@@ -15,7 +15,7 @@ Shader "Hidden/TextureOutput/ColorPalette"
             #pragma vertex vert
             #pragma fragment frag
             #include "Assets/Shaders/Library/Common.hlsl"
-            #include "TextureOutputInclude.hlsl"
+            #include "../BakingInclude.hlsl"
             #pragma shader_feature_fragment _TEXTURE_OUTPUT_SRGB
 
             struct a2v

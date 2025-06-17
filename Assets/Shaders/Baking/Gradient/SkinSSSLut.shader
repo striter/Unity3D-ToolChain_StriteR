@@ -1,4 +1,4 @@
-Shader "Hidden/TextureOutput/PreIntergratedSkinSSSLUT"
+Shader "Hidden/Baking/Gradient/SkinSSSLut"
 {
     Properties
     {
@@ -11,7 +11,7 @@ Shader "Hidden/TextureOutput/PreIntergratedSkinSSSLUT"
             #pragma vertex vert
             #pragma fragment frag
             #include "Assets/Shaders/Library/Common.hlsl"
-            #include "TextureOutputInclude.hlsl"
+            #include "../BakingInclude.hlsl"
             #pragma shader_feature_fragment _TEXTURE_OUTPUT_SRGB
 
             struct a2v

@@ -203,7 +203,7 @@ namespace Rendering
             var cameraTrans = camera.transform;
             var toRight = cameraTrans.right * halfHeight * aspect;
             var toTop = cameraTrans.up * halfHeight;
-            var startPos = cameraTrans.position+cameraTrans.forward*camera.nearClipPlane;
+            var startPos = cameraTrans.position + cameraTrans.forward * camera.nearClipPlane;
             tl = startPos - toRight + toTop;
             tr = startPos + toRight + toTop;
             bl = startPos - toRight - toTop;
@@ -221,7 +221,6 @@ namespace Rendering
                 RenderBufferLoadAction.DontCare,RenderBufferStoreAction.DontCare);
             _buffer.DrawMesh(kFullscreenMesh, Matrix4x4.identity, _material, 0, _pass);
         }
-
     }
 }
 

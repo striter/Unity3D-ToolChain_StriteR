@@ -27,6 +27,7 @@ namespace UnityEditor.Extensions
         Gradient,
         Noise,
         Material,
+        MeshBake,
     }
 
     [Serializable]
@@ -78,9 +79,8 @@ namespace UnityEditor.Extensions
     public interface ITextureGenerator
     {
         bool Valid { get; }
-        void Setup(TextureGeneratorData _data);
-        void Preview(Rect _rect);
-        void Output();
+        void Preview(Rect _rect,ref FTextureHelper helper);
+        void Output(ref FTextureHelper helper);
         void Dispose();
     }
 
@@ -94,18 +94,44 @@ namespace UnityEditor.Extensions
         [Foldout(nameof(mode), ETextureGenerateMode.Gradient)] public FGradientTextureGenerator gradientGenerator;
         [Foldout(nameof(mode),ETextureGenerateMode.Material)] public FTextureGeneratorMaterial materialGenerator;
         [Foldout(nameof(mode), ETextureGenerateMode.Noise)] public FNoiseTextureGenerator noiseGenerator;
+        [Foldout(nameof(mode), ETextureGenerateMode.MeshBake)] public FMeshBakeGenerator meshBakeGenerator;
         public ITextureGenerator Generator => mode switch {
             ETextureGenerateMode.Material => materialGenerator,
             ETextureGenerateMode.Noise => noiseGenerator,
             ETextureGenerateMode.Gradient => gradientGenerator,
+            ETextureGenerateMode.MeshBake => meshBakeGenerator,
             _ => null
         };
 
         public static readonly FTextureGenerateData kDefault = new() {
             config = TextureGeneratorData.kDefault,
             materialGenerator = FTextureGeneratorMaterial.kDefault,
-            noiseGenerator = FNoiseTextureGenerator.kDefault
+            noiseGenerator = FNoiseTextureGenerator.kDefault,
         };
+    }
+
+    public struct FTextureHelper
+    {
+        public Texture2D texture;
+        public RenderTexture renderTexture;
+        public Color[] colors;
+        public void Validate(FTextureGenerateData _config)
+        {
+            texture = _config.config.Texture2D(texture);
+            renderTexture = _config.config.RenderTexture(renderTexture);
+            colors = _config.config.Colors(colors);
+        }
+
+        public void Dispose()
+        {
+            colors = null;
+            if (texture != null)
+                GameObject.DestroyImmediate(texture);
+            if (renderTexture != null)
+                RenderTexture.ReleaseTemporary(renderTexture);
+            texture = null;
+            renderTexture = null;
+        }
     }
     
     public class EWTextureGenerator : EditorWindow
@@ -117,6 +143,7 @@ namespace UnityEditor.Extensions
         private const float kTexturePadding = 10f;
         private ITextureGenerator m_Generator;
         private static readonly string kKeyword = "_TEXTURE_OUTPUT_SRGB";
+        private FTextureHelper _helpers;
         private void OnEnable()
         {
             m_SerializedWindow = new SerializedObject(this);
@@ -129,9 +156,9 @@ namespace UnityEditor.Extensions
             Undo.undoRedoPerformed -= OnUndoRedo;
             m_SerializedWindow.Dispose();
             m_SerializedWindow = null;
-            if(m_Generator != null)
-                m_Generator.Dispose();
+            m_Generator?.Dispose();
             m_Generator = null;
+            _helpers.Dispose();
         }
 
         private void OnUndoRedo()
@@ -163,9 +190,7 @@ namespace UnityEditor.Extensions
             }
             if (generator is not { Valid: true })
                 return;
-            
-            Shader.EnableKeyword(kKeyword);
-            generator.Setup(m_Data.config);
+            _helpers.Validate(m_Data);
             var aspect = (float)m_Data.config.resolutionY / (float)m_Data.config.resolutionX;
             var width = math.min(position.width,(position.height - propertyHeight - 20 - 20) / aspect) - kTexturePadding;
             HorizontalScope.NextLine(0f,20);
@@ -177,10 +202,11 @@ namespace UnityEditor.Extensions
             textureRect = HorizontalScope.NextRect(0, width);
             GUI.DrawTexture(textureRect,Texture2D.whiteTexture);
             textureRect = textureRect.Collapse(Vector2.one * kTextureCollapse,Vector2.one * .5f);
-            generator.Preview(textureRect);
+            generator.Preview(textureRect,ref _helpers);
             HorizontalScope.NextLine(2, 20);
+            Shader.EnableKeyword(kKeyword);
             if (GUI.Button(HorizontalScope.NextRect(0, 80), "Export"))
-                generator.Output();
+                generator.Output(ref _helpers);
             Shader.DisableKeyword(kKeyword);
         }
     }

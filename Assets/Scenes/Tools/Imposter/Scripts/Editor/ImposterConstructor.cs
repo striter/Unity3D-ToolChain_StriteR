@@ -109,7 +109,6 @@ namespace Runtime.Optimize.Imposter
                 
                 block.SetVector(ImposterShaderProperties.kBoundingID, (float4)boundingSphere);
                 meshRenderers.Traversal(p=>p.SetPropertyBlock(block));
-
                 
                 var alphaHandle = new ImposterCameraHandle() {m_Name = "_AlphaMask", m_Shader = null};
                 var contourMeshHandle = new ImposterCameraHandle() {m_Name = "_ContourMesh", m_Shader = Shader.Find("Hidden/Imposter_ContourShape") };
@@ -192,13 +191,13 @@ namespace Runtime.Optimize.Imposter
 
             public void Init(int2 _resolution, GSphere _sphere, bool _clear = true)
             {
-                m_Camera = new GameObject($"Camera_{m_Name}").AddComponent<Camera>();
                 m_RenderTexture = RenderTexture.GetTemporary(_resolution.x, _resolution.y, 0, RenderTextureFormat.ARGB32);
 
                 _sphere.radius += 0.05f;
                 RenderTexture.active = m_RenderTexture;
                 GL.Clear(true, true, Color.clear);
 
+                m_Camera = new GameObject($"Camera_{m_Name}").AddComponent<Camera>();
                 m_Camera.orthographic = true;
                 m_Camera.clearFlags = _clear ? CameraClearFlags.Depth : CameraClearFlags.Nothing;
                 m_Camera.backgroundColor = Color.black.SetA(0f);
@@ -213,7 +212,6 @@ namespace Runtime.Optimize.Imposter
                 var additional = m_Camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
                 additional.renderPostProcessing = false;
                 additional.allowHDROutput = false;
-                additional.SetRenderer(kRendererIndex);
             }
 
             public void Render(List<KeyValuePair<Material, Shader>> _materialRef, GSphere _sphere, float3 _direction, G2Box _rect)
@@ -247,9 +245,9 @@ namespace Runtime.Optimize.Imposter
 
                 if (dilateMat != null)
                 {
-                    RenderTexture tempTex = RenderTexture.GetTemporary( m_RenderTexture.width, m_RenderTexture.height, m_RenderTexture.depth, m_RenderTexture.format );
-                    RenderTexture tempMask = RenderTexture.GetTemporary( m_RenderTexture.width, m_RenderTexture.height, m_RenderTexture.depth, m_RenderTexture.format );
-                    RenderTexture dilatedMask = RenderTexture.GetTemporary( m_RenderTexture.width, m_RenderTexture.height, m_RenderTexture.depth, m_RenderTexture.format );
+                    var tempTex = RenderTexture.GetTemporary( m_RenderTexture.width, m_RenderTexture.height, m_RenderTexture.depth, m_RenderTexture.format );
+                    var tempMask = RenderTexture.GetTemporary( m_RenderTexture.width, m_RenderTexture.height, m_RenderTexture.depth, m_RenderTexture.format );
+                    var dilatedMask = RenderTexture.GetTemporary( m_RenderTexture.width, m_RenderTexture.height, m_RenderTexture.depth, m_RenderTexture.format );
                     Graphics.Blit(dilateTex,dilatedMask);
                     for( int i = 0; i < _input.cellResolution / 4; i++ )
                     {

@@ -1,50 +1,42 @@
 ﻿using System;
+using Rendering;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace UnityEditor.Extensions
 {
-
     [Serializable]
     public class FTextureGeneratorMaterial : ITextureGenerator
     {
-        [DefaultAsset("Assets/Shaders/TextureOutput/TextureOutput_ColorPalette.mat")] public Material material;
-        public bool Valid => material != null;
+        [DefaultAsset("Assets/Shaders/Baking/Gradient/ColorPalette.mat")] public Material m_Material;
+        public bool Valid => m_Material != null;
         public static readonly FTextureGeneratorMaterial kDefault = new();
-        private RenderTexture m_RenderTexture;
-        private Texture2D m_Texture;
-        public void Setup(TextureGeneratorData _data)
+        public void Preview(Rect _rect,ref FTextureHelper helper)
         {
-            m_RenderTexture = _data.RenderTexture(m_RenderTexture,false);
-            m_Texture = _data.Texture2D(m_Texture,false);
+            var m_RenderTexture = helper.renderTexture;
+            RenderTexture.active = m_RenderTexture;
+            GL.Clear(true, true, Color.clear); // clear the render texture
+            Graphics.Blit(Texture2D.whiteTexture, m_RenderTexture, m_Material,0);
+            RenderTexture.active = null;
+            EditorGUI.DrawTextureTransparent(_rect, m_RenderTexture);
         }
 
-        public void Preview(Rect _rect)
+        public void Output(ref FTextureHelper helper)
         {
-            EditorGUI.DrawPreviewTexture(_rect, Texture2D.whiteTexture,material);
-        }
-        
-        public void Dispose()
-        {
-            if (m_RenderTexture != null)
-                RenderTexture.ReleaseTemporary(m_RenderTexture);
-            m_RenderTexture = null;
-            
-            if (m_Texture != null)
-                GameObject.DestroyImmediate(m_Texture);
-            m_Texture = null;
-        }
-
-        public void Output()
-        {
-            if (!UEAsset.SaveFilePath(out var filePath, "png", $"{material.name}_Output"))
+            if (!UEAsset.SaveFilePath(out var filePath, "png", $"{m_Material.name}_Output"))
                 return;
             
-            RenderTexture.active = m_RenderTexture;
-            Graphics.Blit(Texture2D.whiteTexture, m_RenderTexture, material,0);
-            m_Texture.ReadPixels(new Rect(0, 0, m_RenderTexture.width, m_RenderTexture.height), 0, 0);
-            m_Texture.Apply();
-            UEAsset.CreateOrReplaceFile<Texture2D>(filePath, m_Texture.EncodeToPNG());
+            var renderTexture = helper.renderTexture;
+            var texture = helper.texture;
+            RenderTexture.active = renderTexture;
+            texture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+            texture.Apply();
+            UEAsset.CreateOrReplaceFile<Texture2D>(filePath, texture.EncodeToPNG());
             RenderTexture.active = null;
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

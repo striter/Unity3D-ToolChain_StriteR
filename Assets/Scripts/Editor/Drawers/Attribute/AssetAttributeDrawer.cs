@@ -19,6 +19,7 @@ namespace UnityEditor.Extensions
 
         static Object LoadDefaultAsset(Type _type,string _path) => _type switch {
                 not null when _type == typeof(Shader) => Shader.Find(_path),
+                not null when _type == typeof(Mesh) => AssetDatabase.LoadAssetAtPath<GameObject>(_path).GetComponent<MeshFilter>().sharedMesh,
                 not null when _type.IsSubclassOf(typeof(Object)) => AssetDatabase.LoadAssetAtPath<Object>(_path),
                 _ => null
             };
@@ -30,7 +31,6 @@ namespace UnityEditor.Extensions
 
             position = position.ResizeY(base.GetPropertyHeight(property,label));
             base.OnGUI(position, property, label);
-
             if (property.objectReferenceValue != null) return;
             var buttonSize = position.size.x / 5f;
             position = position.MoveY().ResizeY(kButtonHeight).ResizeX(buttonSize).MoveX(position.size.x - buttonSize);
