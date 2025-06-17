@@ -90,8 +90,8 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Curvature: 1
-    - _CurvaturePower: 21.4
-    - _CurvatureStrength: 0.033
+    - _CurvaturePower: 2.2
+    - _CurvatureStrength: 0.004
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1

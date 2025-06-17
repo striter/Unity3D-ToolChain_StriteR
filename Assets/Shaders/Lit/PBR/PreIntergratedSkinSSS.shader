@@ -15,7 +15,7 @@ Shader "Game/Lit/PBR/PreIntergratedSkinSSS"
 		[HDR]_EmissionColor("Emission Color",Color)=(0,0,0,0)
 
 		[Header(SSS)]
-		_Curvature("Curvature",Range(0,100))=0
+		[NoScaleOffset]_CurvatureTex("Curvature",2D)="black"{}
 		[NoScaleOffset]_SkinLUT("Skin LUT",2D) = "black"{}
 		
 		[Header(Render Options)]
@@ -40,13 +40,13 @@ Shader "Game/Lit/PBR/PreIntergratedSkinSSS"
 			TEXTURE2D( _NormalTex); SAMPLER(sampler_NormalTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
 			TEXTURE2D(_PBRTex);SAMPLER(sampler_PBRTex);
+			TEXTURE2D(_CurvatureTex);SAMPLER(sampler_CurvatureTex);
 			INSTANCING_BUFFER_START
 				INSTANCING_PROP(float4,_MainTex_ST)
 				INSTANCING_PROP(float4, _Color)
 				INSTANCING_PROP(float4,_BlendTex_ST)
 				INSTANCING_PROP(float4,_BlendColor)
 				INSTANCING_PROP(float4,_EmissionColor)
-				INSTANCING_PROP(float,_Curvature)
 			INSTANCING_BUFFER_END
     	ENDHLSL
     	
@@ -74,7 +74,7 @@ Shader "Game/Lit/PBR/PreIntergratedSkinSSS"
 				
 				float3 worldBump = input.normalWS;
 				float3 worldPos  = positionWS;
-				surface.curvature =  saturate(INSTANCE(_Curvature) * 0.01 * (length(fwidth(worldBump)) / length(fwidth(worldPos))));
+				surface.curvature =  SAMPLE_TEXTURE2D(_CurvatureTex,sampler_CurvatureTex,input.uv).r;// saturate( 0.01 * (length(fwidth(worldBump)) / length(fwidth(worldPos))));
 				surface.sssNormal = input.normalWS;// mul(transpose(input.TBNWS), DecodeNormalMap(SAMPLE_TEXTURE2D_BIAS(_NormalTex,sampler_NormalTex,input.uv,-100))).rgb;
 			}
             #define BRDF_SURFACE_ADDITIONAL_TRANSFER(input,surface) CalculateCurvature(input,surface);

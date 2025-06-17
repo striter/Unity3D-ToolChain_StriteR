@@ -50,6 +50,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CurvatureTex:
+        m_Texture: {fileID: 2800000, guid: 7aa83b25dbc2c294fa07736a03d631b4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DepthTex:
         m_Texture: {fileID: 2800000, guid: a731e8696e6d50f41b1bd4e03fc713d5, type: 3}
         m_Scale: {x: 1, y: 1}
