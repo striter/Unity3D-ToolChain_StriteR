@@ -16,7 +16,6 @@ Shader "Hidden/Baking/Gradient/ColorPalette"
             #pragma fragment frag
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "../BakingInclude.hlsl"
-            #pragma shader_feature_fragment _TEXTURE_OUTPUT_SRGB
 
             struct a2v
             {
@@ -67,7 +66,7 @@ Shader "Hidden/Baking/Gradient/ColorPalette"
                 #if !UNITY_COLORSPACE_GAMMA
                     output.rgb = GammaToLinear(output.rgb);
                 #endif
-                return float4(Output(output.rgb),1);
+                return float4(output.rgb,1);
             }
             ENDHLSL
         }

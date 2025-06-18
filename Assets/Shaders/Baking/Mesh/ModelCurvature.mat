@@ -16,7 +16,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -90,8 +90,8 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Curvature: 1
-    - _CurvaturePower: 2.2
-    - _CurvatureStrength: 0.004
+    - _CurvaturePower: 1
+    - _CurvatureStrength: 0.01
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1

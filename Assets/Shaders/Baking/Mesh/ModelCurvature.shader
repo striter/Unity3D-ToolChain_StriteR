@@ -9,13 +9,16 @@ Shader "Hidden/Baking/Mesh/ModelCurvature"
     {
         Pass
         {
-            Cull Off
+            Cull Back
+            Blend One Zero
+            ZTest LEqual
+            ZWrite On
+            
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "../BakingInclude.hlsl"
-            #pragma shader_feature_fragment _TEXTURE_OUTPUT_SRGB
 
             struct a2v
             {
@@ -42,7 +45,7 @@ Shader "Hidden/Baking/Mesh/ModelCurvature"
                 v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-                o.positionCS = TransformUVToPositionCS(v.uv);
+                o.positionCS = TransformObjectToHClip(v.positionOS);//TransformUVToPositionCS(v.uv);
 				o.positionWS = TransformObjectToWorld(v.positionOS);
 				o.normalWS = TransformObjectToWorldNormal(v.normalOS);
                 return o;
@@ -51,9 +54,9 @@ Shader "Hidden/Baking/Mesh/ModelCurvature"
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
-                float curvature =   length(fwidth(normalize(i.normalWS))) / length(fwidth(i.positionWS));
+                float curvature = length(fwidth(normalize(i.normalWS))) / length(fwidth(i.positionWS));
                 curvature = pow(saturate(curvature * _CurvatureStrength),_CurvaturePower);
-                return float4(Output(curvature),1);
+                return float4(curvature,curvature,curvature,1);
             }
             ENDHLSL
         }

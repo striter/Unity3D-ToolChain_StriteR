@@ -53,11 +53,12 @@ namespace UnityEditor.Extensions
             EditorGUI.DrawPreviewTexture(_rect,helper.texture);
         }
 
-        public void Output(ref FTextureHelper helper)
+        public Texture2D Output(ref FTextureHelper helper)
         {
             Apply(ref helper);
             if (UEAsset.SaveFilePath(out string filePath, "png", $"Gradient"))
-                UEAsset.CreateOrReplaceFile<Texture2D>(filePath, helper.texture.EncodeToPNG());
+                return UEAsset.CreateOrReplaceFile<Texture2D>(filePath, helper.texture.EncodeToPNG());
+            return null;
         }
 
         public void Dispose()

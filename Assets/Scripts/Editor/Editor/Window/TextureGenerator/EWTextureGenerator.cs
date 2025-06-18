@@ -48,7 +48,7 @@ namespace UnityEditor.Extensions
         }
         public RenderTexture RenderTexture(RenderTexture _texture,bool sRGB = true)
         {
-            if (_texture != null && (_texture.width != (int)resolutionX || _texture.height != (int)resolutionY))
+            if (_texture != null && (_texture.width != (int)resolutionX || _texture.height != (int)resolutionY || _texture.isDataSRGB != sRGB))
             {
                 UnityEngine.RenderTexture.ReleaseTemporary(_texture);
                 _texture = null;
@@ -62,7 +62,7 @@ namespace UnityEditor.Extensions
         }
         public Texture2D Texture2D(Texture2D _texture,bool sRGB = true)
         {
-            if (_texture != null && (_texture.width != (int)resolutionX || _texture.height != (int)resolutionY))
+            if (_texture != null && (_texture.width != (int)resolutionX || _texture.height != (int)resolutionY || _texture.isDataSRGB != sRGB))
             {
                 GameObject.DestroyImmediate(_texture);
                 _texture = null;
@@ -80,7 +80,7 @@ namespace UnityEditor.Extensions
     {
         bool Valid { get; }
         void Preview(Rect _rect,ref FTextureHelper helper);
-        void Output(ref FTextureHelper helper);
+        Texture2D Output(ref FTextureHelper helper);
         void Dispose();
     }
 
@@ -90,6 +90,7 @@ namespace UnityEditor.Extensions
     {
         public TextureGeneratorData config;
         public ETextureGenerateMode mode;
+        public bool sRGB;
 
         [Foldout(nameof(mode), ETextureGenerateMode.Gradient)] public FGradientTextureGenerator gradientGenerator;
         [Foldout(nameof(mode),ETextureGenerateMode.Material)] public FTextureGeneratorMaterial materialGenerator;
@@ -97,13 +98,14 @@ namespace UnityEditor.Extensions
         [Foldout(nameof(mode), ETextureGenerateMode.MeshBake)] public FMeshBakeGenerator meshBakeGenerator;
         public ITextureGenerator Generator => mode switch {
             ETextureGenerateMode.Material => materialGenerator,
-            ETextureGenerateMode.Noise => noiseGenerator,
             ETextureGenerateMode.Gradient => gradientGenerator,
+            ETextureGenerateMode.Noise => noiseGenerator,
             ETextureGenerateMode.MeshBake => meshBakeGenerator,
             _ => null
         };
 
         public static readonly FTextureGenerateData kDefault = new() {
+            sRGB = true,
             config = TextureGeneratorData.kDefault,
             materialGenerator = FTextureGeneratorMaterial.kDefault,
             noiseGenerator = FNoiseTextureGenerator.kDefault,
@@ -117,8 +119,8 @@ namespace UnityEditor.Extensions
         public Color[] colors;
         public void Validate(FTextureGenerateData _config)
         {
-            texture = _config.config.Texture2D(texture);
-            renderTexture = _config.config.RenderTexture(renderTexture);
+            texture = _config.config.Texture2D(texture, _config.sRGB);
+            renderTexture = _config.config.RenderTexture(renderTexture,_config.sRGB);
             colors = _config.config.Colors(colors);
         }
 
@@ -136,13 +138,15 @@ namespace UnityEditor.Extensions
     
     public class EWTextureGenerator : EditorWindow
     {
+        [MenuItem("Work Flow/Asset/Texture Generator", false, 304)]
+        static void ShowTextureGenerator() => EditorWindow.GetWindow(typeof(EWTextureGenerator)).titleContent = new GUIContent("Texture Generator", EditorGUIUtility.IconContent("CustomTool").image);
+
         [SerializeField] private FTextureGenerateData m_Data = FTextureGenerateData.kDefault;
         private SerializedProperty m_DataProperty;
         private SerializedObject m_SerializedWindow;
         private const float kTextureCollapse = 6f;
         private const float kTexturePadding = 10f;
         private ITextureGenerator m_Generator;
-        private static readonly string kKeyword = "_TEXTURE_OUTPUT_SRGB";
         private FTextureHelper _helpers;
         private void OnEnable()
         {
@@ -172,7 +176,6 @@ namespace UnityEditor.Extensions
         
         private void OnGUI()
         {
-            Shader.DisableKeyword(kKeyword);
             EditorGUILayout.PropertyField(m_DataProperty);
             var propertyHeight = EditorGUI.GetPropertyHeight(m_DataProperty, true);
             HorizontalScope.Begin(5,5,propertyHeight,Screen.width);
@@ -204,10 +207,17 @@ namespace UnityEditor.Extensions
             textureRect = textureRect.Collapse(Vector2.one * kTextureCollapse,Vector2.one * .5f);
             generator.Preview(textureRect,ref _helpers);
             HorizontalScope.NextLine(2, 20);
-            Shader.EnableKeyword(kKeyword);
             if (GUI.Button(HorizontalScope.NextRect(0, 80), "Export"))
-                generator.Output(ref _helpers);
-            Shader.DisableKeyword(kKeyword);
+            {
+                var texture2D = generator.Output(ref _helpers);
+                var importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(texture2D)) as TextureImporter;
+                if (importer != null)
+                {
+                    importer.sRGBTexture = m_Data.sRGB;
+                    importer.SaveAndReimport();
+                    AssetDatabase.Refresh();
+                }
+            }
         }
     }
 }

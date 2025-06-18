@@ -21,18 +21,18 @@ namespace UnityEditor.Extensions
             EditorGUI.DrawTextureTransparent(_rect, m_RenderTexture);
         }
 
-        public void Output(ref FTextureHelper helper)
+        public Texture2D Output(ref FTextureHelper helper)
         {
             if (!UEAsset.SaveFilePath(out var filePath, "png", $"{m_Material.name}_Output"))
-                return;
+                return null;
             
             var renderTexture = helper.renderTexture;
             var texture = helper.texture;
             RenderTexture.active = renderTexture;
             texture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
             texture.Apply();
-            UEAsset.CreateOrReplaceFile<Texture2D>(filePath, texture.EncodeToPNG());
             RenderTexture.active = null;
+            return UEAsset.CreateOrReplaceFile<Texture2D>(filePath, texture.EncodeToPNG());
         }
 
         public void Dispose()

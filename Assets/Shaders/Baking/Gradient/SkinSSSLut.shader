@@ -12,7 +12,6 @@ Shader "Hidden/Baking/Gradient/SkinSSSLut"
             #pragma fragment frag
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "../BakingInclude.hlsl"
-            #pragma shader_feature_fragment _TEXTURE_OUTPUT_SRGB
 
             struct a2v
             {
@@ -83,7 +82,7 @@ Shader "Hidden/Baking/Gradient/SkinSSSLut"
             {
 				UNITY_SETUP_INSTANCE_ID(i);
                 float2 uv = i.uv;
-                return float4(Output(BakeSkinLUT(uv)),1);
+                return float4(BakeSkinLUT(uv),1);
             }
             ENDHLSL
         }

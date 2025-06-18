@@ -62,11 +62,12 @@ namespace UnityEditor.Extensions
             EditorGUI.DrawPreviewTexture(_rect, texture);
         }
 
-        public void Output(ref FTextureHelper _helper)
+        public Texture2D Output(ref FTextureHelper _helper)
         {
             Apply(_helper.texture);
             if (UEAsset.SaveFilePath(out string filePath, "png", $"{m_Data.noiseType}_{m_Data.noiseSample}"))
-                UEAsset.CreateOrReplaceFile<Texture2D>(filePath, _helper.texture.EncodeToPNG());
+                return UEAsset.CreateOrReplaceFile<Texture2D>(filePath, _helper.texture.EncodeToPNG());
+            return null;
         }
 
         public void Dispose()
