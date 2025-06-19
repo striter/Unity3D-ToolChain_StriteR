@@ -18,7 +18,7 @@ namespace UnityEditor.Extensions
         public EGradientMode mode;
         [Foldout(nameof(mode),EGradientMode.Gradient)] public Gradient gradient;
         [Foldout(nameof(mode),EGradientMode.ColorPalette)] public ColorPalette colorPalette;
-        public static GradientTextureData kDefault => new GradientTextureData { mode = EGradientMode.Gradient, gradient = new Gradient(), colorPalette = ColorPalette.kDefault };
+        public static GradientTextureData kDefault => new GradientTextureData { mode = EGradientMode.ColorPalette, gradient = new Gradient(), colorPalette = ColorPalette.kDefault };
         public Color Evaluate(float _value) => mode == EGradientMode.Gradient ? gradient.Evaluate(_value) : colorPalette.Evaluate(_value);
     }
 
