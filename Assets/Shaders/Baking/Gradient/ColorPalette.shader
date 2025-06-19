@@ -9,6 +9,7 @@ Shader "Hidden/Baking/Gradient/ColorPalette"
     }
     SubShader
     {
+        Tags{"PreviewType" = "Plane"}
         Pass
         {
             HLSLPROGRAM

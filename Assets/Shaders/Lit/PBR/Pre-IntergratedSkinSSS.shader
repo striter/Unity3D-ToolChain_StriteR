@@ -1,4 +1,4 @@
-Shader "Game/Lit/PBR/PreIntergratedSkinSSS"
+Shader "Game/Lit/PBR/Pre-IntergratedSkinSSS"
 {
     Properties
 	{
@@ -14,6 +14,10 @@ Shader "Game/Lit/PBR/PreIntergratedSkinSSS"
 		_EmissionTex("Emission",2D)="white"{}
 		[HDR]_EmissionColor("Emission Color",Color)=(0,0,0,0)
 
+		[Header(BRDF)]
+		[NoScaleOffset]_BeckmannBRDFLUT("Beckmann BRDF LUT",2D)="black"{}
+		_BeckmannBRDFSpecular("Beckmann BRDF Specular",Range(0,100))=1
+		
 		[Header(SSS)]
 		[NoScaleOffset]_CurvatureTex("Curvature",2D)="black"{}
 		[NoScaleOffset]_SkinLUT("Skin LUT",2D) = "black"{}
@@ -79,8 +83,28 @@ Shader "Game/Lit/PBR/PreIntergratedSkinSSS"
 			}
             #define BRDF_SURFACE_ADDITIONAL_TRANSFER(input,surface) CalculateCurvature(input,surface);
 
-            TEXTURE2D(_SkinLUT); SAMPLER(sampler_SkinLUT);
+            #include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
+            TEXTURE2D(_BeckmannBRDFLUT); SAMPLER(sampler_BeckmannBRDFLUT);
+            float _BeckmannBRDFSpecular;
+            float fresnelReflectance(float3 H, float3 V, float F0)
+			{
+			  float base = 1.0 - dot(V, H);
+			  float exponential = pow(base, 5.0);
+			  return exponential + F0 * (1.0 - exponential);
+			}
+			float GetNormalDistribution(BRDFSurface surface,BRDFLightInput lightSurface)
+			{
+				float ph = pow(2 * SAMPLE_TEXTURE2D(_BeckmannBRDFLUT,sampler_BeckmannBRDFLUT,float2(lightSurface.NDH,surface.roughness)).r,10);
+            	//fresnelReflectance
+            	float fresnelReflectanceBase = 1.0 - lightSurface.VDH;
+            	float exponential = pow(fresnelReflectanceBase, 5.0);
+				float fresnelReflectance = exponential + 0.028 * (1.0 - exponential);
+            	return max(ph * fresnelReflectance / dot(lightSurface.halfDir,lightSurface.halfDir),0) * _BeckmannBRDFSpecular;
+			}
+	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
+            
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+            TEXTURE2D(_SkinLUT); SAMPLER(sampler_SkinLUT);
 			half3 LightingWithSSS(BRDFSurface surface,Light light)
 			{
 				BRDFLightInput input=BRDFLightInput_Ctor(surface,light.direction,light.color,light.shadowAttenuation,light.distanceAttenuation);

@@ -188,11 +188,6 @@ f2of ForwardFragment(v2ff i)
 	AlphaClip(surface.alpha);
 	o.result = float4(finalCol,surface.alpha);
 	
-	// BRDFLightInput lightInput=BRDFLightInput_Ctor(surface,mainLight.direction,mainLight.color,mainLight.shadowAttenuation,mainLight.distanceAttenuation);
-	// BRDFLight brdfLight=BRDFLight_Ctor(surface,lightInput);
-	// o.result = brdfLight.normalDistribution;
-	// o.result =  float4(BRDFLighting(surface,brdfLight),1);
-	
 	#if defined(F2O_TRANSFER)
 		F2O_TRANSFER(surface,o)
 	#endif

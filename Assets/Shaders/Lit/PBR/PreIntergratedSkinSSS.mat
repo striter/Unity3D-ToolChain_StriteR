@@ -42,6 +42,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: c196e7189c20ddd4e876d46929e470b9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _BeckmannBRDFLUT:
+        m_Texture: {fileID: 2800000, guid: 39daaf613a836584ab75fc367c77dbb8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: dc57807282857d345827be7fb4f64b5b, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -225,6 +229,7 @@ Material:
     - _AtlasHeight: 0
     - _AtlasIndex: 0
     - _AtlasWidth: 0
+    - _BeckmannBRDFSpecular: 13.1
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0

@@ -1,10 +1,11 @@
-Shader "Hidden/Baking/Gradient/SkinSSSLut"
+Shader "Hidden/Baking/Gradient/Pre-integratedSkinLUT"
 {
     Properties
     {
     }
     SubShader
     {
+        Tags{"PreviewType" = "Plane"}
         Pass
         {
             HLSLPROGRAM

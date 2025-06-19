@@ -138,9 +138,6 @@ namespace UnityEditor.Extensions
     
     public class EWTextureGenerator : EditorWindow
     {
-        [MenuItem("Work Flow/Asset/Texture Generator", false, 304)]
-        static void ShowTextureGenerator() => EditorWindow.GetWindow(typeof(EWTextureGenerator)).titleContent = new GUIContent("Texture Generator", EditorGUIUtility.IconContent("CustomTool").image);
-
         [SerializeField] private FTextureGenerateData m_Data = FTextureGenerateData.kDefault;
         private SerializedProperty m_DataProperty;
         private SerializedObject m_SerializedWindow;

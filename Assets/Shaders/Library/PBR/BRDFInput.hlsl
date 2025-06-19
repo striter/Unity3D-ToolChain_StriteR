@@ -101,6 +101,7 @@ struct BRDFLightInput
 {
     half3 lightDirection;
     half3 lightColor;
+    half3 halfDir;
     half shadowAttenuation;
     half distanceAttenuation;
     half NDL;
@@ -121,6 +122,7 @@ BRDFLightInput BRDFLightInput_Ctor(BRDFSurface surface,half3 lightDir,half3 ligh
     float3 halfDir = SafeNormalize(float3(viewDir) + float3(lightDir));
 
     BRDFLightInput input;
+    input.halfDir = halfDir;
     input.lightDirection=lightDir;
     input.lightColor=lightColor;
     input.shadowAttenuation=shadowAttenuation;
