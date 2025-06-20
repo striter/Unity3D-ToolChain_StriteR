@@ -1,23 +1,31 @@
 #define MAX_MARCH_STEPS 256
 #define TOLERANCE 0.001
-
-bool RaymarchSDF(GRay ray,float start,float end,out float distance,out SDFOutput _output,int _marchSteps,float _tolerance)
+struct SDFHitInfo
 {
-    distance = start;
-    for(int i=0;i<_marchSteps&&distance<end;i++)
+    float distance;
+    SDFSurface data;
+};
+
+bool RaymarchSDF(GRay ray,float start,float end,out SDFHitInfo _hitInfo,int _marchSteps,float _tolerance)
+{
+    _hitInfo.distance = start;
+    for(int i=0;i<_marchSteps&&_hitInfo.distance<end;i++)
     {
-        _output=SceneSDF(ray.GetPoint(distance));
-        float sdfDistance = _output.distance;
+        SDFSurface data = SceneSDF(ray.GetPoint(_hitInfo.distance));
+        float sdfDistance = data.distance;
         if(sdfDistance < _tolerance)
+        {
+            _hitInfo.data = data;
             return true;
-        distance+=sdfDistance;
+        }
+        _hitInfo.distance+=sdfDistance;
     }
     return false;
 }
 
-bool RaymarchSDF(GRay ray,float start,float end,out float distance,out SDFOutput _output)
+bool RaymarchSDF(GRay ray,float start,float end,out SDFHitInfo _output)
 {
-    return RaymarchSDF(ray,start,end,distance,_output,MAX_MARCH_STEPS,TOLERANCE);
+    return RaymarchSDF(ray,start,end,_output,MAX_MARCH_STEPS,TOLERANCE);
 }
 
 #define MAX_SHADOW_STEPS 256
@@ -28,9 +36,8 @@ float RaymarchSDFShadow(float3 _position,float3 _lightPosition,float _bias = SHA
     float3 direction = _lightPosition - _position;
     GRay shadowRay = GRay_Ctor(_position,normalize(direction));
     float maxMarchLength = length(direction);
-    float distance= 0;
-    SDFOutput _output;
-    return RaymarchSDF(shadowRay,_bias,maxMarchLength,distance,_output,MAX_SHADOW_STEPS,TOLERANCE) ? 0 :1;
+    SDFHitInfo output;
+    return RaymarchSDF(shadowRay,_bias,maxMarchLength,output,MAX_SHADOW_STEPS,TOLERANCE) ? 0 :1;
 }
 
 float RaymarchSDFSoftShadow(float3 _position,float3 _lightPosition,float _softConstant = .1f,float _bias = SHADOW_BIAS,int _maxSteps = MAX_SHADOW_STEPS)

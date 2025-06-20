@@ -45,22 +45,22 @@ Shader "Hidden/SDF_SphereBox"
             float _CylinderRoundRoundness;
             float3 _CylinderRoundColor;
             #define SceneSDF(xxx) SDF_TorusLink(xxx) 
-            SDFOutput SDF_TorusLink(float3 position)
+            SDFSurface SDF_TorusLink(float3 position)
             {
-                float3 origin=TransformObjectToWorld(0);
-                GCylinder cylinder=GCylinder_Ctor(origin,_CylinderRadius);
-                GCapsule capsule=GCapsule_Ctor(origin,_CapsuleRadius,float3(0,1,0),_CapsuleHeight);
-                GCylinderCapped cylinderCapped=GCylinderCapped_Ctor(origin,_CylinderCappedRadius,_CylinderCappedHeight);
-                GCylinderRound cylinderRound=GCylinderRound_Ctor(origin,_CylinderRoundRadius,_CylinderRoundHeight,_CylinderRoundRoundness);
-                float3 samplePosition=RotateAround(position,origin,_Time.y,float3(1,0,0) );
-                SDFOutput distA=GCylinder_SDF(cylinder,SDFInput_Ctor(samplePosition ,_CylinderColor));
-                SDFOutput distB=GCapsule_SDF(capsule,SDFInput_Ctor(samplePosition,_CapsuleColor));
+                float3 origin = TransformObjectToWorld(0);
+                GCylinder cylinder = GCylinder_Ctor(origin,_CylinderRadius);
+                GCapsule capsule = GCapsule_Ctor(origin,_CapsuleRadius,float3(0,1,0),_CapsuleHeight);
+                GCylinderCapped cylinderCapped = GCylinderCapped_Ctor(origin,_CylinderCappedRadius,_CylinderCappedHeight);
+                GCylinderRound cylinderRound = GCylinderRound_Ctor(origin,_CylinderRoundRadius,_CylinderRoundHeight,_CylinderRoundRoundness);
+                float3 samplePosition = RotateAround(position,origin,_Time.y,float3(1,0,0) );
+                SDFSurface distA = SDFSurface_Ctor(cylinder.SDF(samplePosition) ,_CylinderColor);
+                SDFSurface distB = SDFSurface_Ctor(capsule.SDF(samplePosition) , _CapsuleColor);
 
-                samplePosition=RotateAround(position,origin,_Time.y,float3(0,0,1));
-                SDFOutput distC=GCylinderCapped_SDF(cylinderCapped,SDFInput_Ctor(samplePosition,_CylinderCappedColor));
-                SDFOutput distD=GCylinderRound_SDF(cylinderRound,SDFInput_Ctor(samplePosition,_CylinderRoundColor));
-                SDFOutput output=SDFUnion( SDFDifference( distB,distA),SDFDifference( distD,distC));
-                return  SDFDifference(output,distC);
+                samplePosition = RotateAround(position,origin,_Time.y,float3(0,0,1));
+                SDFSurface distC = SDFSurface_Ctor(cylinderCapped.SDF(samplePosition) , _CylinderCappedColor);
+                SDFSurface distD = SDFSurface_Ctor(cylinderRound.SDF(samplePosition) , _CylinderRoundColor);
+                SDFSurface output = Union( Difference( distB,distA),Difference( distD,distC));
+                return Difference(output,distC);
             }
             #include "Assets/Shaders/Library/Passes/GeometrySDFPass.hlsl"
             ENDHLSL

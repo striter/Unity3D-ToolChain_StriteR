@@ -28,7 +28,7 @@ Shader "Hidden/SDF_SphereBox"
             HLSLPROGRAM
             #pragma vertex vertSDF
             #pragma fragment fragSDF
-            #define IGeometrySDF
+            #define CSG_DATA_EXTRA float3 color;
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Geometry.hlsl"
             float3 _SphereColor;
@@ -42,18 +42,20 @@ Shader "Hidden/SDF_SphereBox"
             float3 _FrameBoxSize;
             float _FrameBoxExtend;
             #define SceneSDF(xxx) SDF_SphereBox(xxx) 
-            SDFOutput SDF_SphereBox(float3 position)
+            SDFSurface SDF_SphereBox(float3 position)
             {
                 float3 origin=TransformObjectToWorld(0);
                 GSphere sphere=GSphere_Ctor(origin,_SphereRadius);
                 GBoxRound roundBox=GRoundBox_Ctor(origin,_RoundBoxSize,_RoundBoxRoundness);
                 GBoxFrame frameBox=GFrameBox_Ctor(origin,_FrameBoxSize,_FrameBoxExtend);
                 GBox box=GBox_Ctor(origin,_BoxSize);
-                SDFOutput distA= GSphere_SDF(sphere,SDFInput_Ctor(position,_SphereColor));
-                SDFOutput distB=GRoundBox_SDF(roundBox,SDFInput_Ctor(RotateAround(position,origin,_Time.y,float3(1,0,0) ),_RoundBoxColor));
-                SDFOutput distC=GFrameBox_SDF(frameBox,SDFInput_Ctor(RotateAround(position,origin,_Time.y,float3(0,1,0) ),_FrameBoxColor));
-                SDFOutput distD=GBox_SDF(box,SDFInput_Ctor(RotateAround(position,origin,_Time.y,float3(0,0,1) ),_BoxColor));
-                return SDFUnion( SDFDifference(distB,distA),distC,distD);
+                SDFSurface distA ;
+                distA.distance = sphere.SDF(position);
+                distA.color = _SphereColor;
+                SDFSurface distB = SDFSurface_Ctor(roundBox.SDF(RotateAround(position,origin,_Time.y,float3(1,0,0))),_RoundBoxColor);
+                SDFSurface distC = SDFSurface_Ctor(frameBox.SDF(RotateAround(position,origin,_Time.y,float3(0,1,0))),_FrameBoxColor);
+                SDFSurface distD = SDFSurface_Ctor(box.SDF(RotateAround(position,origin,_Time.y,float3(0,0,1))),_BoxColor);
+                return Union( Difference(distB,distA),distC,distD);
             }
             #include "Assets/Shaders/Library/Passes/GeometrySDFPass.hlsl"
             

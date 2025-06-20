@@ -44,7 +44,7 @@ Shader "Hidden/SDF_Torus"
             float _TorusLinkMinorRadius;
             float _TorusLinkExtend;
             #define SceneSDF(xxx) SDF_TorusLink(xxx) 
-            SDFOutput SDF_TorusLink(float3 position)
+            SDFSurface SDF_TorusLink(float3 position)
             {
                 float3 origin=TransformObjectToWorld(0);
                 GTorus torus=GTorus_Ctor(origin,_TorusMajorRadius,_TorusMinorRadius);
@@ -52,12 +52,12 @@ Shader "Hidden/SDF_Torus"
                 GTorusLink torusLink=GTorusLink_Ctor(origin,_TorusLinkMajorRadius,_TorusLinkMinorRadius,_TorusLinkExtend);
                 
                 float3 samplePos=RotateAround(position,origin,_Time.y,float3(1,0,0) );
-                SDFOutput distA=GTorus_SDF(torus,SDFInput_Ctor(samplePos,_TorusColor));
-                SDFOutput distB=GTorusCapped_SDF(torusCapped,SDFInput_Ctor( samplePos,_TorusCappedColor));
-                SDFOutput distC=GTorusLink_SDF(torusLink,SDFInput_Ctor(RotateAround(position,origin,_Time.y,float3(0,1,0) ) ,_TorusLinkColor));
+                SDFSurface distA=SDFSurface_Ctor(torus.SDF(samplePos),_TorusColor);
+                SDFSurface distB=SDFSurface_Ctor(torusCapped.SDF( samplePos),_TorusCappedColor);
+                SDFSurface distC=SDFSurface_Ctor(torusLink.SDF(RotateAround(position,origin,_Time.y,float3(0,1,0) )) ,_TorusLinkColor);
 
-                SDFOutput distAB = SDFUnionSmin(distA,distB,.2,5);
-                return SDFUnion(distAB,distC);
+                SDFSurface distAB = UnionSmin(distA,distB,.2,5);
+                return Union(distAB,distC);
             }
             #include "Assets/Shaders/Library/Passes/GeometrySDFPass.hlsl"
             ENDHLSL

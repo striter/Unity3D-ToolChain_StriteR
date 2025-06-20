@@ -104,7 +104,10 @@ namespace Examples.Rendering.Misc
             OnValidate();
             if (!m_DrawGizmos) return;
             foreach (var element in m_Elements)
+            {
+                Gizmos.color = element.albedo.SetA(1f);
                 element.FormatCPU(transform.localToWorldMatrix).DrawGizmos();
+            }
         }
     }
 }
