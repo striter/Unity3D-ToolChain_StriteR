@@ -272,7 +272,7 @@ GameObject:
   - component: {fileID: 364328608}
   - component: {fileID: 364328610}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Volume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -330,7 +330,7 @@ MonoBehaviour:
     mixRed: {x: 0, y: 0, z: 0}
     mixGreen: {x: 0, y: 0, z: 0}
     mixBlue: {x: 0, y: 0, z: 0}
-    toneMapping: 0
+    toneMapping: 1
     bloom: 1
     bloomData:
       m_SampleMode: 0
@@ -344,7 +344,7 @@ MonoBehaviour:
       m_Color: {r: 0.047169805, g: 0.047169805, b: 0.047169805, a: 1}
       m_Blur:
         blurType: 8
-        blurSize: 0.69
+        blurSize: 0.28
         iteration: 6
         downSample: 1
         angle: 0
