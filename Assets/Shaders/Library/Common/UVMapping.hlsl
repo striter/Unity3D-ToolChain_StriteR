@@ -86,3 +86,13 @@ half4 UnrepeatMapping(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv)
             SAMPLE_TEXTURE2D_GRAD(_tex,_sampler,uvd,ddxd,ddyd),b.x),
             b.y);
 }
+
+float2 CartesianToPolar(float2 _cartesian)
+{
+    float radius = length(_cartesian);
+    float theta = atan2(_cartesian.x, _cartesian.y);
+    if (theta < 0)
+        theta += kPI2;
+    theta /= kPI2;
+    return float2(radius, theta);
+}

@@ -41,7 +41,6 @@ struct GCylinderRound
     float roundRadius;
     float SDF(float3 _position)
     {
-        
         float3 p=_position-cylinder.center;
         float2 d= float2(length(p.xz)-2.0*cylinder.radius+roundRadius,abs(p.y)-height);
         return min(max(d),0)+length(max(d,0))-roundRadius;

@@ -1,4 +1,4 @@
-Shader "Hidden/SDF_SphereBox"
+Shader "Hidden/SDF_Cylinder"
 {
     Properties
     {

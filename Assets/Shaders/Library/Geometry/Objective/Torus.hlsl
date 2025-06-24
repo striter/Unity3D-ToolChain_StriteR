@@ -7,8 +7,9 @@
 
     float SDF(float3 _position)
     {
-        float q=length(_position.xz-center.xz)-majorRadius;
-        return length(float2(q,_position.y))-minorRadius;
+        _position -= center;
+        float2 q = float2(length(_position.xz)-majorRadius,_position.y);
+        return length(q)-minorRadius;
     }
 };
 GTorus GTorus_Ctor(float3 _center,float _majorRadius,float _minorRadius)

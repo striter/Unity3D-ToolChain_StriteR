@@ -6,6 +6,7 @@
 #include "Geometry/Objective/Line.hlsl"
 #include "Geometry/Objective/Sphere.hlsl"
 #include "Geometry/Objective/Torus.hlsl"
+#include "Geometry/Objective/Disk.hlsl"
 #include "Geometry/Objective/Axis.hlsl"
 #include "Geometry/Objective/Cone.hlsl"
 
