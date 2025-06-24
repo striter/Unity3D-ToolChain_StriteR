@@ -22,6 +22,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: FilterableProcedurals
   m_Shader: {fileID: 4800000, guid: e10b2f8139e2e4941b3cc16604d082f5, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _FILTER
   - _SHAPE_CHECKER
@@ -32,6 +34,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -114,7 +117,7 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _SHAPE: 0
-    - _Scale: 1
+    - _Scale: 0.6
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
