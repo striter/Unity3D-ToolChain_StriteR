@@ -33,8 +33,8 @@ namespace Rendering.Pipeline
             
             _renderingData.cameraData.camera.depthTextureMode |= DepthTextureMode.Depth | DepthTextureMode.MotionVectors;    //Dude wtf
 
-            var projection = GL.GetGPUProjectionMatrix(_renderingData.cameraData.GetProjectionMatrix(),_renderingData.cameraData.IsCameraProjectionMatrixFlipped());
-            var view = _renderingData.cameraData.GetViewMatrix();
+            var projection = GL.GetGPUProjectionMatrix(_renderingData.cameraData.camera.projectionMatrix,_renderingData.cameraData.IsCameraProjectionMatrixFlipped());
+            var view = _renderingData.cameraData.camera.worldToCameraMatrix;
             var vp = projection * view;
 
             if (!m_PreViewProjectionMatrixes.ContainsKey(cameraID))

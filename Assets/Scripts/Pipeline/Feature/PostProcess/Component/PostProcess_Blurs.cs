@@ -235,6 +235,9 @@ namespace Rendering.PostProcess
         public override void Execute(RenderTextureDescriptor _descriptor, ref DBlurs _data, CommandBuffer _buffer,
             RenderTargetIdentifier _src, RenderTargetIdentifier _dst, ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
+            if(_descriptor.width <= 16 || _descriptor.height <= 16) 
+                return;
+            
             var sampleName = _data.blurType.ToString();
             _buffer.BeginSample(sampleName);
             var baseDownSample = math.max(_data.downSample, 1);

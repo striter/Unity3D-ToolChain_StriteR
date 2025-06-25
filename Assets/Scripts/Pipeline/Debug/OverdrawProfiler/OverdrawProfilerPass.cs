@@ -22,9 +22,9 @@ namespace Render.Debug
             renderPassEvent = _data.m_Event;
         }
 
-        public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
+        public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData _renderingData)
         {
-            base.OnCameraSetup(cmd, ref renderingData);
+            base.OnCameraSetup(cmd, ref _renderingData);
             m_Material.Value.SetColor(kOverdrawColor, m_Data.m_Color);
             var stackEachDraw = 0.05f;
             m_Material.Value.SetFloat(kIncrementPerStack, stackEachDraw);

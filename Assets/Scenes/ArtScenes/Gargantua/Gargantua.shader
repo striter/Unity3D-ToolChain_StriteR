@@ -2,7 +2,7 @@ Shader "Hidden/Gargantua"
 {
     Properties
     {
-        
+		[Enum(_16,16,_32,32,_64,64,_128,128,_256,256)]_Iteration("Iteration",int)=16
         [Header(Gas Disc)]
         _DiskRadius("Disk Radius",Range(0,1))=0.1
         _GasDiskTexture("Texture",2D)="black"{}
@@ -23,7 +23,7 @@ Shader "Hidden/Gargantua"
     {
         Cull Front
         ZTest Always
-        ZWrite On
+        ZWrite Off
         Blend One One
         Tags {"Queue" = "Transparent"}
         
@@ -37,7 +37,6 @@ Shader "Hidden/Gargantua"
             
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Geometry.hlsl"
-            #define ITERATIONS 256
             struct a2v
             {
                 float3 positionOS : POSITION;
@@ -53,6 +52,7 @@ Shader "Hidden/Gargantua"
 
             TEXTURE2D(_GasDiskTexture);SAMPLER(sampler_GasDiskTexture);
             INSTANCING_BUFFER_START
+                INSTANCING_PROP(int,_Iteration)
                 INSTANCING_PROP(float4,_Color)
                 INSTANCING_PROP(float,_HazeOffset)
                 INSTANCING_PROP(float,_HazeRange)
@@ -72,7 +72,7 @@ Shader "Hidden/Gargantua"
                 float singularityDist = distance(position, origin);
                 float warpFactor = 1 / (pow(singularityDist, 2.0) + 0.0001);
                 float3 singularityDir = normalize(origin - position);
-                return normalize(direction + singularityDir * warpFactor * _WarpAmount / ITERATIONS);
+                return normalize(direction + singularityDir * warpFactor * _WarpAmount / _Iteration);
             }
             
             float3 Haze(GTorus torus,float3 pos)
@@ -81,7 +81,7 @@ Shader "Hidden/Gargantua"
                 float torusBlurred = saturate(1 - invlerp( _HazeRange, _HazeRangeEnd,sdf));
                 torusBlurred *= step(sdf,.5);
                 torusBlurred *= pow(torusBlurred, 2.0);
-                return torusBlurred;
+                return torusBlurred / _Iteration;
             }
 
             float3 GasDisk(float3 pos)
@@ -94,10 +94,10 @@ Shader "Hidden/Gargantua"
 
                 float cylinderSDF = cylinder.SDF(pos);
                 float coverage = saturate(invlerp(_DiskRadius,0,cylinderSDF));
-                coverage *= saturate(invlerp(.03,0.01,abs(cylinder.cylinder.center.y - pos.y)));
+                coverage *= saturate(invlerp(.03,0,abs(cylinder.cylinder.center.y - pos.y)));
                 coverage *= step(0.04,cylinderSDF);
                 coverage = pow(coverage,2);
-                return SAMPLE_TEXTURE2D(_GasDiskTexture,sampler_GasDiskTexture,coords) * coverage / ITERATIONS;
+                return SAMPLE_TEXTURE2D(_GasDiskTexture,sampler_GasDiskTexture,coords) * coverage / _Iteration;
             }
             
             v2f vert (a2v v)
@@ -146,16 +146,16 @@ Shader "Hidden/Gargantua"
                 // SDFHitInfo result;
                 // if(!RaymarchSDF(GRay_Ctor(positionOS,directionOS),startEndOS.x,startEndOS.y,result))
                 // {
-                // clip(-1);
-                // return 0;
+                //  clip(-1);
+                //  return 0;
                 // }
                 
                 // return 1;
                 
-                float marchStepOS = (startEndOS.y - startEndOS.x) / ITERATIONS;
-                // float dither = dither01((_Time.y - floor(_Time.y)) * 144);
-                // positionOS += directionOS * dither * marchStepOS;
-                for (int iteration = 0; iteration < ITERATIONS; iteration++)
+                float marchStepOS = (startEndOS.y - startEndOS.x) / _Iteration;
+                float dither = dither01((_Time.y - floor(_Time.y)) * 144);
+                positionOS += directionOS * dither * marchStepOS;
+                for (int iteration = 0; iteration < _Iteration; iteration++)
                 {
                     directionOS = WarpSpace(torusOS,directionOS, positionOS);
                     positionOS += directionOS * marchStepOS;

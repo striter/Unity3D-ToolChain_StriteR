@@ -86,17 +86,17 @@ namespace Rendering.PostProcess
         private const int kJitterAmount = 16;
         private uint jitterIndex = 0;
 
-        private bool m_FirstBuffer = true;
+        private bool m_FirstExecution = true;
         private static readonly int kHistoryBufferID = Shader.PropertyToID("_HistoryBuffer");
-        private static readonly float2[] kJitters = new float2[kJitterAmount].Remake((i,p)=>ULowDiscrepancySequences.Halton2D((uint)i) - .5f);
+        private static readonly float2[] kJitters = new float2[kJitterAmount].Remake((i,p)=>(ULowDiscrepancySequences.Halton2D((uint)i) - .5f) * .5f);
         private static readonly Dictionary<int, TAAHistoryBuffer> m_Buffers = new();
-        
+        private Matrix4x4 m_ViewMatrix,m_ProjectionMatrix;
+        private Matrix4x4 m_OriginProjectionMatrix;
         class TAAHistoryBuffer
         {
             private static uint historyBufferIndex = 0u;
             public RenderTextureDescriptor descriptor;
-            public RenderTexture buffer;
-
+            public RenderTexture renderTexture;
             static RenderTextureDescriptor OutputDescriptor(RenderTextureDescriptor _descriptor)
             {
                 _descriptor.msaaSamples = 1;
@@ -111,13 +111,30 @@ namespace Rendering.PostProcess
             {
                 descriptor = OutputDescriptor(_descriptor);
                 
-                buffer = RenderTexture.GetTemporary(descriptor);
-                buffer.name = "_HistoryBuffer" + historyBufferIndex++;
+                renderTexture = RenderTexture.GetTemporary(descriptor);
+                renderTexture.name = "_HistoryBuffer" + historyBufferIndex++;
             }
             
-            public void Dispose()=> RenderTexture.ReleaseTemporary(buffer);
+            public void Dispose()=> RenderTexture.ReleaseTemporary(renderTexture);
         }
 
+        public SRP_TAASetupPass Setup(ref RenderingData _renderingData)
+        {
+            var camera = _renderingData.cameraData.camera;
+            
+            var jitter = kJitters[jitterIndex];
+            jitterIndex = (jitterIndex + 1) % kJitterAmount;
+            var projectionMatrix =  camera.projectionMatrix;
+            var viewMatrix = camera.worldToCameraMatrix;
+            m_OriginProjectionMatrix = projectionMatrix;
+            m_ViewMatrix = viewMatrix;
+            projectionMatrix.m02 += jitter.x / _renderingData.cameraData.cameraTargetDescriptor.width;
+            projectionMatrix.m12 += jitter.y / _renderingData.cameraData.cameraTargetDescriptor.height;
+            m_ProjectionMatrix = projectionMatrix;
+            _renderingData.cameraData.camera.projectionMatrix = projectionMatrix;
+            return this;
+        }
+        
         public void Dispose()
         {
             foreach (var buffer in m_Buffers.Values)
@@ -125,55 +142,45 @@ namespace Rendering.PostProcess
             m_Buffers.Clear();
         }
 
-        private TAAHistoryBuffer currentBuffer;
+        private TAAHistoryBuffer GetHistoryBuffer(ref RenderingData _renderingData,out bool m_FirstExecution)
+        {
+            m_FirstExecution = false;
+            var descriptor = _renderingData.cameraData.cameraTargetDescriptor;
+            var instanceID = _renderingData.cameraData.camera.GetInstanceID(); 
+            if (m_Buffers.TryGetValue(instanceID,out var m_CurrentBuffer)&&!m_CurrentBuffer.Validate(descriptor))
+            {
+                m_CurrentBuffer.Dispose();
+                m_Buffers.Remove(instanceID);
+                m_CurrentBuffer = null;
+            }
+
+            if (m_Buffers.ContainsKey(instanceID)) 
+                return m_CurrentBuffer;
+            
+            m_CurrentBuffer = new TAAHistoryBuffer(_renderingData.cameraData.cameraTargetDescriptor);
+            m_Buffers.Add(instanceID,m_CurrentBuffer);
+            m_FirstExecution = true;
+            return m_CurrentBuffer;
+        }
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            var camera = _renderingData.cameraData.camera;
-            
-            var jitter = kJitters[jitterIndex];
-            var projectionMatrix =  camera.projectionMatrix;
-            var viewMatrix = camera.worldToCameraMatrix;
-            projectionMatrix.m02 += jitter.x / camera.pixelWidth;
-            projectionMatrix.m12 += jitter.y / camera.pixelHeight;
-
-            var instanceID = _renderingData.cameraData.camera.GetInstanceID(); 
-            var descriptor = _renderingData.cameraData.cameraTargetDescriptor;
-            currentBuffer = default;
-            if (m_Buffers.TryGetValue(instanceID,out currentBuffer)&&!currentBuffer.Validate(descriptor))
-            {
-                currentBuffer.Dispose();
-                m_Buffers.Remove(instanceID);
-            }
-
-            if (!m_Buffers.ContainsKey(instanceID))
-            {                
-                currentBuffer = new TAAHistoryBuffer(_renderingData.cameraData.cameraTargetDescriptor);
-                m_Buffers.Add(instanceID,currentBuffer);
-                m_FirstBuffer = true;
-            }
-            
             var cmd = CommandBufferPool.Get("TAA PrePass");
-            cmd.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
-            cmd.SetGlobalTexture(kHistoryBufferID,currentBuffer.buffer);
-            
+            cmd.SetViewProjectionMatrices(m_ViewMatrix, m_ProjectionMatrix);
             _context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
 
-        public void ExecuteBuffer(CommandBuffer _cmd, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor,
+        public void ExecuteResolve(CommandBuffer _cmd, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor,
             ref DAntiAliasing _data,Material _material,ref RenderingData _renderingData)
         {
-            if (m_FirstBuffer)
-            {
-                _cmd.Blit(_src,currentBuffer.buffer);
-                m_FirstBuffer = false;
-            }
-            
+            var historyBuffer = GetHistoryBuffer(ref _renderingData,out var firstExecution);
+            if (firstExecution)
+                _cmd.Blit(_src,historyBuffer.renderTexture);
+            _cmd.SetGlobalTexture(kHistoryBufferID,historyBuffer.renderTexture);
             _cmd.SetGlobalFloat("_Blend",_data.blend);
             _cmd.Blit(_src,_dst,_material,1);
-            _cmd.Blit(_dst,currentBuffer.buffer);
-            _cmd.SetViewProjectionMatrices(_renderingData.cameraData.camera.worldToCameraMatrix,_renderingData.cameraData.camera.projectionMatrix);
-            jitterIndex = (jitterIndex + 1) % kJitterAmount;
+            _cmd.Blit(_dst,historyBuffer.renderTexture);
+            _renderingData.cameraData.camera.projectionMatrix = m_OriginProjectionMatrix;
         }
     }
     
@@ -217,7 +224,7 @@ namespace Rendering.PostProcess
             switch (_data.mode)
             {
                 case EAntiAliasing.FXAA:base.Execute(_descriptor, ref _data, _buffer, _src, _dst, _context, ref _renderingData);break;
-                case EAntiAliasing.TAA:m_TAAPass.ExecuteBuffer(_buffer,_src,_dst,_descriptor,ref _data,m_Material,ref _renderingData);break;
+                case EAntiAliasing.TAA:m_TAAPass.ExecuteResolve(_buffer,_src,_dst,_descriptor,ref _data,m_Material,ref _renderingData);break;
             }
 
         }

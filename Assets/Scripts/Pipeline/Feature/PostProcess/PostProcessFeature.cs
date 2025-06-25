@@ -46,7 +46,7 @@ namespace Rendering.Pipeline
                 if(antiAliasing != EAntiAliasing.None)
                     m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
                 if(antiAliasing == EAntiAliasing.TAA)
-                    _renderer.EnqueuePass(m_TAASetup);
+                    _renderer.EnqueuePass(m_TAASetup.Setup(ref _renderingData));
 
                 _renderingData.cameraData.camera.GetComponentsInChildren(kResults);
                 m_PostprocessQueue.AddRange(kResults);
@@ -63,7 +63,7 @@ namespace Rendering.Pipeline
             
             if (m_PostprocessQueue.Count<=0)
                 return;
-            //Sort&Enqeuue
+            //Sort&Enqueue
             m_OpaqueProcessing.Clear();
             m_ScreenProcessing.Clear();
 
