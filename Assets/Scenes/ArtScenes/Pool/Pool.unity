@@ -611,6 +611,99 @@ Transform:
   - {fileID: 1883280165}
   m_Father: {fileID: 1424984980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &855759411
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 855759414}
+  - component: {fileID: 855759413}
+  - component: {fileID: 855759412}
+  m_Layer: 0
+  m_Name: Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &855759412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855759411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e24f8465e5911194a9d11d5acb09953c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Data:
+    LUTTex: {fileID: 0}
+    LUT64: 0
+    LUTWeight: 1
+    m_BSC: 0
+    brightness: 1
+    saturation: 1
+    contrast: 1
+    channelMix: 0
+    mixRed: {x: 0, y: 0, z: 0}
+    mixGreen: {x: 0, y: 0, z: 0}
+    mixBlue: {x: 0, y: 0, z: 0}
+    toneMapping: 1
+    bloom: 1
+    bloomData:
+      m_SampleMode: 0
+      m_Threshold: 1.28
+      m_MaskData:
+        mode: 1
+        renderMask: -1
+        overrideMaterial: {fileID: 0}
+        overrideShader: {fileID: 0}
+        inheritDepth: 1
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
+      m_Blur:
+        blurType: 8
+        blurSize: 0.23
+        iteration: 8
+        downSample: 1
+        angle: 0
+        attenuation: 1
+      m_BloomDebug: 0
+    motionBlur: 0
+    iteration: 2
+    intensity: 1
+--- !u!114 &855759413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855759411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f378cf68d6ca9a949a71410f53f8b27f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Priority: 0
+--- !u!4 &855759414
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855759411}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.351658, y: -16.214733, z: 21.541948}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1053284536
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,7 +859,7 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
-  m_projectionMatrixMode: 1
+  m_projectionMatrixMode: 0
   m_GateFitMode: 2
   m_FOVAxisMode: 0
   m_Iso: 200
@@ -844,7 +937,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -1192,13 +1285,12 @@ MonoBehaviour:
     m_IncludeTransparent: 1
     m_DownSample: 1
     m_BlurParam:
-      m_BlurType: 2
-      m_BlurSize: 0.387
-      m_Iteration: 5
-      m_DownSample: 1
-      m_Angle: 0
-      m_Vector: {x: 0.5, y: 0.5}
-      m_Attenuation: 0.9
+      blurType: 3
+      blurSize: 0.46
+      iteration: 4
+      downSample: 1
+      angle: 0
+      attenuation: 1
 --- !u!850595691 &1610938124
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -1974,3 +2066,4 @@ SceneRoots:
   - {fileID: 1250078499}
   - {fileID: 1424984980}
   - {fileID: 112803055}
+  - {fileID: 855759414}
