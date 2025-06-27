@@ -15,11 +15,9 @@ public class GeometryVisualizeShapes : MonoBehaviour
     public bool m_ManualCast = false;
     [Foldout(nameof(m_ManualCast),false)][PostNormalize] public float3 m_CastDirection = kfloat3.forward;
     [Foldout(nameof(m_ManualCast),true)] public GRay m_ManualCastRay = GRay.kDefault;
-    private IGeometry[] drawingShapes = {GTriangle.kDefault,GDisk.kDefault,GQuad.kDefault, GPolygon.kBunny,   GBox.kDefault, GCapsule.kDefault, GCylinder.kDefault, GSphere.kOne, GEllipsoid.kDefault, GCone.kDefault };
-#if UNITY_EDITOR
+    private IGeometry[] drawingShapes = {GTriangle.kDefault,GDisk.kDefault,GQuad.kDefault, GPolygon.kBunny,   GBox.kDefault, GCapsule.kDefault, GCylinder.kDefault, GSphere.kOne, GEllipsoid.kDefault, GConeCapped.kDefault,GTorus.kDefault };
     private void OnDrawGizmos()
     {
-        m_SupportDirection = m_SupportDirection.normalize();
         foreach (var (index, value) in drawingShapes.LoopIndex())
         {
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * 3f * index);
@@ -88,5 +86,4 @@ public class GeometryVisualizeShapes : MonoBehaviour
 
         }
     }
-#endif
 }

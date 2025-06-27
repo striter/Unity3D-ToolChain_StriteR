@@ -161,7 +161,7 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
-  m_projectionMatrixMode: 1
+  m_projectionMatrixMode: 0
   m_GateFitMode: 2
   m_FOVAxisMode: 0
   m_Iso: 200
@@ -344,7 +344,7 @@ MonoBehaviour:
       m_Color: {r: 0.047169805, g: 0.047169805, b: 0.047169805, a: 1}
       m_Blur:
         blurType: 8
-        blurSize: 0.28
+        blurSize: 0.78
         iteration: 6
         downSample: 1
         angle: 0
