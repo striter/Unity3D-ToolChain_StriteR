@@ -92,6 +92,7 @@ namespace Rendering.PostProcess
         private static readonly Dictionary<int, TAAHistoryBuffer> m_Buffers = new();
         private Matrix4x4 m_ViewMatrix,m_ProjectionMatrix;
         private Matrix4x4 m_OriginProjectionMatrix;
+        private Camera m_Camera;
         class TAAHistoryBuffer
         {
             private static uint historyBufferIndex = 0u;
@@ -120,23 +121,25 @@ namespace Rendering.PostProcess
 
         public SRP_TAASetupPass Setup(ref RenderingData _renderingData)
         {
-            var camera = _renderingData.cameraData.camera;
+            m_Camera = _renderingData.cameraData.camera;
             
             var jitter = kJitters[jitterIndex];
             jitterIndex = (jitterIndex + 1) % kJitterAmount;
-            var projectionMatrix =  camera.projectionMatrix;
-            var viewMatrix = camera.worldToCameraMatrix;
+            var projectionMatrix =  m_Camera.projectionMatrix;
+            var viewMatrix = m_Camera.worldToCameraMatrix;
             m_OriginProjectionMatrix = projectionMatrix;
             m_ViewMatrix = viewMatrix;
             projectionMatrix.m02 += jitter.x / _renderingData.cameraData.cameraTargetDescriptor.width;
             projectionMatrix.m12 += jitter.y / _renderingData.cameraData.cameraTargetDescriptor.height;
             m_ProjectionMatrix = projectionMatrix;
-            _renderingData.cameraData.camera.projectionMatrix = projectionMatrix;
+            m_Camera.projectionMatrix = projectionMatrix;
             return this;
         }
         
         public void Dispose()
         {
+            if(m_Camera != null)
+                m_Camera.ResetProjectionMatrix();
             foreach (var buffer in m_Buffers.Values)
                 buffer.Dispose();
             m_Buffers.Clear();
@@ -180,7 +183,7 @@ namespace Rendering.PostProcess
             _cmd.SetGlobalFloat("_Blend",_data.blend);
             _cmd.Blit(_src,_dst,_material,1);
             _cmd.Blit(_dst,historyBuffer.renderTexture);
-            _renderingData.cameraData.camera.projectionMatrix = m_OriginProjectionMatrix;
+            m_Camera.ResetProjectionMatrix();
         }
     }
     
