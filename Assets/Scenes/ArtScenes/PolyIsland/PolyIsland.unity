@@ -746,10 +746,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4624901287131249093, guid: 5fc3594c79f5cc34b914d8207786072a,
+    - target: {fileID: 2638484995229630208, guid: 5fc3594c79f5cc34b914d8207786072a,
         type: 3}
-      propertyPath: m_Data.volumetricLight
-      value: 1
+      propertyPath: m_Name
+      value: Fog
       objectReference: {fileID: 0}
     - target: {fileID: 5838221340852727280, guid: 5fc3594c79f5cc34b914d8207786072a,
         type: 3}
