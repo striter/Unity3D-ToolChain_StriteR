@@ -615,6 +615,15 @@ namespace System.Linq.Extensions
                 _src.Add(element);
         }
 
+        public static void Resize<T>(this IList<T> _src,int _newSize,Func<T> _onEachSpawn = null)
+        {
+            for(var i=_src.Count;i<_newSize;i++)
+                _src.Add(_onEachSpawn != null ? _onEachSpawn() : default);
+
+            for (var i = _src.Count - 1; i >= _newSize; i--)
+                _src.RemoveAt(i);
+        }
+        
         public static T Index<T>(this IList<T> _collection, int _index) => _collection[_index];
         public static IEnumerable<T> Iterate<T>(this IList<T> _collection, int _startIndex,int _endIndex = -1)
         {

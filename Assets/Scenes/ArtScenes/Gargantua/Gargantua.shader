@@ -24,7 +24,7 @@ Shader "Hidden/Gargantua"
         Cull Front
         ZTest Always
         ZWrite Off
-        Blend One One
+        Blend One Zero
         Tags {"Queue" = "Transparent"}
         
         //&https://www.shadertoy.com/view/lstSRS
@@ -120,12 +120,12 @@ Shader "Hidden/Gargantua"
             }
             
             #include "Assets/Shaders/Library/Geometry/GeometrySDFOutput.hlsl"
+            TEXTURE2D(_CameraOpaqueTexture);SAMPLER(sampler_CameraOpaqueTexture);
             float4 frag (v2f i) : SV_Target
             {
 				UNITY_SETUP_INSTANCE_ID(i);
                 float2 ndc = TransformHClipToNDC(i.positionHCS);
-
-
+                
                 float3 color;
                 float3 originWS = GetCameraPositionWS();
                 float3 directionWS = TransformNDCToFrustumCornersRay(ndc);
@@ -140,7 +140,7 @@ Shader "Hidden/Gargantua"
 
                 float2 distances = Distance(sphereOS,GRay_Ctor(positionOS,directionOS));
                 float2 startEndOS = float2(min(distances.x,distances.y,0),max(distances.x,distances.y,0));
-
+                
                 startEndOS.y *= 2;
 
                 // SDFHitInfo result;
@@ -151,7 +151,7 @@ Shader "Hidden/Gargantua"
                 // }
                 
                 // return 1;
-                
+
                 float marchStepOS = (startEndOS.y - startEndOS.x) / _Iteration;
                 float dither = dither01((_Time.y - floor(_Time.y)) * 144);
                 positionOS += directionOS * dither * marchStepOS;
@@ -162,7 +162,16 @@ Shader "Hidden/Gargantua"
                     color += Haze(torusOS, positionOS) * _Color;
                     color += GasDisk(positionOS) * _GasDiskColor;
                 }
-                return float4(color,1);
+
+                float4 positionCS = TransformObjectToHClip(positionOS);
+                float2 newNdc = TransformHClipToNDC(positionCS);
+                GSphere zeroedSphere = GSphere_Ctor(0,_WarpAmount);
+                float sdf = zeroedSphere.SDF(positionOS);
+                ndc = lerp(ndc,newNdc,sdf * _WarpAmount);
+                float3 base = SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,ndc);
+
+                base *= step(0,sdf);
+                return float4(base + color,1);
             }
             ENDHLSL
         }

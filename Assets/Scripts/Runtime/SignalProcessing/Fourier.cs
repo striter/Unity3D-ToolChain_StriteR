@@ -33,7 +33,7 @@ namespace Runtime.SignalProcessing
         }
 
         //https://rosettacode.org/wiki/Fast_Fourier_transform
-        public static bool FFT(IList<cfloat2> _input)
+        public static bool CooleyTukeyFFT(IList<cfloat2> _input)
         {
             if (!math.ispow2(_input.Count))
             {

@@ -96,7 +96,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DiskRadius: 0.364
+    - _DiskRadius: 0.327
     - _DiskRadiusEnd: 0.14925377
     - _DstBlend: 0
     - _DstBlendAlpha: 0
@@ -123,7 +123,7 @@ Material:
     - _Surface: 0
     - _TorusMajorRadius: 0.118
     - _TorusMinorRadius: 0.026
-    - _WarpAmount: 0.098
+    - _WarpAmount: 0.065
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:

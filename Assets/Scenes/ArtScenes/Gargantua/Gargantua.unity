@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 30d9edc3439b6064f962923268edb5c8, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.015196434, g: 0.013198634, b: 0.014696146, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -197,17 +197,17 @@ MonoBehaviour:
     bloom: 1
     bloomData:
       m_SampleMode: 0
-      m_Threshold: 0
+      m_Threshold: 0.51
       m_MaskData:
         mode: 0
         renderMask: -1
         overrideMaterial: {fileID: 0}
         overrideShader: {fileID: 0}
         inheritDepth: 1
-      m_Color: {r: 0.047169805, g: 0.047169805, b: 0.047169805, a: 1}
+      m_Color: {r: 0.03773582, g: 0.03773582, b: 0.03773582, a: 1}
       m_Blur:
         blurType: 8
-        blurSize: 0.78
+        blurSize: 0.56
         iteration: 6
         downSample: 1
         angle: 0
@@ -251,8 +251,8 @@ Transform:
   m_GameObject: {fileID: 425038722}
   serializedVersion: 2
   m_LocalRotation: {x: -0.12691595, y: 0.8549154, z: 0.2051745, w: 0.45925543}
-  m_LocalPosition: {x: 4.27, y: 0, z: 0.84}
-  m_LocalScale: {x: 12, y: 12, z: 12}
+  m_LocalPosition: {x: 4.21, y: 0, z: 0.78}
+  m_LocalScale: {x: 15, y: 15, z: 15}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -379,7 +379,7 @@ Camera:
   m_GameObject: {fileID: 918248898}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2

@@ -172,7 +172,9 @@ public class AudioAnalysis : MonoBehaviour
             if (m_DFT)
                 Fourier.DFT(m_FrequencySample,N).FillList(PoolList<cfloat2>.Empty(nameof(AudioAnalysis))).FillArray(m_FrequencySample);
             else
-                Fourier.FFT(m_FrequencySample);
+            {
+                Fourier.CooleyTukeyFFT(m_FrequencySample);
+            }
             
             for (var i = 0; i < N/2; i++)
             {

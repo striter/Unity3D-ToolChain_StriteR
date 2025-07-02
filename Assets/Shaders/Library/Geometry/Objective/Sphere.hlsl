@@ -3,6 +3,7 @@
     float3 center;
     float radius;
     float SDF(float3 _point) { return length(_point - center) - radius; }
+    bool Contains(float3 _point) { return length(_point - center) <= radius; }
 };
 
 GSphere GSphere_Ctor(float3 _center, float _radius)
