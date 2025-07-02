@@ -150,6 +150,13 @@ namespace UnityEditor.Extensions
             return true;
         }
 
+        public static bool SaveAssetPath(out string filePath, string extension = "", string defaultName = "", string startDirectory = null)
+        {
+            var success = SaveFilePath(out filePath, extension, defaultName, startDirectory);
+            filePath = filePath.FileToAssetPath();
+            return success;
+        }
+
         public static bool SelectDirectory(UnityEngine.Object _srcAsset, out string directoryPath, out string objName)
         {
             directoryPath = "";
@@ -331,14 +338,14 @@ namespace UnityEditor.Extensions
             _tar.colors = _src.colors;
             _tar.boneWeights = _src.boneWeights;
             var uvs = new List<Vector4>();
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
                 _src.GetUVs(i, uvs);
                 _tar.SetUVsResize(i, uvs);
             }
 
             _tar.subMeshCount = _src.subMeshCount;
-            for (int i = 0; i < _src.subMeshCount; i++)
+            for (var i = 0; i < _src.subMeshCount; i++)
             {
                 _tar.SetIndices(_src.GetIndices(i),MeshTopology.Triangles,i,false);
                 _tar.SetSubMesh(i,_src.GetSubMesh(i),MeshUpdateFlags.DontRecalculateBounds);

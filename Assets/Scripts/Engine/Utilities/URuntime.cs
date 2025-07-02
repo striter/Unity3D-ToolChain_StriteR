@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
@@ -24,6 +25,34 @@ public static class URuntime
         int count = _transform.childCount;
         for (int i = 0; i < count; i++)
             yield return _transform.GetChild(i);
+    }
+
+    private static List<string> kHelper = new();
+    public static string GetRelativePath(this Transform _child, Transform _root)
+    {            
+        if (_root == null) throw new ArgumentNullException(nameof(_root));
+        if (_child == null) throw new ArgumentNullException(nameof(_child));
+        if (_child == _root) return "";
+
+        kHelper.Clear();
+        var foundRoot = false;
+        
+        var current = _child;
+        while (current != null && current != _root)
+        {
+            kHelper.Add(current.name);
+            current = current.parent;
+            if (current == _root)
+                foundRoot = true;
+        }
+
+        // Validate path
+        if (!foundRoot)
+            throw new ArgumentException($"{_child.name} is not a descendant of {_root.name}");
+
+        // Reverse to root->child order and join
+        kHelper.Reverse();
+        return string.Join("/", kHelper);
     }
 
     public static void SetParentAndSyncPositionRotation(this Transform _src, Transform _dst)

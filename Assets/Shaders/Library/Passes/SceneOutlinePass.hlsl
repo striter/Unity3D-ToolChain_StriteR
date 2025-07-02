@@ -29,6 +29,9 @@ v2fs VertexSceneSelection(a2fs v)
 	v2fs o;
 	UNITY_SETUP_INSTANCE_ID(v);
 	UNITY_TRANSFER_INSTANCE_ID(v,o);
+#if defined(A2V_TRANSFER)
+	A2V_TRANSFER(v)
+#endif
 	o.normalWS=TransformObjectToWorldNormal(v.normalOS);
 	float3 positionWS =
 	#if defined(GET_POSITION_WS)

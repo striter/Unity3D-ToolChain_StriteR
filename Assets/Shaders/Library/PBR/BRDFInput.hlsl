@@ -41,7 +41,7 @@ struct f2of
 {
     float4 result:SV_TARGET;
 
-    #if defined(F2O_ADDITIONAL)
+#if defined(F2O_ADDITIONAL)
     F2O_ADDITIONAL
 #endif
 };

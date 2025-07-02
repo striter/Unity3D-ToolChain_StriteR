@@ -34,9 +34,17 @@ namespace Runtime.Geometry
         
         public static implicit operator float4(GSphere _src) => new(_src.center,_src.radius);
         public bool Contains(float3 _p, float _bias = float.Epsilon) =>math.lengthsq(_p - center) < radius * radius + _bias;
-        public bool Contains(GSphere _sphere) =>math.lengthsq(_sphere.center - center) < radius * radius + _sphere.radius;
-        public GBox GetBoundingBox()=> GBox.Minmax(center - radius,center + radius);
+        public GSphere Encapsulate(float3 _p)
+        {
+            var delta = _p - center;
+            var length = math.length(delta);
+            var direction = delta / length;
+            return length > radius ? Minmax(center - direction * radius, center + direction * length) : this;
+        }
 
+        public bool Contains(GSphere _sphere) =>math.lengthsq(_sphere.center - center) < radius * radius + _sphere.radius;
+        public GSphere Encapsulate(GSphere _sphere) => Minmax(this, _sphere);
+        public GBox GetBoundingBox()=> GBox.Minmax(center - radius,center + radius);
         public bool RayIntersection(GRay _ray, out float2 distances)
         {
             distances = -1;

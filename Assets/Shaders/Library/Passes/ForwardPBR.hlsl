@@ -7,6 +7,9 @@ v2ff ForwardVertex(a2vf v)
 	v2ff o;
 	UNITY_SETUP_INSTANCE_ID(v);
 	UNITY_TRANSFER_INSTANCE_ID(v, o);
+#if defined(A2V_TRANSFER)
+	A2V_TRANSFER(v)
+#endif
 	o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
 	o.normalWS = TransformObjectToWorldNormal(v.normalOS);
 	o.tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);

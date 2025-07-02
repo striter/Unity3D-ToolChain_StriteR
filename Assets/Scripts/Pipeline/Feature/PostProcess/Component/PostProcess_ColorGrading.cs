@@ -12,7 +12,7 @@ namespace Rendering.PostProcess
         public override bool OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.ColorGrading;
 
-        [InspectorButton]
+        [InspectorButton(true)]
         void SepiaToneFilter()
         {
             var data = GetData();

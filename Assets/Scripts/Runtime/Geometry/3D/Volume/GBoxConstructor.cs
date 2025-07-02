@@ -20,5 +20,6 @@ namespace Runtime.Geometry
         }
         public GBox Encapsulate(GBox _other) => Minmax(math.min(min, _other.min), math.max(max, _other.max));
         public GBox Encapsulate(float3 _point) => Minmax(math.min(min, _point), math.max(max, _point));
+        public GBox Encapsulate(GSphere _sphere) => Minmax(math.min(min, _sphere.center - _sphere.radius), math.max(max, _sphere.center + _sphere.radius));
     }
 }

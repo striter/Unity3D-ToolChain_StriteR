@@ -6,6 +6,7 @@ struct a2vmeta
 {
     float4 positionOS   : POSITION;
     float3 normalOS     : NORMAL;
+    float4 tangentOS    : TANGENT;
     float2 uv0          : TEXCOORD0;
     float2 uv1          : TEXCOORD1;
     float2 uv2          : TEXCOORD2;
@@ -25,6 +26,9 @@ struct v2fmeta
 v2fmeta VertexMeta(a2vmeta input)
 {
     v2fmeta output = (v2fmeta)0;
+#if defined(A2V_TRANSFER)
+    A2V_TRANSFER(v)
+#endif
     output.positionCS = UnityMetaVertexPosition(input.positionOS.xyz, input.uv1, input.uv2);
     output.uv = TRANSFORM_TEX(input.uv0, _MainTex);
 #ifdef EDITOR_VISUALIZATION
