@@ -11,23 +11,36 @@ namespace UnityEditor.Extensions
     [CustomEditor(typeof(MonoBehaviour), editorForChildClasses:true,isFallback = true),CanEditMultipleObjects]
    public class EInspectorExtension : Editor 
     {
-        private List<ButtonAttributeData> inspectorMethods;
+        private List<ButtonAttributeData> m_InspectorMethods;
+        private bool m_Readonly = true;
         protected virtual void OnEnable()
         {
-            inspectorMethods = UInspectorExtension.GetInspectorMethods(target);
+            m_InspectorMethods = UInspectorExtension.GetInspectorMethods(target);
+            m_Readonly = target.GetType().GetCustomAttributes(true).Any(p=>p is ReadonlyAttribute);
         }
 
         public override void OnInspectorGUI()
         {
+            if (m_Readonly)
+            {
+                EditorGUI.BeginDisabledGroup(true);
+                GUI.enabled = false;
+            }
+            
             base.OnInspectorGUI();
-            if (inspectorMethods.Count <= 0)
+            if (m_Readonly)
+            {
+                EditorGUI.EndDisabledGroup();
+                GUI.enabled = true;
+            }
+            if (m_InspectorMethods.Count <= 0)
                 return;
             
             EditorGUILayout.BeginVertical();
-            if(inspectorMethods.Any(p=>p.attribute.IsElementVisible(target)))
+            if(m_InspectorMethods.Any(p=>p.attribute.IsElementVisible(target)))
                 EditorGUILayout.LabelField("Extension Buttons", EditorStyles.boldLabel);
             
-            foreach (var data in inspectorMethods)
+            foreach (var data in m_InspectorMethods)
             {
                 if(!data.attribute.IsElementVisible(target))
                     continue;

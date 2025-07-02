@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry;
-using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -32,7 +30,8 @@ namespace Examples.Tools.Optimize.GPUSkinning
             m_MeshFilter ??= GetComponent<MeshFilter>();
             if (m_MeshFilter == null)
                 return false;
-            m_MeshFilter.sharedMesh = m_Data.m_Mesh;
+            if (m_MeshFilter.sharedMesh != m_Data.m_Mesh)
+                m_MeshFilter.sharedMesh = m_Data.m_Mesh;
             m_Block ??= new MaterialPropertyBlock();
             m_Buffer ??= new GraphicsBuffer(GraphicsBuffer.Target.Structured,m_Data.m_Bones.Count, sizeof(float) * 16);
             if (m_Bones.Count != m_Data.m_Bones.Count)

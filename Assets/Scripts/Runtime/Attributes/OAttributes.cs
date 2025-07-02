@@ -22,8 +22,8 @@ public class ScriptableObjectEditAttribute : PropertyAttribute
 }
 
 
-[AttributeUsage(AttributeTargets.GenericParameter | AttributeTargets.Field,AllowMultiple = true)]
-public class ReadonlyAttribute:PropertyAttribute{ }
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Field,AllowMultiple = true)]
+public class ReadonlyAttribute : PropertyAttribute{ }
 
 [AttributeUsage(AttributeTargets.Field)]
 public class RenameAttribute : PropertyAttribute

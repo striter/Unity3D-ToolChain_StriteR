@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Runtime.Geometry;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Examples.Tools.Optimize.GPUSkinning
@@ -14,6 +13,7 @@ namespace Examples.Tools.Optimize.GPUSkinning
         public GSphere bounds;
     }
     
+    [Readonly]
     public class GPUSkinningData : ScriptableObject
     {
         public Mesh m_Mesh;

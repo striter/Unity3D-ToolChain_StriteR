@@ -2,11 +2,9 @@
 
 namespace UnityEditor.Extensions
 {
-
     [CustomPropertyDrawer(typeof(MinMaxRangeAttribute))]
     public class MinMaxRangePropertyDrawer : AAttributePropertyDrawer<MinMaxRangeAttribute>
     {
-     
         void DrawMinmaxGUI(Rect position,GUIContent label,MinMaxRangeAttribute attribute,ref float min,ref float max)
         {
             Rect minmaxRect = position.Collapse(new Vector2(position.size.x / 6, 0f),new Vector2(0f,0f));

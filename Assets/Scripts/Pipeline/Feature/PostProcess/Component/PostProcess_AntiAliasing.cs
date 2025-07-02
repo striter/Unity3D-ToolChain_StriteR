@@ -86,12 +86,10 @@ namespace Rendering.PostProcess
         private const int kJitterAmount = 16;
         private uint jitterIndex = 0;
 
-        private bool m_FirstExecution = true;
         private static readonly int kHistoryBufferID = Shader.PropertyToID("_HistoryBuffer");
         private static readonly float2[] kJitters = new float2[kJitterAmount].Remake((i,p)=>(ULowDiscrepancySequences.Halton2D((uint)i) - .5f) * .5f);
         private static readonly Dictionary<int, TAAHistoryBuffer> m_Buffers = new();
         private Matrix4x4 m_ViewMatrix,m_ProjectionMatrix;
-        private Matrix4x4 m_OriginProjectionMatrix;
         private Camera m_Camera;
         class TAAHistoryBuffer
         {
@@ -127,7 +125,6 @@ namespace Rendering.PostProcess
             jitterIndex = (jitterIndex + 1) % kJitterAmount;
             var projectionMatrix =  m_Camera.projectionMatrix;
             var viewMatrix = m_Camera.worldToCameraMatrix;
-            m_OriginProjectionMatrix = projectionMatrix;
             m_ViewMatrix = viewMatrix;
             projectionMatrix.m02 += jitter.x / _renderingData.cameraData.cameraTargetDescriptor.width;
             projectionMatrix.m12 += jitter.y / _renderingData.cameraData.cameraTargetDescriptor.height;
