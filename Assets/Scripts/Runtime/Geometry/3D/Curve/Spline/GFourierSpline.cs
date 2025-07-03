@@ -27,9 +27,9 @@ namespace Runtime.Geometry.Curves.Spline
         void Ctor()
         {
             var fourierCoefficients = new cfloat2x3[coefficients];
-            Fourier.DFT(paths.Select(p=>p.x),coefficients).Traversal((index, value) => fourierCoefficients[index].c0 = value);
-            Fourier.DFT(paths.Select(p=>p.y),coefficients).Traversal((index, value) => fourierCoefficients[index].c1 = value);
-            Fourier.DFT(paths.Select(p=>p.z),coefficients).Traversal((index, value) => fourierCoefficients[index].c2 = value);
+            UFourier.Discrete.Transform(paths.Select(p=>p.x),coefficients).Traversal((index, value) => fourierCoefficients[index].c0 = value);
+            UFourier.Discrete.Transform(paths.Select(p=>p.y),coefficients).Traversal((index, value) => fourierCoefficients[index].c1 = value);
+            UFourier.Discrete.Transform(paths.Select(p=>p.z),coefficients).Traversal((index, value) => fourierCoefficients[index].c2 = value);
             this.fourierCoefficients = fourierCoefficients;
         }
 
@@ -37,9 +37,9 @@ namespace Runtime.Geometry.Curves.Spline
         {
             float3 result = 0;
             var N = paths.Length;
-            result.x = Fourier.IFT(fourierCoefficients.Select(p=>p.c0),N,_value);
-            result.y = Fourier.IFT(fourierCoefficients.Select(p=>p.c1),N,_value);
-            result.z = Fourier.IFT(fourierCoefficients.Select(p=>p.c2),N,_value);
+            result.x = UFourier.Discrete.Inverse(fourierCoefficients.Select(p=>p.c0),N,_value);
+            result.y = UFourier.Discrete.Inverse(fourierCoefficients.Select(p=>p.c1),N,_value);
+            result.z = UFourier.Discrete.Inverse(fourierCoefficients.Select(p=>p.c2),N,_value);
             return result;
         }
 

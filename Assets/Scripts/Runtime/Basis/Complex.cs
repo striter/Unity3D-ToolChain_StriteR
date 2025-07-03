@@ -84,6 +84,7 @@ public struct cfloat2
     public static cfloat2 one = new (1f, 0f);
     public static cfloat2 iOne = new (0f, 1f);
     public static cfloat2 rOne = new (1f, 0f);
+    public override string ToString() => $"x:{x}, i:{i}";
 }
 
 public struct cfloat2x3

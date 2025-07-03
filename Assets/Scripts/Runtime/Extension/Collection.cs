@@ -9,10 +9,8 @@ namespace System.Linq.Extensions
 {
     public static class UCollection
     {
-        static class Keys
-        {
-            public static readonly int kSorting = nameof(SortIndex).GetHashCode();
-        }
+        public static readonly int kSortingKey = nameof(SortIndex).GetHashCode();
+        private static readonly string kPrefix = "[Collection]";
         
         #region IEnumrable
             public static void Execute(this IEnumerator _iterator)
@@ -642,15 +640,27 @@ namespace System.Linq.Extensions
         
         public static void FillArray<T>(this IList<T> _src, IList<T> _dst)
         {
+            if (_dst.Count != _src.Count)
+            {
+                Debug.LogError($"{kPrefix}:{nameof(FillArray)} : Count Mismatch");
+                return;
+            }
+            
             int length = _src.Count;
             for (int i = 0; i < length; i++)
                 _dst[i] =  _src[i];
         }
-
+        
         public static void FillArray<T, Y>(this IList<T> _src, IList<Y> _dst, Func<T, Y> _convert)
         {
-            int length = _src.Count;
-            for (int i = 0; i < length; i++)
+            if (_dst.Count != _src.Count)
+            {
+                Debug.LogError($"{kPrefix}:{nameof(FillArray)} : Count Mismatch");
+                return;
+            }
+            
+            var length = _src.Count;
+            for (var i = 0; i < length; i++)
             {
                 var element = _src[i];
                 _dst[i] = _convert(element);
@@ -794,11 +804,11 @@ namespace System.Linq.Extensions
         
         public static void SortIndex<T>(this T[] _array, IEnumerable<int> _indexes)
         {
-            var tempList  = PoolList<T>.Empty(Keys.kSorting);
+            var tempList  = PoolList<T>.Empty(kSortingKey);
             foreach (var index in _indexes)
                 tempList.Add(_array[index]);
 
-            for (int i = 0; i < tempList.Count; i++)
+            for (var i = 0; i < tempList.Count; i++)
                 _array[i] = tempList[i];
         }
 
@@ -904,7 +914,7 @@ namespace System.Linq.Extensions
 
         public static void SortIndex<T>(this List<T> _list, IEnumerable<int> _indexes)
         {
-            var tempList  = PoolList<T>.Empty(Keys.kSorting);
+            var tempList  = PoolList<T>.Empty(kSortingKey);
             foreach (var index in _indexes)
                 tempList.Add(_list[index]);
             _list.Clear();
@@ -972,6 +982,18 @@ namespace System.Linq.Extensions
             return _list;
         }
         
+        public static IList<T> Remake<T>(this IList<T> _array, Func<int, T, T> _onEach)
+        {
+            var count = _array.Count;
+            for (var i = 0; i < count; i++)
+            {
+                var element = _array[i];
+                _array[i] = _onEach(i, element);
+            }
+            return _array;
+        }
+
+
         public static IList<T> FillList<T>(this IEnumerable<T> _collection, IList<T> _list)
         {
             _list.Clear();

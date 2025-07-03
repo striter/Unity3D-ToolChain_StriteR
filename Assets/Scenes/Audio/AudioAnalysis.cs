@@ -151,6 +151,7 @@ public class AudioAnalysis : MonoBehaviour
         [Range(6,12)]public int m_SpectrumPow = 8;
         private float[] m_OutputSample;
         public bool m_DFT = false;
+        [Foldout(nameof(m_DFT), false)] public EWindow m_Window = EWindow.BlackmanHarris;
         private cfloat2[] m_FrequencySample;  public int Initialize(AudioSource _source)
         {
             var size = umath.pow(2,m_SpectrumPow);
@@ -166,15 +167,13 @@ public class AudioAnalysis : MonoBehaviour
 
             var N = m_OutputSample.Length;
             _source.GetOutputData(m_OutputSample, 0);
-            for(var i = 0; i < N; i++)
-                m_FrequencySample[i] = new cfloat2(m_OutputSample[i] * UAudio.Hanning(i,N), 0);
+            m_OutputSample.FillArray(m_FrequencySample,p=>new cfloat2(p,0));
+            m_FrequencySample.Window(m_Window);
 
             if (m_DFT)
-                Fourier.DFT(m_FrequencySample,N).FillList(PoolList<cfloat2>.Empty(nameof(AudioAnalysis))).FillArray(m_FrequencySample);
+                UFourier.Discrete.Transform(m_FrequencySample,N).FillList(PoolList<cfloat2>.Empty(nameof(AudioAnalysis))).FillArray(m_FrequencySample);
             else
-            {
-                Fourier.CooleyTukeyFFT(m_FrequencySample);
-            }
+                UFourier.CooleyTukey.Transform(m_FrequencySample);
             
             for (var i = 0; i < N/2; i++)
             {
