@@ -44,6 +44,8 @@ public struct cfloat2
         return new cfloat2(num * math.cos(_value.i), num * math.sin(_value.i));
     }
     
+    public static cfloat2 conjugate(cfloat2 _value) => new(_value.x, -_value.i);
+    
     public static cfloat2 mul(cfloat2 _value, cfloat2 _point) => _value * _point;
     public static cfloat2 pow(cfloat2 _value, float _power)
     {

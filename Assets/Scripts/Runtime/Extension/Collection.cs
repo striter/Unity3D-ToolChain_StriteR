@@ -613,13 +613,15 @@ namespace System.Linq.Extensions
                 _src.Add(element);
         }
 
-        public static void Resize<T>(this IList<T> _src,int _newSize,Func<T> _onEachSpawn = null)
+        public static IList<T> Resize<T>(this IList<T> _src,int _newSize,Func<T> _onEachSpawn = null)
         {
             for(var i=_src.Count;i<_newSize;i++)
                 _src.Add(_onEachSpawn != null ? _onEachSpawn() : default);
 
             for (var i = _src.Count - 1; i >= _newSize; i--)
                 _src.RemoveAt(i);
+
+            return _src;
         }
         
         public static T Index<T>(this IList<T> _collection, int _index) => _collection[_index];
@@ -770,11 +772,11 @@ namespace System.Linq.Extensions
         
         public static T[] Resize<T>(this T[] _srcArray,int _length,bool _fillWithLast=true)
         {
-            T[] dstArray = new T[_length];
+            var dstArray = new T[_length];
             if (_srcArray.Length == 0)
                 return dstArray;
             
-            for (int i = 0; i < dstArray.Length; i++)
+            for (var i = 0; i < dstArray.Length; i++)
             {
                 if (i >= _srcArray.Length && !_fillWithLast)
                     break;
@@ -995,6 +997,17 @@ namespace System.Linq.Extensions
             }
 
             return _list;
+        }
+        
+        public static IList<T> Remake<T>(this IList<T> _array, Func<T, T> _onEach)
+        {
+            var count = _array.Count;
+            for (var i = 0; i < count; i++)
+            {
+                var element = _array[i];
+                _array[i] = _onEach( element);
+            }
+            return _array;
         }
         
         public static IList<T> Remake<T>(this IList<T> _array, Func<int, T, T> _onEach)

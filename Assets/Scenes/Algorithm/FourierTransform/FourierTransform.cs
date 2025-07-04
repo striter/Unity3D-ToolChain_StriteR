@@ -21,45 +21,60 @@ namespace Examples.Algorithm.FourierTransform
         _1024 = 1024,
         _2048 = 2048,
     }
+
+    public enum EFourierType
+    {
+        DiscreteFourierTransform,
+        ColeyTukeyFastFourierTransform,
+    }
+    
     public class FourierTransform : MonoBehaviour
     {
-        public EResolution m_InputResolution;
-        public EResolution m_OutputResolution;
-        public float[] m_Inputs;
+        public EFourierType m_FourierType = EFourierType.DiscreteFourierTransform;
+        public EResolution m_TimeResolution = EResolution._128;
+        public EResolution m_FrequencyResolution = EResolution._64;
+        public EResolution m_InverseResolution = EResolution._256;
+        [Readonly] public cfloat2[] m_Inputs;
 
         public void OnValidate()
         {
             var random = new LCGRandom("FourierTransform".GetHashCode());
-            m_Inputs = new float[(int)m_InputResolution];
+            m_Inputs = new cfloat2[(int)m_TimeResolution];
             for (var i = 0; i < m_Inputs.Length; i++)
-                m_Inputs[i] = URandom.Random01(random);
+                m_Inputs[i] = URandom.Random01(random) * cfloat2.rOne;
         }
 
-        public EResolution kResolution = EResolution._256;
         private void OnDrawGizmos()
         {
             if (m_Inputs == null ) return;
 
             Gizmos.matrix = transform.localToWorldMatrix;
+            
+            Gizmos.color = Color.white;
             var bounds = GBox.kDefault;
             bounds.DrawGizmos();
-            for (var i = 0; i < m_Inputs.Length; i++)
-            {
-                var color = Color.red;
-                Gizmos.color = color;
-                // Gizmos.DrawSphere(bounds.GetPoint((float)i / m_Inputs.Length,m_Inputs[i],0), .5f / m_Inputs.Length);
-            }
-            UGizmos.DrawLines(m_Inputs.Select((c, i) => bounds.GetPoint((float)i / (m_Inputs.Length - 1),m_Inputs[i],0)));
+            
+            Gizmos.color = Color.red;
+            UGizmos.DrawLines(m_Inputs.Select((c, i) => bounds.GetPoint((float)i / (m_Inputs.Length - 1),m_Inputs[i].x,0)));
 
             Gizmos.color = Color.blue;
-            var fourierCoefficients = new cfloat2[(int)m_OutputResolution];
-            UFourier.DiscreteFourier.Transform(m_Inputs,fourierCoefficients);
-            // var fftList = m_Inputs.Select(p=>p*cfloat2.rOne).ToList();
-            // UFourier.CooleyTukeyFastFourier.Transform(fftList);
-            // fftList.FillArray(m_FourierCoefficients);
-            var resolution = (int)kResolution;
-            var inversedResult = UFourier.DiscreteFourier.Inverse(fourierCoefficients, resolution);
-            UGizmos.DrawLines(inversedResult.Select((c, i) => bounds.GetPoint((float)i / (resolution - 1),c.x,1)));
+            var frequencies = new cfloat2[(int)m_TimeResolution];
+            switch (m_FourierType)
+            {
+                case EFourierType.DiscreteFourierTransform: UFourier.DiscreteFourier.Transform(m_Inputs,frequencies); break;
+                case EFourierType.ColeyTukeyFastFourierTransform: UFourier.CooleyTukeyFastFourier.Transform(m_Inputs, frequencies); break;
+            }
+            var downsizeFactor = (float)m_FrequencyResolution / (float)m_TimeResolution;
+            frequencies = frequencies.Resize((int)m_FrequencyResolution,false).Remake(p => p * downsizeFactor);
+
+            IList<cfloat2> inversedResult = new cfloat2[(int)m_InverseResolution];
+            switch (m_FourierType)
+            {
+                case EFourierType.ColeyTukeyFastFourierTransform: inversedResult = UFourier.CooleyTukeyFastFourier.Inverse(frequencies, inversedResult); break;
+                case EFourierType.DiscreteFourierTransform: inversedResult = UFourier.DiscreteFourier.Inverse(frequencies, inversedResult); break;
+            }
+            var inverseResolution = (int)m_InverseResolution;
+            UGizmos.DrawLines(inversedResult.Select((c, i) => bounds.GetPoint((float)i / (inverseResolution - 1),c.x,1)));
         }
     }
 
