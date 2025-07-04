@@ -22,7 +22,6 @@ namespace Runtime.Random
     {
         private const uint kModulus = int.MaxValue , kModulusM1 = kModulus - 1, kA = 48271, kC = 1;
         private uint seed;
-
         public LCGRandom(int _hashCode)
         {
             seed = (uint)_hashCode;
@@ -35,6 +34,14 @@ namespace Runtime.Random
         }
     }
 
+    public class SystemRandom : IRandomGenerator
+    {
+        public System.Random random { get; private set; }= new System.Random();
+        public float NextFloat() => (float)random.NextDouble();
+        public static implicit operator SystemRandom(System.Random _random) => new SystemRandom { random = _random };
+        public static SystemRandom kDefault = new SystemRandom(){ random = new System.Random("kDefault".GetHashCode()) };
+    }
+    
     public class UnityRandom : IRandomGenerator
     {
         public float NextFloat() => UnityEngine.Random.value;

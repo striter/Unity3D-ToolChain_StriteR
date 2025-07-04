@@ -9,48 +9,65 @@ namespace Runtime.SignalProcessing
     //https://iquilezles.org/articles/fourier/
     public static class UFourier
     {
-        static List<cfloat2> kComplexFiller = new List<cfloat2>();
-
-        public static class Discrete
+        static List<cfloat2> kComplexFiller = new();
+        public static class DiscreteFourier
         {
-            public static IEnumerable<cfloat2> Transform(IEnumerable<float> _input,int _coefficients) => Transform(_input.Select(p=>new cfloat2(p,0)),_coefficients);
-            public static IEnumerable<cfloat2> Transform(IEnumerable<cfloat2> _input,int _coefficients) => Transform(_input.FillList(kComplexFiller),_coefficients);
-            public static IEnumerable<cfloat2> Transform(IList<cfloat2> _input,int _coefficients)
+            public static IList<cfloat2> Transform(IEnumerable<float> _time,IList<cfloat2> _frequencies) => Transform(_time.Select(p=>new cfloat2(p,0)),_frequencies);
+            public static IList<cfloat2> Transform(IEnumerable<cfloat2> _time,IList<cfloat2> _frequencies) => Transform(_time.FillList(kComplexFiller),_frequencies);
+            public static IList<cfloat2> Transform(IList<cfloat2> _time,IList<cfloat2> _frequencies)
             {
-                var N = _input.Count;
-                _coefficients = _coefficients == -1 ? N : _coefficients;
-                for (var k = 0; k < _coefficients; k++)
+                var N = _time.Count;
+                if (_frequencies is null)
+                {
+                    Debug.LogError($"[{nameof(DiscreteFourier)}]: null OutputFrequencies");
+                    return null;
+                }
+                
+                var coefficients = _frequencies.Count;
+                if (coefficients <= 0 || coefficients > N)
+                {
+                    Debug.LogError($"[{nameof(DiscreteFourier)}]: Invalid OutputFrequencies {coefficients}");
+                    return null;
+                }
+                for (var k = 0; k < coefficients; k++)
                 {
                     var fc = cfloat2.zero;
                     for (var n = 0; n < N; n++)
                     {
-                        var input = _input[n]; 
-                        var an = cfloat2.exp(-kmath.kPI2 / N * k * n* cfloat2.iOne);
+                        var input = _time[n]; 
+                        var an = cfloat2.exp(-kmath.kPI2 * n * k / N * cfloat2.iOne);
                         fc += input * an;
                     }
-
-                    yield return fc;
+                    _frequencies[k] = fc * coefficients / N;
                 }
+                return _frequencies;
+            }
+
+            public static IEnumerable<cfloat2> Inverse(IList<cfloat2> _input,int _count = -1)
+            {
+                var N = _count == -1 ? _input.Count : _count;
+                
+                for (var i = 0; i < N; i++)
+                    yield return Inverse(_input,(float)i / N);
             }
             
-            public static float Inverse(IEnumerable<cfloat2> _coefficients,int _N,float _value) => Inverse(_coefficients.FillList(kComplexFiller),_N,_value);
-            public static float Inverse(IList<cfloat2> _coefficients, int _N, float _value)
+            public static cfloat2 Inverse(IEnumerable<cfloat2> _coefficients,float _value) => Inverse(_coefficients.FillList(kComplexFiller),_value);
+            public static cfloat2 Inverse(IList<cfloat2> _coefficients, float _value)
             {
-                var n = _value * _N;
-                var k = _coefficients.Count;
-                var result = 0f;
-                for (var i = 0; i < k; i++)
+                var N = _coefficients.Count;
+                var result = cfloat2.zero;
+                for (var k = 0; k < N; k++)
                 {
-                    var w = ( i == 0 || i == k - 1 )?1.0f:2.0f;
-                    var an = cfloat2.exp(kmath.kPI2 / _N * i * n * cfloat2.iOne);
-                    result += w * math.dot(_coefficients[i], an);
+                    var angle = kmath.kPI2 * k * _value * cfloat2.iOne;
+                    var exp = cfloat2.exp(angle);
+                    result += _coefficients[k]*exp;
                 }
-                return result / _N;
+                return result / N;
             }
         }
 
         //https://rosettacode.org/wiki/Fast_Fourier_transform
-        public static class CooleyTukey
+        public static class CooleyTukeyFastFourier
         {
             public static bool Transform(IList<cfloat2> _input)
             {
@@ -80,7 +97,7 @@ namespace Runtime.SignalProcessing
                             var even = _input[evenIndex];
                             var odd = _input[oddIndex];
 
-                            var term = -2 * kmath.kPI * k / N;
+                            var term = -kmath.kPI2 * k / N;
                             umath.sincos_fast(term,out var sin,out var cos);
                             var exp = new cfloat2(cos,sin) * odd;
 
@@ -93,7 +110,8 @@ namespace Runtime.SignalProcessing
             }
         }
 
-        
-
+        public static class StockhamFastFourier
+        {
+        }
     }
 }

@@ -2005,7 +2005,7 @@ MonoBehaviour:
     - x: 0.547
       y: 0
       z: 0.081
-    coefficients: 20
+    coefficient: 19
   m_HermineSpline:
     positions:
     - position:

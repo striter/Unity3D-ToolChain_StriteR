@@ -92,12 +92,32 @@ public class RangeVectorAttribute : PropertyAttribute
 [AttributeUsage(AttributeTargets.Field)]
 public class ClampAttribute:PropertyAttribute
 {
+    public string m_ClampMinField;
     public readonly float m_Min;
+    public string m_ClampMaxField;
     public readonly float m_Max;
     public ClampAttribute(float _min=float.MinValue, float _max=int.MaxValue)
     {
         m_Min = _min;
         m_Max = _max;
+    }
+
+    public ClampAttribute(float _min, string _clampMaxField)
+    {
+        m_Min = _min;
+        m_ClampMaxField = _clampMaxField;
+    }
+
+    public ClampAttribute(string _clampMinField, float _max)
+    {
+        m_ClampMinField = _clampMinField;
+        m_Max = _max;
+    }
+    
+    public ClampAttribute(string _clampMinField, string _clampMaxField)
+    {
+        m_ClampMinField = _clampMinField;
+        m_ClampMaxField = _clampMaxField;
     }
 }
 

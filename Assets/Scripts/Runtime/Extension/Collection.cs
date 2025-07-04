@@ -638,11 +638,26 @@ namespace System.Linq.Extensions
                 _src[i] = _dst;
         }
         
-        public static void FillArray<T>(this IList<T> _src, IList<T> _dst)
+        
+        public static void Fill<T>(this IEnumerable<T> _src, IList<T> _dst) 
+        {
+            int index = 0;
+            foreach (var element in _src)
+            {
+                if (index >= _dst.Count)
+                {
+                    Debug.LogError($"{kPrefix}{nameof(Fill)}: Count Mismatch");
+                    return;
+                }
+                _dst[index++] = element;
+            }
+        }        
+
+        public static void Fill<T>(this IList<T> _src, IList<T> _dst)
         {
             if (_dst.Count != _src.Count)
             {
-                Debug.LogError($"{kPrefix}:{nameof(FillArray)} : Count Mismatch");
+                Debug.LogError($"{kPrefix}{nameof(Fill)}: Count Mismatch");
                 return;
             }
             
@@ -651,11 +666,11 @@ namespace System.Linq.Extensions
                 _dst[i] =  _src[i];
         }
         
-        public static void FillArray<T, Y>(this IList<T> _src, IList<Y> _dst, Func<T, Y> _convert)
+        public static void Fill<T, Y>(this IList<T> _src, IList<Y> _dst, Func<T, Y> _convert)
         {
             if (_dst.Count != _src.Count)
             {
-                Debug.LogError($"{kPrefix}:{nameof(FillArray)} : Count Mismatch");
+                Debug.LogError($"{kPrefix}{nameof(Fill)} : Count Mismatch");
                 return;
             }
             
@@ -666,7 +681,7 @@ namespace System.Linq.Extensions
                 _dst[i] = _convert(element);
             }
         }
-        public static int FillArray<T>(this IList<T> _src, IList<T> _dst, Predicate<T> _validate) 
+        public static int Fill<T>(this IList<T> _src, IList<T> _dst, Predicate<T> _validate) 
         {
             int index = 0;
             int length = _src.Count;
@@ -1014,7 +1029,7 @@ namespace System.Linq.Extensions
             var end = (start + 1) % count;
             return (_collection[start], _collection[end], _value%1,_value % count);
         }
-        public static void Resize<T>(this List<T> _src,int _newSize,Func<T> _onEachSpawn = null,Action<T> _onEachDespawn = null)
+        public static List<T> Resize<T>(this List<T> _src,int _newSize,Func<T> _onEachSpawn = null,Action<T> _onEachDespawn = null)
         {
             for(var i=_src.Count;i<_newSize;i++)
                 _src.Add(_onEachSpawn != null ? _onEachSpawn() : default);
@@ -1025,6 +1040,7 @@ namespace System.Linq.Extensions
                 _src.RemoveAt(i);
             }
 
+            return _src;
         }
         #endregion
         #region Dictionary

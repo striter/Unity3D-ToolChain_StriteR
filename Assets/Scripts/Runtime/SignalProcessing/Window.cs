@@ -19,18 +19,6 @@ namespace Runtime.SignalProcessing
 
     public static class UWindow
     {
-        static float Tukey(int i, int N,float alpha = 0.5f)
-        {
-            var key = alpha * N;
-            var frame1 = key / 2f;
-            var frame2 = N - frame1;
-            if(i < frame1)
-                return .5f + 0.5f * math.cos(kmath.kPI2 * i / key);
-            if (i < frame2)
-                return 1f;
-            return .5f - .5f * math.cos(kmath.kPI2 * (N - i) / key);
-        }
-        
         public static void Window(this IList<cfloat2> _signals, EWindow _window)
         {
             var N = _signals.Count;
@@ -49,5 +37,18 @@ namespace Runtime.SignalProcessing
                 default: throw new ArgumentOutOfRangeException(nameof(_window), _window, null);
             }
         }
+        
+        static float Tukey(int i, int N,float alpha = 0.5f)
+        {
+            var key = alpha * N;
+            var frame1 = key / 2f;
+            var frame2 = N - frame1;
+            if(i < frame1)
+                return .5f + 0.5f * math.cos(kmath.kPI2 * i / key);
+            if (i < frame2)
+                return 1f;
+            return .5f - .5f * math.cos(kmath.kPI2 * (N - i) / key);
+        }
+
     }
 }

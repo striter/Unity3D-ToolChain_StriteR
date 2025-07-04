@@ -1,5 +1,7 @@
-﻿using Unity.Mathematics;
+﻿using System;
+using Unity.Mathematics;
 
+[Serializable]
 public struct cfloat2
 {
     public float x;
