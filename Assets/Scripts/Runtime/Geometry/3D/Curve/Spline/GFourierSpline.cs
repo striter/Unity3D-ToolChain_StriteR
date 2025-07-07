@@ -63,7 +63,7 @@ namespace Runtime.Geometry.Curves.Spline
         {
             Gizmos.color = Color.white.SetA(.1f);
             UGizmos.DrawLinesConcat(paths);
-            this.DrawGizmos(paths.Length * 4);
+            this.DrawGizmos(paths.Length * 8);
         }
     }
 }

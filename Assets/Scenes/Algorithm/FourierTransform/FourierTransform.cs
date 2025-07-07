@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry;
+using Runtime.Pool;
 using Runtime.Random;
 using Runtime.SignalProcessing;
 using UnityEngine;
@@ -26,6 +27,7 @@ namespace Examples.Algorithm.FourierTransform
     {
         DiscreteFourierTransform,
         ColeyTukeyFastFourierTransform,
+        StockhamFastFourierTransform
     }
     
     public class FourierTransform : MonoBehaviour
@@ -58,20 +60,25 @@ namespace Examples.Algorithm.FourierTransform
             UGizmos.DrawLines(m_Inputs.Select((c, i) => bounds.GetPoint((float)i / (m_Inputs.Length - 1),m_Inputs[i].x,0)));
 
             Gizmos.color = Color.blue;
-            var frequencies = new cfloat2[(int)m_TimeResolution];
+            var frequencies = (IList<cfloat2>)PoolList<cfloat2>.Empty(nameof(FourierTransform) + "_frequencies");
+            frequencies.Resize((int)m_TimeResolution);
             switch (m_FourierType)
             {
                 case EFourierType.DiscreteFourierTransform: UFourier.DiscreteFourier.Transform(m_Inputs,frequencies); break;
                 case EFourierType.ColeyTukeyFastFourierTransform: UFourier.CooleyTukeyFastFourier.Transform(m_Inputs, frequencies); break;
+                case EFourierType.StockhamFastFourierTransform: UFourier.StockhamFastFourier.Transform(m_Inputs, frequencies); break;
             }
             var downsizeFactor = (float)m_FrequencyResolution / (float)m_TimeResolution;
-            frequencies = frequencies.Resize((int)m_FrequencyResolution,false).Remake(p => p * downsizeFactor);
+            frequencies = frequencies.Resize((int)m_FrequencyResolution).Remake(p => p * downsizeFactor);
 
-            IList<cfloat2> inversedResult = new cfloat2[(int)m_InverseResolution];
+            var inversedResult = (IList<cfloat2>)PoolList<cfloat2>.Empty(nameof(FourierTransform) + "_inversedResult");
+            inversedResult.Resize((int)m_InverseResolution);
             switch (m_FourierType)
             {
-                case EFourierType.ColeyTukeyFastFourierTransform: inversedResult = UFourier.CooleyTukeyFastFourier.Inverse(frequencies, inversedResult); break;
+                default:
                 case EFourierType.DiscreteFourierTransform: inversedResult = UFourier.DiscreteFourier.Inverse(frequencies, inversedResult); break;
+                case EFourierType.ColeyTukeyFastFourierTransform: inversedResult = UFourier.CooleyTukeyFastFourier.Inverse(frequencies, inversedResult); break;
+                case EFourierType.StockhamFastFourierTransform: inversedResult = UFourier.StockhamFastFourier.Inverse(frequencies, inversedResult); break;
             }
             var inverseResolution = (int)m_InverseResolution;
             UGizmos.DrawLines(inversedResult.Select((c, i) => bounds.GetPoint((float)i / (inverseResolution - 1),c.x,1)));

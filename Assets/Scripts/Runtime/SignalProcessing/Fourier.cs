@@ -25,7 +25,7 @@ namespace Runtime.SignalProcessing
                 }
                 
                 var coefficients = _output.Count;
-                if (coefficients <= 2 || coefficients > N)
+                if (coefficients < 2 || coefficients > N)
                 {
                     Debug.LogError($"[{nameof(DiscreteFourier)}]: OutputFrequencies Length Invalid {coefficients} Range[{2},{N}]");
                     return null;
@@ -68,60 +68,44 @@ namespace Runtime.SignalProcessing
             }
         }
 
+        static bool FastFourierParametersCheck(IList<cfloat2> _input, IList<cfloat2> _output)
+        {
+            if (_output is null)
+            {
+                Debug.LogError($"[{nameof(CooleyTukeyFastFourier)}]: null OutputFrequencies");
+                return false;
+            }
+
+            if (!math.ispow2(_input.Count))
+            {
+                Debug.LogError($"[{nameof(CooleyTukeyFastFourier)}]: Input Count {_input.Count} Not a power of 2");
+                return false;
+            }
+
+            if (_input.Count != _output.Count)
+            {
+                Debug.LogError($"[{nameof(CooleyTukeyFastFourier)}]: Input Count {_input.Count} != Output Count {_output.Count}");
+                return false;
+            }
+
+            return true;
+        }
+        
         //https://rosettacode.org/wiki/Fast_Fourier_transform
         public static class CooleyTukeyFastFourier
         {
-            static bool SafeCheck(IList<cfloat2> _input,IList<cfloat2> _output)
+            static void FFT0(IList<cfloat2> _output)
             {
-                if (_output is null)
-                {
-                    Debug.LogError($"[{nameof(CooleyTukeyFastFourier)}]: null OutputFrequencies");
-                    return false;
-                }
-
-                if (Equals(_input, _output))
-                {
-                    Debug.LogError($"[{nameof(CooleyTukeyFastFourier)}]: Input == Output");
-                    return false;
-                }
-                
-                if (!math.ispow2(_input.Count))
-                {
-                    Debug.LogError($"[{nameof(CooleyTukeyFastFourier)}]: Input Count {_input.Count} Not a power of 2");
-                    return false;
-                }
-
-                if (_input.Count != _output.Count)
-                {
-                    Debug.LogError($"[{nameof(CooleyTukeyFastFourier)}]: Input Count {_input.Count} != Output Count {_output.Count}");
-                    return false;
-                }
-
-                return true;
-            }
-
-            static void BitReverse(IList<cfloat2> _array)
-            {
-                var bits = (int)math.log2(_array.Count);
-                var count = _array.Count;
+                var bits = (int)math.log2(_output.Count);
+                var count = _output.Count;
                 for (var j = 1; j < count; j++)
                 {
                     var swapPos = UBit.Reverse(j, bits);
                     if (swapPos <= j)
                         continue;
-                    (_array[j], _array[swapPos]) = (_array[swapPos], _array[j]);
+                    (_output[j], _output[swapPos]) = (_output[swapPos], _output[j]);
                 }
-            }
-            public static IList<cfloat2> Transform(IList<cfloat2> _input,IList<cfloat2> _output =null)
-            {
-                _output ??= new List<cfloat2>(_input.Count);
-                if (!SafeCheck(_input,_output))
-                    return null;
                 
-                _input.Fill(_output);
-                BitReverse(_output);
-
-                var count = _output.Count;
                 for (var N = 2; N <= count; N <<= 1)
                 {
                     for (var i = 0; i < count; i += N)
@@ -142,22 +126,107 @@ namespace Runtime.SignalProcessing
                         }
                     }
                 }
+            }
+            
+            public static IList<cfloat2> Transform(IList<cfloat2> _input,IList<cfloat2> _output =null)
+            {
+                _output ??= _input;
+                if (!FastFourierParametersCheck(_input,_output))
+                    return null;
+                
+                if(!Equals(_input, _output))
+                    _input.Fill(_output);
+                FFT0(_output);
                 return _output;
             }
 
             public static IList<cfloat2> Inverse(IList<cfloat2> _input, IList<cfloat2> _output = null)
             {
-                _input.Remake(cfloat2.conjugate);
-                _output = Transform(_input,_output);
-                _input.Remake(cfloat2.conjugate);
-                var size = _input.Count;
+                if (!FastFourierParametersCheck(_input, _output))
+                    return null;
+                
+                _input.Select(cfloat2.conjugate).Fill(_output);
+                FFT0(_output);
+                var size = _output.Count;
                 _output.Remake(p=> p/size);
                 return _output;
             }
         }
 
+        //http://wwwa.pikara.ne.jp/okojisan/otfft-en/stockham2.html
         public static class StockhamFastFourier
         {
+            private static List<cfloat2> kTempBuffer0 = new();
+            static void FFT0(IList<cfloat2> _output)
+            {
+                var yIsOutput = false;
+                var N = _output.Count;
+                var s = 1;
+                var x = _output;
+                kTempBuffer0.Resize(N);
+                var y = (IList<cfloat2>)kTempBuffer0;
+
+                var stages = (int)math.log2(N);
+                for(var stage = 0; stage <= stages; stage++)
+                {
+                    if (N == 1)
+                    {
+                        if (yIsOutput)
+                        {
+                            for (var q = 0; q < s; ++q)
+                                y[q] = x[q];
+                        }
+
+                        break;
+                    }
+                    var m = N/2;
+                    var theta0 = -kmath.kPI2 / N;
+
+                    for (var p = 0; p < m; ++p)
+                    {
+                        var phase = p * theta0;
+                        var wp = new cfloat2(math.cos(phase),math.sin(phase));
+
+                        for (var q = 0; q < s; ++q)
+                        {
+                            var a = x[q + s*(p)];
+                            var b = x[q + s*(p + m)];
+
+                            y[q + s*(2*p + 0)] =  a + b;
+                            y[q + s*(2*p + 1)] = (a - b) * wp;
+                        }
+                    }
+
+                    (x, y) = (y, x);
+                    N  = m;
+                    s *= 2;
+                    yIsOutput = !yIsOutput;
+                }
+            }
+            public static IList<cfloat2> Transform(IList<cfloat2> _input, IList<cfloat2> _output)
+            {
+                _output ??= _input;
+                if (!FastFourierParametersCheck(_input, _output))
+                    return null;
+
+                if(!Equals(_input, _output))
+                    _input.Fill(_output);
+                
+                FFT0(_output);
+                return _output;
+            }
+            
+            public static IList<cfloat2> Inverse(IList<cfloat2> _input, IList<cfloat2> _output)
+            {
+                if (!FastFourierParametersCheck(_input, _output))
+                    return null;
+                
+                _input.Select(cfloat2.conjugate).Fill(_output);
+                FFT0(_output);
+                var size = _output.Count;
+                _output.Remake(p=> p/size);
+                return _output;
+            }
         }
     }
 }

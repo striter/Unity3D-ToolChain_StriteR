@@ -171,9 +171,11 @@ public class AudioAnalysis : MonoBehaviour
             m_FrequencySample.Window(m_Window);
 
             if (m_DFT)
-                UFourier.DiscreteFourier.Transform(m_FrequencySample,PoolList<cfloat2>.Empty(nameof(AudioAnalysis)).Resize(N)).Fill(m_FrequencySample);
+                UFourier.DiscreteFourier
+                    .Transform(m_FrequencySample, PoolList<cfloat2>.Empty(nameof(AudioAnalysis)).Resize(N))
+                    .Fill(m_FrequencySample);
             else
-                UFourier.CooleyTukeyFastFourier.Transform(m_FrequencySample,m_FrequencySample);
+                UFourier.CooleyTukeyFastFourier.Transform(m_FrequencySample);
             
             for (var i = 0; i < N/2; i++)
             {
