@@ -621,6 +621,7 @@ MonoBehaviour:
   m_CustomSpectrumAnalysis:
     m_SpectrumPow: 9
     m_DFT: 0
+    m_Window: 4
   m_BandAnalysis:
     m_Window: 5
     m_SpectrumPow: 8

@@ -695,9 +695,10 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: BAKERY_INCLUDED
-    Standalone: BAKERY_INCLUDED
-  additionalCompilerArguments: {}
+    Android: 
+    Standalone: 
+  additionalCompilerArguments:
+    Standalone: []
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
