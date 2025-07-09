@@ -14,7 +14,8 @@ Material:
   m_ValidKeywords:
   - _NDF_BECKMANN
   - _VF_GGX
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -42,7 +43,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 5b0b5f090a89bed47a59702235207bbe, type: 3}
+        m_Texture: {fileID: 2800000, guid: bebdaaf14c8e6ce44815744b1bbe2b21, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Matcap:
@@ -54,7 +55,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f90e3449ad3674016962a3aba3d31a06, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PBRTex:

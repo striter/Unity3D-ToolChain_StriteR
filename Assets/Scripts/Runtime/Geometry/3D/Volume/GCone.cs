@@ -67,5 +67,6 @@ namespace Runtime.Geometry
                 distances.y = -1;
             return true;
         }
+        public void DrawGizmos(float _height = 1f) => UGizmos.DrawCone(origin, normal, GetRadius(_height),_height);
     }
 }

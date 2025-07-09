@@ -57,7 +57,7 @@ namespace CameraController
             distance = 1f,
         };
 
-        public AnchoredControllerParameters Evaluate(ITransformHandle _anchor)
+        public FCameraControllerOutput Evaluate(ITransformHandle _anchor)
         {
             var root = _anchor.Get(childName);
             var anchor = _anchor.transform;
@@ -76,7 +76,7 @@ namespace CameraController
             if (useTransformPosition)
                 finalAnchor.xz = ((float3)anchor.position).xz;
             
-            return new AnchoredControllerParameters()
+            return new FCameraControllerOutput()
             {
                 anchor = finalAnchor + (anchorBeforeRotation ? anchorOffset : math.mul(anchor.rotation, anchorOffset)),
                 euler = new float3(pitch,yaw,roll),
@@ -85,60 +85,5 @@ namespace CameraController
                 distance = finalDistance,
             };
         }
-    }
-    
-    [Serializable]
-    public struct AnchoredControllerParameters
-    {
-        public float3 anchor;
-        public float3 euler;
-        public float2 viewport;
-        public float distance;
-        public float fov;
-        
-        public static readonly AnchoredControllerParameters kDefault = default;
-
-        public static AnchoredControllerParameters operator +(AnchoredControllerParameters _a, AnchoredControllerParameters _b) => new() {
-            anchor = _a.anchor + _b.anchor,
-            euler = _a.euler + _b.euler,
-            viewport = _a.viewport + _b.viewport,
-            distance = _a.distance + _b.distance,
-            fov = _a.fov + _b.fov,
-        };
-        
-        public static AnchoredControllerParameters operator -(AnchoredControllerParameters _a, AnchoredControllerParameters _b) => new() {
-            anchor = _a.anchor - _b.anchor,
-            euler = _a.euler - _b.euler,
-            viewport = _a.viewport - _b.viewport,
-            distance = _a.distance - _b.distance,
-            fov = _a.fov - _b.fov,
-        };
-        
-        public static AnchoredControllerParameters operator *(AnchoredControllerParameters _a, float _b) => new() {
-            anchor = _a.anchor * _b,
-            euler = _a.euler * _b,
-            viewport = _a.viewport * _b,
-            distance = _a.distance * _b,
-            fov = _a.fov * _b,
-        };
-        
-        public static AnchoredControllerParameters operator /(AnchoredControllerParameters _a, float _b) => new() {
-            anchor = _a.anchor / _b,
-            euler = _a.euler / _b,
-            viewport = _a.viewport / _b,
-            distance = _a.distance / _b,
-            fov = _a.fov / _b,
-        };
-        
-        public static AnchoredControllerParameters FormatDelta(AControllerInput _input) => new AnchoredControllerParameters()
-        {
-            anchor = math.mul(_input.Anchor.transform.rotation,_input.InputAnchorOffset),
-            euler = _input.InputEuler,
-            distance = _input.InputDistance,
-            viewport = _input.InputViewPort,
-            fov = _input.InputFOV,
-        };
-        
-        public static AnchoredControllerParameters Lerp( AnchoredControllerParameters _a, AnchoredControllerParameters _b, float _t)=>_a + (_b - _a) * _t;
     }
 }

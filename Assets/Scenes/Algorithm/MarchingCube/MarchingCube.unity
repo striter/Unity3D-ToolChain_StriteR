@@ -220,6 +220,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1859607300}
   - {fileID: 849067999}
   - {fileID: 1217072739}
   m_Father: {fileID: 0}
@@ -310,6 +311,24 @@ MonoBehaviour:
   - {fileID: -5582133695706433325, guid: f93db92dd663fb04ead1ae3436795d80, type: 3}
   - {fileID: -1562275218897716241, guid: f93db92dd663fb04ead1ae3436795d80, type: 3}
   m_DrawAllCubeElements: 0
+  m_ControllerInput:
+    camera: {fileID: 1859607299}
+    controller: {fileID: 11400000, guid: 7025e21eb2c2bb74e95ad9cf155c2e2a, type: 2}
+    anchor: {fileID: 1217072739}
+    anchorOffset:
+      x: 0
+      y: 0
+      z: 0
+    target: {fileID: 0}
+    viewPort:
+      x: 0
+      y: 0
+    euler:
+      x: 0
+      y: 0
+      z: 0
+    pinch: 0
+    fovDelta: 0
 --- !u!64 &1336818041
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -425,7 +444,6 @@ GameObject:
   - component: {fileID: 1859607299}
   - component: {fileID: 1859607298}
   - component: {fileID: 1859607302}
-  - component: {fileID: 1859607303}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -505,7 +523,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1336818039}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1859607302
 MonoBehaviour:
@@ -551,57 +569,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!114 &1859607303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1859607297}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eccd6b324d794867bcba67673e7634a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Controller: {fileID: 11400000, guid: 7025e21eb2c2bb74e95ad9cf155c2e2a, type: 2}
-  m_Input:
-    camera: {fileID: 1859607299}
-    anchor: {fileID: 1672718396}
-    anchorOffset:
-      x: 0
-      y: 0
-      z: 0
-    target: {fileID: 0}
-    viewPort:
-      x: 0
-      y: 0
-    euler:
-      x: 0
-      y: 0
-      z: 0
-    pinch: 0
-    fovDelta: 0
-  m_Core:
-    m_Initialize: 1
-    m_Reset: 0
-    m_Output:
-      anchor:
-        x: 0
-        y: 0
-        z: 0
-      euler:
-        x: 0
-        y: 0
-        z: 0
-      fov: 0
-      distance: 0
-      viewPort:
-        x: 0
-        y: 0
-    m_AnchorDebugRecording: 0
-    m_SerializedController: {fileID: 0}
-    m_ScriptableController: {fileID: 11400000, guid: 7025e21eb2c2bb74e95ad9cf155c2e2a,
-      type: 2}
 --- !u!1 &2029433251
 GameObject:
   m_ObjectHideFlags: 1
@@ -930,6 +897,5 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 2076451511}
-  - {fileID: 1859607300}
   - {fileID: 1336818039}
   - {fileID: 2029433253}

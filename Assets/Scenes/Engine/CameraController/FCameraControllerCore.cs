@@ -20,9 +20,9 @@ namespace CameraController
         [Readonly] public FCameraControllerOutput m_Output;
         public bool m_AnchorDebugRecording = false;
         private List<float3> m_AnchorList = new List<float3>();
-        [Fold(nameof(m_SerializedController),null)] public MonoBehaviour m_SerializedController;
-        [Fold(nameof(m_ScriptableController),null)] public ScriptableObject m_ScriptableController;
-        public bool Switch(ICameraController _controller)
+        [Fold(nameof(m_SerializedController),null),Readonly] public MonoBehaviour m_SerializedController;
+        [Fold(nameof(m_ScriptableController),null),Readonly] public ScriptableObject m_ScriptableController;
+        private bool SwitchController(ICameraController _controller)
         {
             _controller ??= FEmptyController.kDefault;
             if (_controller == m_Controller)
@@ -47,6 +47,7 @@ namespace CameraController
 
         public bool Tick<T>(float _deltaTime,ref T _input) where T:AControllerInput
         {
+            SwitchController(_input.Controller);
             if (!_input.Available)
             {             
                 if(_input.Camera != null && _input.Camera.gameObject.activeInHierarchy)
@@ -138,7 +139,7 @@ namespace CameraController
                 anchor = _anchor,
                 euler = _rotation.toEulerAngles(),
                 fov = _fov,
-                viewPort = _viewPort,
+                viewport = _viewPort,
                 distance = _distance
             };
         
@@ -164,9 +165,9 @@ namespace CameraController
             if(m_AnchorDebugRecording)
                 m_AnchorList.Clear();
             if(m_SerializedController != null && m_SerializedController is ICameraController _controllerSerialized)
-                Switch(_controllerSerialized);
+                SwitchController(_controllerSerialized);
             if(m_ScriptableController != null && m_ScriptableController is ICameraController _controllerScriptable)
-                Switch(_controllerScriptable);
+                SwitchController(_controllerScriptable);
         }
     }
 

@@ -49,7 +49,8 @@ public struct Damper
 
     public void InitializeAngle(float3 _begin) => Initialize(quaternion.Euler(_begin * kDeg2Rad));
     public float3 TickAngle(float _deltaTime, float3 _desire) => Tick(_deltaTime,quaternion.Euler(_desire * kDeg2Rad)).toEulerAngles();
-
+    
+    
     public void Initialize(quaternion _begin) => Initialize(_begin.value);
     public quaternion Tick(float _deltaTime, quaternion _target)
     {
@@ -79,20 +80,21 @@ public struct Damper
             case EDamperMode.Never: break;
             case EDamperMode.Instant:
             {
-                velocity = 0;
-                value = xd;
+                vel = 0;
+                val = xd;
             } break;
             case EDamperMode.Constant:
             {
-                var sign = math.sign(xd - value);
-                velocity = sign * constant;
-                value += velocity * dt;
+                var diff = xd - val;
+                var sign = math.sign(diff);
+                vel = sign * constant;
+                val = clamp(val + vel * dt, min(val,xd), max(val,xd));
             }
                 break;
             case EDamperMode.Lerp: {
                 var nextValue = lerp(value,xd, 1.0f - negExp_Fast( dt*0.69314718056f /(halfLife+float.Epsilon)));
-                velocity = nextValue - value;
-                value = nextValue;
+                vel = nextValue - value;
+                val = nextValue;
             } break;
             case EDamperMode.SpringSimple: {
                 Damping.SpringSimple(dt,s,d,ref val,ref vel,xd,vd,eps);

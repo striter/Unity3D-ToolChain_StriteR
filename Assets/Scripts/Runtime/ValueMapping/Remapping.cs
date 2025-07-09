@@ -76,7 +76,8 @@ public partial class umath
     public static int repeat(int _t,int _length) => clamp(_t - _t / _length * _length, 0, _length);
     public static float repeat(float _t,float _length) => clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
     public static float2 repeat(float2 _t,float2 _length) => clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
-    
+    public static float3 repeat(float3 _t,float3 _length) => clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
+    public static float4 repeat(float4 _t,float4 _length) => clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
     public static bool IsPrime(ushort _value)
     {
         for (ushort i = 2; i < _value; i++)

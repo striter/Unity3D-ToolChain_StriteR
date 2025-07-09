@@ -40,7 +40,6 @@ namespace Examples.PhysicsScenes
 
         protected override void Tick(float _deltaTime, ref List<TrackData> _data)
         {
-            m_Head.position = m_Body.transform.position + Vector3.up * .9f;
             if (m_TargetObject)
             {
                 m_TargetObject.MovePosition(Vector3.Lerp(m_TargetObject.transform.position, m_GravityPoint.position, _deltaTime * 10f));
@@ -48,6 +47,7 @@ namespace Examples.PhysicsScenes
             }
             m_Head.rotation = TickRotation();
             m_Body.Move(TickMovement()*_deltaTime);
+            m_Head.position = m_Body.transform.position + Vector3.up * .9f;
         }
 
         public override void FixedTick(float _deltaTime)
@@ -59,7 +59,7 @@ namespace Examples.PhysicsScenes
             if (m_GravityGunCounter.Playing||!m_AltFiring)
                 return;
 
-            if (!UnityEngine.Physics.Raycast(m_Head.position, m_Head.forward, out RaycastHit _hit, float.MaxValue, -1) || !TargetInteractable(_hit.collider, out Rigidbody suckTarget))
+            if (!Physics.Raycast(m_Head.position, m_Head.forward, out RaycastHit _hit, float.MaxValue, -1) || !TargetInteractable(_hit.collider, out Rigidbody suckTarget))
                 return;
             if(Vector3.Distance(m_GravityPoint.transform.position,suckTarget.transform.position)<m_GravityGunAvailableDistance)
             {
@@ -72,7 +72,7 @@ namespace Examples.PhysicsScenes
 
         void OnAltFire(bool _altFire,Vector2 _pos)
         {
-            if (_altFire&&m_TargetObject)
+            if (_altFire && m_TargetObject)
             {
                 m_GravityGunCounter.Replay();
                 ReleaseTarget();

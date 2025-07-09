@@ -51,7 +51,7 @@ namespace CameraController.Animation
             _output.anchor += finalData.offset;
             _output.euler += finalData.euler;
             _output.fov += finalData.fov;
-            _output.viewPort += new float2(finalData.viewPortDeltaX, finalData.viewPortDeltaY);
+            _output.viewport += new float2(finalData.viewPortDeltaX, finalData.viewPortDeltaY);
         }
         public void OnFinished() { }
         public void DrawGizmos(AControllerInput _input) { }

@@ -4,7 +4,6 @@ using CameraController.Demo;
 using Runtime;
 using Runtime.Geometry;
 using Runtime.Pool;
-using Runtime.TouchTracker;
 using TPool;
 using UnityEngine;
 
@@ -14,10 +13,7 @@ namespace Examples.ArtScenes.CornellBox
     public class CornellBox : MonoBehaviour
     {
         public GBox m_Bounding;
-        public FControllerInput m_Input;
-        public ACameraController m_Controller;
-        private FCameraControllerCore m_Core = new FCameraControllerCore();
-
+        public FCameraControllerSimple m_Controller;
         private ObjectPoolClass<int,CornellBoxView> m_Views;
         #region Constants
         private static readonly string kViewModelRoot = "ViewModels";
@@ -49,15 +45,7 @@ namespace Examples.ArtScenes.CornellBox
         // Update is called once per frame
         void LateUpdate()
         {
-            var deltaTime = Time.deltaTime;
-            var tracks = TouchTracker.Execute(deltaTime);
-            m_Input.PlayerPinch += tracks.CombinedPinch();
-            m_Input.PlayerDrag += tracks.CombinedDrag();
-            
-            m_Core.Switch(m_Controller);
-            m_Core.Tick(deltaTime, ref m_Input);
-            
-            m_Views.Traversal(p=>p.Tick(m_Input.camera));
+            m_Views.Traversal(p=>p.Tick(m_Controller.m_Input.camera));
         }
 
         private void OnDrawGizmos()
@@ -66,7 +54,7 @@ namespace Examples.ArtScenes.CornellBox
             if (m_Views != null)
             {
                 foreach (var view in m_Views)
-                    view.DrawGizmos(m_Input.camera);
+                    view.DrawGizmos(m_Controller.m_Input.camera);
                 return;
             }
             

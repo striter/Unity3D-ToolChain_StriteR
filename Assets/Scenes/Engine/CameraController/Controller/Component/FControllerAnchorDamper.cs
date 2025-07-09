@@ -19,7 +19,7 @@ namespace CameraController.Component
         [Foldout(nameof(m_AnchorMode),EAnchorMode.ShockAbsorber,EAnchorMode.ShockAbsorber_VerticalSeperated)] public Damper m_OriginExtraDamper = Damper.kDefault;
         [Foldout(nameof(m_AnchorMode),EAnchorMode.ShockAbsorber_VerticalSeperated)] public Damper m_OriginExtraDamper2 = Damper.kDefault;
 
-        public void Initialize(AControllerInput _input,AnchoredControllerParameters parameters)
+        public void Initialize(AControllerInput _input,FCameraControllerOutput parameters)
         {
             var origin = (float3)_input.Anchor.transform.position;
             var targetAnchor = parameters.anchor;
@@ -48,7 +48,7 @@ namespace CameraController.Component
             }
         }
 
-        public float3 Tick(float _deltaTime, AControllerInput _input, AnchoredControllerParameters parameters)
+        public float3 Tick(float _deltaTime, AControllerInput _input, FCameraControllerOutput parameters)
         {
             var origin = (float3)_input.Anchor.transform.position;
             var targetAnchor = parameters.anchor;
@@ -79,7 +79,7 @@ namespace CameraController.Component
             return dampedAnchor;
         }
 
-        public float3 DrawGizmos(AControllerInput _input,AnchoredControllerParameters parameters)
+        public float3 DrawGizmos(AControllerInput _input,FCameraControllerOutput parameters)
         {
             var origin = (float3)_input.Anchor.transform.position;
             var anchor = float3.zero;

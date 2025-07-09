@@ -577,6 +577,7 @@ namespace System.Linq.Extensions
         #endregion
         
         #region IList
+        public static int NextIndex<T>(this IList<T> _collection, int _index) => (_index + 1) % _collection.Count;
         public static bool Contains<T>(this IList<T> _collection1, IList<T> _collection2) where T:IEquatable<T>
         {
             foreach (T element1 in _collection1)

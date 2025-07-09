@@ -23,10 +23,10 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1
+  m_AmbientIntensity: 1.34
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 486d6dca451cdb345b021a985783d2d8, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -405,9 +405,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Layer: 2147483647
-  m_Width: 2
-  m_Height: 2
-  m_Distance: 2
+  m_Bounding:
+    center:
+      x: 0
+      y: 0
+      z: 0
+    extent:
+      x: 0.5
+      y: 0.5
+      z: 0.5
   m_Falloff: 0.5
 --- !u!33 &52574022
 MeshFilter:
@@ -936,9 +942,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef30b503d3009d479c86a9f68e4dc0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CameraController: {fileID: 11400000, guid: 7932fc48fedd281448e7d151fdbe4a5a, type: 2}
+  m_CameraController: {fileID: 11400000, guid: 7025e21eb2c2bb74e95ad9cf155c2e2a, type: 2}
   m_MoveSpeed: 3
   m_RotateSpeed: 0.2
+  m_Pitch: 0
+  m_Yaw: 0
   m_Head: {fileID: 1014856373}
   m_Body: {fileID: 67379951}
   m_GravityPoint: {fileID: 1764583030}
@@ -2732,9 +2740,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06de2a920a6481b458452355d1616d28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CameraController: {fileID: 11400000, guid: c20c08a34d259e546bdd034eeeec00f5, type: 2}
+  m_CameraController: {fileID: 11400000, guid: fd76805b41e1e314c870a1b3f152cc4e, type: 2}
   m_MoveSpeed: 10
   m_RotateSpeed: 1
+  m_Pitch: 0
+  m_Yaw: 0
   m_CameraFollow: {fileID: 4134352683900706328}
   m_CameraAttach: {fileID: 710567232}
   m_SkinHips: {fileID: 3842325509327754211}
@@ -3805,9 +3815,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f237320c506124438b32fe4e23fa424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CameraController: {fileID: 11400000, guid: c20c08a34d259e546bdd034eeeec00f5, type: 2}
+  m_CameraController: {fileID: 11400000, guid: fd76805b41e1e314c870a1b3f152cc4e, type: 2}
   m_MoveSpeed: 100
   m_RotateSpeed: 0.5
+  m_Pitch: 0
+  m_Yaw: 0
   m_CameraFollow: {fileID: 4293808370460056936}
   m_CameraAttach: {fileID: 1484250851}
   m_LostConcious: 0
@@ -4557,15 +4569,14 @@ MonoBehaviour:
     m_Recull: 1
     m_AdditionalLightcount: 8
     m_IncludeTransparent: 1
-    m_DownSample: 2
+    m_DownSample: 1
     m_BlurParam:
-      m_BlurType: 0
-      m_BlurSize: 0.05
-      m_Iteration: 2
-      m_DownSample: 2
-      m_Angle: 0
-      m_Vector: {x: 0.5, y: 0.5}
-      m_Attenuation: 0.9
+      blurType: -1
+      blurSize: 0.168
+      iteration: 9
+      downSample: 2
+      angle: 0
+      attenuation: 1
 --- !u!1 &814280861
 GameObject:
   m_ObjectHideFlags: 0
@@ -5893,7 +5904,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1014856373}
   m_Layer: 8
-  m_Name: Head
+  m_Name: CameraAttach
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6137,9 +6148,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f0de749b5dd8a940896b9b8f5f2a9c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CameraController: {fileID: 11400000, guid: c20c08a34d259e546bdd034eeeec00f5, type: 2}
+  m_CameraController: {fileID: 11400000, guid: fd76805b41e1e314c870a1b3f152cc4e, type: 2}
   m_MoveSpeed: 10
   m_RotateSpeed: 1
+  m_Pitch: 0
+  m_Yaw: 0
   m_CameraFollow: {fileID: 821360168}
   m_CameraAttach: {fileID: 13789777}
   m_SkinHips: {fileID: 2108202975}
@@ -10955,11 +10968,9 @@ MonoBehaviour:
   m_marionetteCharacter: {fileID: 715545223}
   m_Human_Balance: {fileID: 511884974}
   m_Human_StaticAnimator: {fileID: 1048702356}
-  m_CameraController:
+  m_Controller:
     m_Initialize: 1
     m_Reset: 0
-    m_SerializedController: {fileID: 0}
-    m_ScriptableController: {fileID: 0}
     m_Output:
       anchor:
         x: 0
@@ -10974,8 +10985,12 @@ MonoBehaviour:
       viewPort:
         x: 0
         y: 0
-  m_ControllerInput:
+    m_AnchorDebugRecording: 0
+    m_SerializedController: {fileID: 0}
+    m_ScriptableController: {fileID: 0}
+  m_Input:
     camera: {fileID: 0}
+    controller: {fileID: 0}
     anchor: {fileID: 0}
     anchorOffset:
       x: 0
@@ -11420,26 +11435,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_VolumetricLight: 0
-    m_VolumetricLightData:
-      m_Strength: 0
-      m_Distance: 0
-      m_MarchTimes: 0
-      m_MarchStrength: 0
-      m_Pow: 0
-      m_Dither: 0
-    m_VolumetricDownSample: 0
-    m_EnableVolumetricBlur: 0
-    m_VolumetricBlur:
-      m_BlurType: 0
-      m_BlurSize: 0
-      m_Iteration: 0
-      m_DownSample: 0
-      m_Angle: 0
-      m_Vector: {x: 0, y: 0}
-      m_Attenuation: 0
-    m_MultiScattering: 0
-    m_MultiScatteringData:
+    volumetricLight: 0
+    volumetricLightData:
+      strength: 0
+      distance: 0
+      marchTimes: 0
+      marchStrength: 0
+      pow: 0
+      dither: 0
+    volumetricDownSample: 0
+    enableVolumetricBlur: 0
+    volumetricBlur:
+      blurType: 0
+      blurSize: 0
+      iteration: 0
+      downSample: 0
+      angle: 0
+      attenuation: 0
+    multiScattering: 0
+    multiScatteringData:
       distanceScale: 0
       sunItensity: 0
       rayleighScatterCofficients: 0
@@ -11459,15 +11473,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de5ad01c3df51c540aae148c4af809a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BindRoot: {fileID: 1484250851}
-  m_BindPosOffset: {x: 0, y: 0, z: -4}
-  m_MoveDamping: 0.2
-  m_ForceLookAt: {fileID: 0}
-  m_BindRotOffset: {x: 0, y: 0, z: 0}
-  m_RotateDamping: 0.2
-  m_Gizmos: 1
-  I_ShakeParam: 0
-  m_ShakeReverseDuration: 0.2
 --- !u!114 &1604089975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11481,69 +11486,74 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_Scan: 0
-    m_ScanData:
-      m_Origin: {x: 0, y: 0, z: 0}
-      m_Color: {r: 0, g: 1, b: 0, a: 1}
-      m_Elapse: 5
-      m_Width: 2
-      m_FadingPow: 0.8
+    scan: 0
+    scanData:
+      origin: {x: 0, y: 0, z: 0}
+      color: {r: 0, g: 0, b: 0, a: 0}
+      elapse: 0
+      width: 0
+      fadingPow: 0
       m_MaskTexture: {fileID: 0}
-      m_MaskTextureScale: 1
-    m_Area: 0
-    m_AreaData:
-      m_Origin: {x: 0, y: 0, z: 0}
-      m_Radius: 5
-      m_Width: 1
-      m_FillColor: {r: 1, g: 1, b: 1, a: 1}
-      m_EdgeColor: {r: 0, g: 0, b: 0, a: 1}
+      maskTextureScale: 0
+    area: 0
+    areaData:
+      origin: {x: 0, y: 0, z: 0}
+      radius: 0
+      width: 0
+      fillColor: {r: 0, g: 0, b: 0, a: 0}
+      edgeColor: {r: 0, g: 0, b: 0, a: 0}
       m_FillTexture: {fileID: 0}
-      m_FillTextureFlow: {x: 1, y: 1}
-      m_FillTextureScale: 1
-    m_Outline: 0
-    m_OutlineData:
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
-      m_Width: 1
-      m_Strength: 2
-      m_Bias: 0.5
-    m_MaskedHighlight: 0
-    m_HighlightData:
-      m_Color: {r: 0, g: 0, b: 1, a: 1}
-      m_Blur:
-        m_BlurType: 3
-        m_BlurSize: 1.3
-        m_Iteration: 7
-        m_DownSample: 2
-        m_Angle: 0
-        m_Vector: {x: 0.5, y: 0.5}
-        m_Attenuation: 0
-    m_DownSample: 1
-    m_SSAO: 1
-    m_SSAOData:
-      m_Color: {r: 0, g: 0, b: 0, a: 1}
-      m_Intensity: 1.36
-      m_Radius: 0.24
-      m_Bias: 0.034
-      m_SampleCount: 8
-      m_Dither: 1
-      m_RandomVectorKeywords: Test2
-    m_VolumetricCloud: 0
-    m_VolumetricCloudData:
-      m_Shape: 0
-      m_CullingMask: 0
-      m_VerticalStart: 20
-      m_VerticalLength: 100
-      m_MainNoise: {fileID: 11700000, guid: d7cdc3d1f96e777489126e46f6ca72c0, type: 2}
-      m_MainNoiseScale: {x: 500, y: 500, z: 500}
-      m_MainNoiseFlow: {x: 0.1, y: 0.1, z: 0.1}
-      m_Density: 50
-      m_DensityClip: 0.6
-      m_DensitySmooth: 0.1
-      m_Distance: 100
-      m_MarchTimes: 32
-      m_Opacity: 0.8
-      m_ColorRamp: {fileID: 2800000, guid: 89fc341d5ec36d74ba6f9959730276ae, type: 3}
-      m_LightAbsorption: 0.2
+      fillTextureFlow: {x: 0, y: 0}
+      fillTextureScale: 0
+    outline: 0
+    outlineData:
+      color: {r: 0, g: 0, b: 0, a: 0}
+      width: 0
+      strength: 0
+      bias: 0
+    maskedHighlight: 0
+    highlightData:
+      color: {r: 0, g: 0, b: 0, a: 0}
+      mask:
+        mode: 0
+        renderMask: 0
+        overrideMaterial: {fileID: 0}
+        overrideShader: {fileID: 0}
+        inheritDepth: 0
+      blur:
+        blurType: 0
+        blurSize: 0
+        iteration: 0
+        downSample: 0
+        angle: 0
+        attenuation: 0
+    downSample: 0
+    SSAO: 0
+    SSAOData:
+      color: {r: 0, g: 0, b: 0, a: 0}
+      intensity: 0
+      radius: 0
+      bias: 0
+      sampleCount: 0
+      dither: 0
+      randomVectorKeywords: 
+    volumetricCloud: 0
+    volumetricCloudData:
+      shape: 0
+      cullingMask: 0
+      verticalStart: 0
+      verticalLength: 0
+      mainNoise: {fileID: 0}
+      mainNoiseScale: {x: 0, y: 0, z: 0}
+      mainNoiseFlow: {x: 0, y: 0, z: 0}
+      density: 0
+      densityClip: 0
+      densitySmooth: 0
+      distance: 0
+      marchTimes: 0
+      opacity: 0
+      colorRamp: {fileID: 0}
+      lightAbsorption: 0
   m_Opaque: 1
   m_DrawGizmos: 1
 --- !u!114 &1604089979
@@ -15271,6 +15281,7 @@ MonoBehaviour:
   m_EndBiTangent: {x: 0, y: 0, z: 0}
   m_ControlDamper:
     mode: 1
+    constant: 0
     halfLife: 0.5
     stiffness: 20
     damping: 4

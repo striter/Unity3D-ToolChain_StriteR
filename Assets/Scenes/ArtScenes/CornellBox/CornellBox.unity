@@ -1289,6 +1289,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1125260495}
   - component: {fileID: 1125260496}
+  - component: {fileID: 1125260497}
   m_Layer: 0
   m_Name: CornellBox
   m_TagString: Untagged
@@ -1335,8 +1336,22 @@ MonoBehaviour:
       x: 1
       y: 1
       z: 1
+  m_Controller: {fileID: 1125260497}
+--- !u!114 &1125260497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1125260494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eccd6b324d794867bcba67673e7634a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_Input:
     camera: {fileID: 969644686}
+    controller: {fileID: 11400000, guid: a8da152b709144f4398283eabfdbfbb8, type: 2}
     anchor: {fileID: 1768301755}
     anchorOffset:
       x: 0
@@ -1350,9 +1365,28 @@ MonoBehaviour:
       x: 0
       y: 0
       z: 0
-    pinch: 0.5
+    pinch: 0
     fovDelta: 0
-  m_Controller: {fileID: 11400000, guid: a8da152b709144f4398283eabfdbfbb8, type: 2}
+  <m_Core>k__BackingField:
+    m_Initialize: 1
+    m_Reset: 0
+    m_Output:
+      anchor:
+        x: 0
+        y: 0
+        z: 0
+      euler:
+        x: 0
+        y: 0
+        z: 0
+      fov: 0
+      distance: 0
+      viewPort:
+        x: 0
+        y: 0
+    m_AnchorDebugRecording: 1
+    m_SerializedController: {fileID: 0}
+    m_ScriptableController: {fileID: 0}
 --- !u!1 &1160526318
 GameObject:
   m_ObjectHideFlags: 0
@@ -1446,7 +1480,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1226606926}
   - component: {fileID: 1226606929}
-  - component: {fileID: 1226606928}
   - component: {fileID: 1226606927}
   m_Layer: 0
   m_Name: Camera
@@ -1514,14 +1547,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!81 &1226606928
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1226606925}
-  m_Enabled: 1
 --- !u!20 &1226606929
 Camera:
   m_ObjectHideFlags: 0

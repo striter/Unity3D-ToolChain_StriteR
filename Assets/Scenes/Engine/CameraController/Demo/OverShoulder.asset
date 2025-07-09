@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: OverShoulder
   m_EditorClassIdentifier: 
   m_InputProcessor: {fileID: 11400000, guid: 649f9e382086d554e93018ea6847d933, type: 2}
+  m_Collision: {fileID: 0}
   m_Anchor:
     m_AnchorMode: 1
     m_OriginDamper:
       mode: 2
+      constant: 0
       halfLife: 0.1
       stiffness: 20
       damping: 4
@@ -27,6 +29,18 @@ MonoBehaviour:
         poleMatching: 1
     m_OriginExtraDamper:
       mode: 2
+      constant: 0
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_OriginExtraDamper2:
+      mode: 3
+      constant: 0
       halfLife: 0.1
       stiffness: 20
       damping: 4
@@ -39,6 +53,7 @@ MonoBehaviour:
     m_RotationMode: 0
     m_PlayerInputDamper:
       mode: 2
+      constant: 0
       halfLife: 0.1
       stiffness: 20
       damping: 4
@@ -49,6 +64,7 @@ MonoBehaviour:
         poleMatching: 1
     m_RotationDamper:
       mode: 2
+      constant: 0
       halfLife: 0.1
       stiffness: 20
       damping: 4
@@ -57,14 +73,9 @@ MonoBehaviour:
         z: 0.35
         r: -0.5
         poleMatching: 1
-  m_Collision:
-    m_CollisionMin: 0
-    m_CollisionForward: 0.1
-    m_CullingMask: 0
-    m_ColliderRadius: 0.1
-    m_SceneMask: 0
   m_DistanceDamper:
     mode: 2
+    constant: 0
     halfLife: 0.1
     stiffness: 20
     damping: 4
@@ -75,6 +86,7 @@ MonoBehaviour:
       poleMatching: 1
   m_ViewportDamper:
     mode: 2
+    constant: 0
     halfLife: 0.1
     stiffness: 20
     damping: 4
@@ -94,7 +106,7 @@ MonoBehaviour:
   m_Yaw: 0
   m_CameraDistance: 1.25
   m_FOV: 50
-  m_ViewportX: 0
+  m_ViewportX: -0.1
   m_ViewportY: 0
   m_PinchDistanceRange:
     start: 0

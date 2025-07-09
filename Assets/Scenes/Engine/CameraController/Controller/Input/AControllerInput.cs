@@ -10,7 +10,8 @@ namespace CameraController.Inputs
 {
     public abstract class AControllerInput
     {
-        public bool Available => Camera !=null && Camera.enabled  && Camera.gameObject.activeInHierarchy
+        public bool Available => Controller != null 
+                                 && Camera !=null && Camera.enabled  && Camera.gameObject.activeInHierarchy
                                  && Anchor != null && Anchor.transform!=null && Anchor.transform.gameObject.activeInHierarchy;
         
         private static readonly string kAnchor = "Anchor";
@@ -68,7 +69,7 @@ namespace CameraController.Inputs
         public abstract Camera Camera { get; }
         public abstract ITransformHandle Anchor { get; }
         public abstract Transform Target { get;}
-
+        public abstract ICameraController Controller { get; }
         public float InputPinch => (this is IPlayerInput touchMixin) ? touchMixin.Pinch : 0;
         public virtual float3 InputEuler => new float3(GetProperty<float>(kPitch).Sum(), GetProperty<float>(kYaw).Sum(),GetProperty<float>(kRoll).Sum())  
                                     + GetProperty<float3>(kEuler).Sum().value;

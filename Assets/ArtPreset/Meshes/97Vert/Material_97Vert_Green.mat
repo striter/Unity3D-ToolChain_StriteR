@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Material_97Vert_Green
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _DEPTHBUFFER
   - _NDF_BECKMANN
@@ -16,12 +18,14 @@ Material:
   - _VF_GGX
   m_InvalidKeywords:
   - _ALPHAPREMULTIPLY_ON
+  - _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -70,7 +74,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f90e3449ad3674016962a3aba3d31a06, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -93,6 +97,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaClipRange: 0.01
+    - _AlphaCutoff: 0.01
     - _AnisoTropicValue: 1
     - _BumpScale: 1
     - _Cull: 2
@@ -119,6 +124,7 @@ Material:
     - _ParallaxCount: 16
     - _SSSIntensity: 1
     - _SSSNormalInfluence: 1
+    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SpecularRange: 0.9

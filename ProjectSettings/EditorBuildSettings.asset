@@ -35,7 +35,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/ArtScenes/Pool/WaveInteraction/WaveInteraction.unity
     guid: cc226ce06d2088f48a0a5ae04254f2cc
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Engine/UGUIExtension/UnityGUIExtensions.unity
     guid: 27507fd8c4cf2d44ca00077fb133f302
   m_configObjects:

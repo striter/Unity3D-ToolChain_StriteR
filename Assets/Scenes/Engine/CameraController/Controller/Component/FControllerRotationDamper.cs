@@ -17,7 +17,7 @@ namespace CameraController.Component
         [Foldout(nameof(m_RotationMode),ERotationMode.EulerInputSeperated)]public Damper m_PlayerInputDamper = Damper.kDefault;
         public Damper m_RotationDamper = Damper.kDefault;
         
-        public void Initialize(AnchoredControllerParameters _input,AnchoredControllerParameters baseParameters)
+        public void Initialize(FCameraControllerOutput _input,FCameraControllerOutput baseParameters)
         {
             switch (m_RotationMode)
             {
@@ -42,7 +42,7 @@ namespace CameraController.Component
             }
         }
 
-        public float3 Tick(float _deltaTime, AnchoredControllerParameters _input, AnchoredControllerParameters baseParameters)
+        public float3 Tick(float _deltaTime, FCameraControllerOutput _input, FCameraControllerOutput baseParameters)
         {
             
             return m_RotationMode switch

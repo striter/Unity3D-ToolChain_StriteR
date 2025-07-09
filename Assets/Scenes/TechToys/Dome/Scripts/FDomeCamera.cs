@@ -37,7 +37,7 @@ namespace Dome
         public void OnEntityControlChanged(ADomePlayerControl _controller)
         {
             m_Input.anchor = _controller?.GetAnchor();
-            m_Controller.Switch(_controller==null?FEmptyController.kDefault:_controller.m_CameraController);
+            m_Input.controller =_controller?.m_CameraController;
             m_Controller.AppendModifier(m_Interpolate);
         }
         
@@ -50,6 +50,7 @@ namespace Dome
     [Serializable]
     public class FControllerInput : AControllerInput,IFOVOffset,IViewportOffset,IAnchorOffset,IPlayerInput
     {
+        public ICameraController controller;
         public Camera camera;
         public Transform anchor;
         public float3 anchorOffset;
@@ -62,6 +63,7 @@ namespace Dome
         public override Camera Camera => camera;
         public override ITransformHandle Anchor => new FTransformHandleDefault(anchor);
         public override Transform Target => target;
+        public override ICameraController Controller => controller;
         public float OffsetFOV { get => fovDelta; set => fovDelta = value; }
         public float OffsetViewPortX { get => viewPort.x; set => viewPort.x = value; }
         public float OffsetViewPortY { get => viewPort.y; set => viewPort.y = value; }

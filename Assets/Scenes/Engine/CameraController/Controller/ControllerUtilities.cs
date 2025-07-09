@@ -36,7 +36,7 @@ namespace CameraController
             var valid = false;
             foreach (var renderer in kRendererHelper)
             {
-                if ((mask & (1 << renderer.gameObject.layer)) == 0)
+                if (!renderer.enabled || (mask & (1 << renderer.gameObject.layer)) == 0)
                     continue;
                     
                 var bound = renderer.bounds;

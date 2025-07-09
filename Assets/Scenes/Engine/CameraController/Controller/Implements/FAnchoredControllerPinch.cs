@@ -9,10 +9,10 @@ namespace CameraController
     public class FAnchoredControllerPinch : AAnchoredController
     {
         public AnchoredControllerInput[] m_PinchParameters = new AnchoredControllerInput[] { AnchoredControllerInput.kDefault };
-        protected override AnchoredControllerParameters EvaluateBaseParameters(AControllerInput _input)
+        protected override FCameraControllerOutput EvaluateBaseParameters(AControllerInput _input)
         {
             var gradient = m_PinchParameters.Gradient(_input.InputPinch * (m_PinchParameters.Length - 1));
-            return AnchoredControllerParameters.Lerp(gradient.start.Evaluate(_input.Anchor), gradient.end.Evaluate(_input.Anchor), gradient.value) ;
+            return FCameraControllerOutput.Lerp(gradient.start.Evaluate(_input.Anchor), gradient.end.Evaluate(_input.Anchor), gradient.value) ;
         }
 
     }

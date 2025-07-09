@@ -32,7 +32,7 @@ namespace CameraController.Animation
                 anchor = math.lerp(lastOutput.anchor, _output.anchor, positionValue),
                 fov = math.lerp(lastOutput.fov, _output.fov, extraValue),
                 distance = math.lerp(lastOutput.distance, _output.distance, extraValue),
-                viewPort = math.lerp(lastOutput.viewPort, _output.viewPort, extraValue),
+                viewport = math.lerp(lastOutput.viewport, _output.viewport, extraValue),
             };
             
             if(m_Collision != null)

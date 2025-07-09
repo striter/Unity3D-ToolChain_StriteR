@@ -15,9 +15,9 @@ MonoBehaviour:
   m_InputProcessor: {fileID: 11400000, guid: b3f7bf54c6ae42543b1f219442e60f55, type: 2}
   m_Collision: {fileID: 0}
   m_Anchor:
-    m_AnchorMode: 1
+    m_AnchorMode: 0
     m_OriginDamper:
-      mode: 0
+      mode: 3
       constant: 0
       halfLife: 0.1
       stiffness: 80
@@ -28,11 +28,11 @@ MonoBehaviour:
         r: -0.5
         poleMatching: 1
     m_OriginExtraDamper:
-      mode: 2
+      mode: 6
       constant: 0
       halfLife: 0.3
-      stiffness: 20
-      damping: 4
+      stiffness: 139
+      damping: 1.7
       secondOrderDynamics:
         f: 5
         z: 0.35

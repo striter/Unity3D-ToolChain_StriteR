@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Extensions;
 using CameraController.Animation;
 using CameraController.Inputs;
 using CameraController.Inputs.Touch;
 using Runtime.TouchTracker;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 
 namespace CameraController.Demo
 {
-    
     [Serializable]
     public class FControllerInput : AControllerInput,IFOVOffset,IViewportOffset , IAnchorOffset , IControllerPlayerTouchInput
     {
+        [Header("Controllers")]
+        [Foldout(nameof(m_ScriptedControllerOverride),null),Clamp(0,nameof(m_Controllers))]public int m_ControllerIndex;
+        [Foldout(nameof(m_ScriptedControllerOverride),null)] public List<ACameraController> m_Controllers;
+        public ACameraController m_ScriptedControllerOverride;
+        
         public Camera camera;
         public Transform anchor;
         public float3 anchorOffset;
@@ -30,6 +34,15 @@ namespace CameraController.Demo
         public FPlayerInputMultiplier Sensitive { get; set; } = FPlayerInputMultiplier.kDefaultPixels;
         public override ITransformHandle Anchor => new FTransformHandleDefault(anchor);
         public override Transform Target => target;
+        public override ICameraController Controller
+        {
+            get
+            {
+                if (m_ScriptedControllerOverride != null)
+                    return m_ScriptedControllerOverride;
+                return m_ControllerIndex < 0 || m_ControllerIndex >= m_Controllers.Count ? null : m_Controllers[m_ControllerIndex];
+            }
+        }
         public float Pitch { get => euler.x; set=> euler.x = value; }
         public float Yaw { get => euler.y; set=> euler.y = value; }
         public float Pinch { get => pinch; set=> pinch = value; }
@@ -45,9 +58,6 @@ namespace CameraController.Demo
     {
         public FControllerInput m_Input;
         
-        [Header("Controllers")]
-        public List<ACameraController> m_Controllers;
-        public MonoBehaviour m_ScripedControllerOverride;
         [Header("Animation")]
         public FControllerInterpolate m_Interpolate;
         public FControllerAdditionalAnimation m_AdditionalAnimation;
@@ -55,7 +65,6 @@ namespace CameraController.Demo
         public FCameraControllerCore m_Core = new FCameraControllerCore();
         private Transform m_Target;
         private Transform m_Character;
-        private int m_Index;
 
         private void OnValidate()
         {
@@ -64,11 +73,6 @@ namespace CameraController.Demo
             // m_Index = 0;
             m_Target = transform.Find("Target");
             m_Input.camera = transform.GetComponentInChildren<Camera>();
-
-            var controller = (ICameraController)m_Controllers[m_Index];
-            if (m_ScripedControllerOverride is ICameraController overrideController)
-                controller = overrideController;
-            m_Core.Switch(controller);
         }
 
         private void Update()
@@ -87,15 +91,14 @@ namespace CameraController.Demo
             
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                m_Index = (m_Index + 1) % m_Controllers.Count;
-                m_Core.Switch(m_Controllers[m_Index]);
+                m_Input.m_ControllerIndex = m_Input.m_Controllers.NextIndex(m_Input.m_ControllerIndex);
                 m_Core.AppendModifier(m_Interpolate);
             }
 
             if (Input.GetKeyDown(KeyCode.R))
             {
+                m_Input.m_ControllerIndex = -1;
                 m_Core.Apply(m_Input, m_Input.Camera.transform.position, m_Input.Camera.transform.rotation, m_Input.Camera.fieldOfView);
-                m_Core.Switch(FEmptyController.kDefault);
             }
         }
 

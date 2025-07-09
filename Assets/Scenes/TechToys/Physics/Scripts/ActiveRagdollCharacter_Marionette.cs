@@ -126,6 +126,7 @@ namespace Examples.PhysicsScenes
             m_Hips.MoveRotation(Quaternion.Slerp(m_Hips.rotation, Quaternion.Euler(m_Pitch, m_Yaw, 0), 20f * _deltaTime));
             float moveSpeed = m_WalkAngularSpeed * m_MoveDelta.y * (m_Sprinting ? 2f : 1f);
 
+            TickRotation();
             float moveFrequency = 2f * (m_Sprinting ? 2f : 1f);
             m_LeftThigh.angularVelocity = m_Right * Mathf.Sin(m_ConciousTimeElapsed * moveFrequency * Mathf.PI) * moveSpeed;
             m_RightThigh.angularVelocity = m_Right * Mathf.Sin((m_ConciousTimeElapsed * moveFrequency + 1f) * Mathf.PI) * moveSpeed;

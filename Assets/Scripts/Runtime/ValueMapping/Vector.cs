@@ -51,16 +51,16 @@ public static partial class umath
     
     public static float3 slerp(float3 from, float3 to, float t,float3 up)
     {
-        float theta = angle(from, to);
-        float sin_theta = sin(theta);
+        var theta = angle(from, to);
+        var sin_theta = sin(theta);
         var dotValue = dot(from.normalize(), to.normalize());
         if (dotValue > .999f)
             return to;
         if(dotValue < -.999f)
             return trilerp(from, up,to, t);
 
-        float a = sin((1 - t) * theta) / sin_theta;
-        float b = sin(t * theta) / sin_theta;
+        var a = sin((1 - t) * theta) / sin_theta;
+        var b = sin(t * theta) / sin_theta;
         return from * a + to * b;
     }
     

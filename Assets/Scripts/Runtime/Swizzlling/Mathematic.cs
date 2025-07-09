@@ -12,8 +12,10 @@ public static class umath_swizzlling       //Swizzling
     public static float4 to4(this float3 _value, float _w=0) => new float4(_value, _w);
     public static float4 to4(this float _value) => new float4(_value, _value,_value,_value);
 
+    public static float3 setX(this float3 _value, float _x) => new float3(_x, _value.y, _value.z);
     public static float3 setY(this float3 _value, float _y) => new float3(_value.x, _y, _value.z);
-
+    public static float3 setZ(this float3 _value, float _z) => new float3(_value.x, _value.y, _z);
+    
     public static float magnitude(this float2 _value) => math.length(_value);
     public static float magnitude(this float3 _value) => math.length(_value);
     public static float magnitude(this float4 _value) => math.length(_value);
@@ -35,6 +37,9 @@ public static class umath_swizzlling       //Swizzling
     public static float3 normalize(this float3 _value) => math.normalize(_value);
     public static float4 normalize(this float4 _value) => math.normalize(_value);
     
+    public static float2 safeNormalize(this float2 _value) => (_value == float2.zero).all() ? float2.zero : math.normalize(_value);
+    public static float3 safeNormalize(this float3 _value) => (_value == float3.zero).all() ? float3.zero : math.normalize(_value);
+    public static float4 safeNormalize(this float4 _value) => (_value == float4.zero).all() ? float4.zero : math.normalize(_value);
     public static float saturate(this float _value)=> math.min(math.max(_value,0f) ,1f);
     public static float2 saturate(this float2 _value)=> math.min(math.max(_value,0f) ,1f);
     public static float3 saturate(this float3 _value)=> math.min(math.max(_value,0f) ,1f);

@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CameraController.Animation;
 using CameraController.Component;
 using CameraController.Inputs;
-using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace CameraController
 {
@@ -13,10 +10,10 @@ namespace CameraController
     {
         [ScriptableObjectEdit] public AControllerInputProcessor m_InputProcessor;
         [ScriptableObjectEdit] public FControllerCollision m_Collision;
-        [Header("Position Damper")] public FAnchorDamper m_Anchor = new FAnchorDamper();
-        [Header("Rotation Damper")] public FRotationDamper m_Rotation = new FRotationDamper();
-        [Header("Distance Damper")] public Damper m_DistanceDamper = Damper.kDefault;
-        [Header("Viewport Damper")] public Damper m_ViewportDamper = Damper.kDefault;    
+        public FAnchorDamper m_Anchor = new ();
+        public FRotationDamper m_Rotation = new ();
+        public Damper m_DistanceDamper = Damper.kDefault;
+        public Damper m_ViewportDamper = Damper.kDefault;    
         public override IEnumerable<IControllerInputProcessor> InputProcessor
         {
             get
@@ -33,7 +30,7 @@ namespace CameraController
             }
         }
 
-        protected abstract AnchoredControllerParameters EvaluateBaseParameters(AControllerInput _input);
+        protected abstract FCameraControllerOutput EvaluateBaseParameters(AControllerInput _input);
 
         public override void OnEnter(AControllerInput _input)
         {
@@ -42,7 +39,7 @@ namespace CameraController
         public override void OnReset(AControllerInput _input)
         {
             var baseParameters = EvaluateBaseParameters(_input);
-            var playerInputParameters = AnchoredControllerParameters.FormatDelta(_input);
+            var playerInputParameters = FCameraControllerOutput.FormatDelta(_input);
             var parameters = baseParameters + playerInputParameters;
             m_Anchor.Initialize(_input,baseParameters);
             m_Rotation.Initialize(playerInputParameters,baseParameters);
@@ -53,18 +50,18 @@ namespace CameraController
         public override bool Tick(float _deltaTime, AControllerInput _input,ref FCameraControllerOutput _output)
         {
             var baseParameters = EvaluateBaseParameters(_input);
-            var playerInputParameters = AnchoredControllerParameters.FormatDelta(_input);
+            var playerInputParameters = FCameraControllerOutput.FormatDelta(_input);
             var viewportNfov = m_ViewportDamper.Tick(_deltaTime,baseParameters.viewport.to3xy(baseParameters.fov));
             _output = new FCameraControllerOutput()
             {
                 anchor = m_Anchor.Tick(_deltaTime, _input, baseParameters) + playerInputParameters.anchor,
                 euler = m_Rotation.Tick(_deltaTime,playerInputParameters,baseParameters),
-                viewPort = viewportNfov.xy + playerInputParameters.viewport,
+                viewport = viewportNfov.xy + playerInputParameters.viewport,
                 fov = viewportNfov.z + playerInputParameters.fov,
                 distance = baseParameters.distance + playerInputParameters.distance,
             };
 
-            _output.Evaluate(_input.Camera, out var frustumRays, out var ray);
+            _output.Evaluate(_input.Camera, out _, out var ray);
             var hitDistance = _output.distance;
             if (m_Collision != null && m_Collision.CalculateDistance(ray, hitDistance, out hitDistance))
             {
@@ -84,12 +81,12 @@ namespace CameraController
         {
             Gizmos.matrix = Matrix4x4.identity;
             
-            var parameters = EvaluateBaseParameters(_input) + AnchoredControllerParameters.FormatDelta(_input);
+            var parameters = EvaluateBaseParameters(_input) + FCameraControllerOutput.FormatDelta(_input);
             var output = new FCameraControllerOutput()
             {
                 anchor = m_Anchor.DrawGizmos(_input,parameters),
                 euler = parameters.euler,
-                viewPort = parameters.viewport,
+                viewport = parameters.viewport,
                 fov = parameters.fov,
                 distance = parameters.distance,
             };

@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
-using CameraController.Demo.Implement;
+using CameraController;
+using CameraController.Demo;
 using Runtime.Geometry;
 using TObjectPool;
 using Runtime.TouchTracker;
@@ -30,6 +31,8 @@ namespace Examples.Algorithm.MarchingCube
         private readonly Dictionary<byte, MarchingCubeMesh> m_CubeMeshes = new Dictionary<byte, MarchingCubeMesh>();
 
         private readonly MarchingCubePersistent m_Persistent = new MarchingCubePersistent();
+        [field : SerializeField] public FCameraControllerCore m_CameraController { get; private set; }= new();
+        public FCameraControllerSimple.Input m_ControllerInput = new();
         protected override void Awake()
         {
             base.Awake();
@@ -97,8 +100,34 @@ namespace Examples.Algorithm.MarchingCube
         {
             float unscaledDeltaTime = Time.unscaledDeltaTime;
             float deltaTime = Time.deltaTime;
-            m_Actor.TickInput(unscaledDeltaTime);
+            
+            var tracks= TouchTracker.Execute(unscaledDeltaTime);
+
+            var construct = tracks.Count > 1;
+            tracks.ResolveClicks(.2f).Traversal(position=>Click(construct, position));
+            
+            tracks.Joystick_Stationary(
+                (position,active)=>{ TouchConsole.DoSetJoystick(position,active);if(!active) m_Actor.m_MoveDelta=Vector2.zero; },
+                (normalized)=>{m_Actor.m_MoveDelta = normalized;TouchConsole.DoTrackJoystick(normalized);},
+                TouchConsole.kJoystickRange,
+                TouchConsole.kJoystickRadius);
+            
+            Vector2 rotateDelta = tracks.Input_ScreenMove(TouchConsole.kScreenDeltaRange);
+            rotateDelta /= 50f;
+            m_Actor.pitchYaw.x = Mathf.Clamp(m_Actor.pitchYaw.x-rotateDelta.y,-60f,60f);
+            m_Actor.pitchYaw.y += rotateDelta.x;
+
+            m_ControllerInput.euler = m_Actor.pitchYaw.ToVector3_XY();
+            m_CameraController.Tick(unscaledDeltaTime,ref m_ControllerInput);
+            
             m_Actor.Tick(deltaTime);
+        }
+
+        void Click(bool _construct,Vector2 _screenPos)
+        {
+            if (!Physics.Raycast(Camera.main.ScreenPointToRay(_screenPos), out var hit))
+                return;
+            MarchingCube.Instance.TerrainValidate(_construct,hit.point);
         }
 
         void Refresh()
@@ -195,44 +224,13 @@ namespace Examples.Algorithm.MarchingCube
         public Transform transform { get; }
 
         private Vector3 position;
-        private Vector2 pitchYaw;
-        
-        private Vector2 m_MoveDelta;
-        private CameraControllerSimple m_Controller;
+        public Vector2 pitchYaw;
+        public Vector2 m_MoveDelta;
         public MarchingCubeActor(Transform _transform)
         {
             transform = _transform;
             position = Vector3.zero;
-            pitchYaw = Vector2.zero;
             m_CameraAttacher = _transform.Find("CameraAttacher");
-            m_Controller = Camera.main.GetComponent<CameraControllerSimple>();
-        }
-
-        public void TickInput(float _unscaledDeltaTime)
-        {
-            var tracks= TouchTracker.Execute(_unscaledDeltaTime);
-
-            tracks.ResolveClicks(.2f).Traversal(position=>Click(tracks.Count>1, position));
-            
-            tracks.Joystick_Stationary(
-                (position,active)=>{ TouchConsole.DoSetJoystick(position,active);if(!active) m_MoveDelta=Vector2.zero; },
-                (normalized)=>{m_MoveDelta = normalized;TouchConsole.DoTrackJoystick(normalized);},
-                TouchConsole.kJoystickRange,
-                TouchConsole.kJoystickRadius);
-
-            Vector2 rotateDelta = tracks.Input_ScreenMove(TouchConsole.kScreenDeltaRange);
-            rotateDelta /= 50f;
-            pitchYaw.x = Mathf.Clamp(pitchYaw.x-rotateDelta.y,-60f,60f);
-            pitchYaw.y += rotateDelta.x;
-
-            m_Controller.m_Input.euler = pitchYaw.ToVector3_XY();
-        }
-
-        void Click(bool _construct,Vector2 _screenPos)
-        {
-            if (!Physics.Raycast(Camera.main.ScreenPointToRay(_screenPos), out var hit))
-                return;
-            MarchingCube.Instance.TerrainValidate(_construct,hit.point);
         }
 
         public void Tick(float _deltaTime)
@@ -244,7 +242,7 @@ namespace Examples.Algorithm.MarchingCube
             Vector3 forward = horizontalRotation * Vector3.forward;
             position +=  (forward * m_MoveDelta.y+right*m_MoveDelta.x) * _deltaTime * 3f;
             
-            m_CameraAttacher.rotation=rotation;
+            m_CameraAttacher.rotation = rotation;
             transform.SetPositionAndRotation(position,rotation);
         }
 

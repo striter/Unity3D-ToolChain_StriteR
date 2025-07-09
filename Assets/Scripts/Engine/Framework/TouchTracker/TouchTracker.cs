@@ -71,8 +71,9 @@ namespace Runtime.TouchTracker
         }
 
         private static List<TrackData> kTrackResults = new();
-        public static List<TrackData> Execute(float _unscaledDeltaTime,bool _filterUI = false,EventSystem _eventSystem = null)
+        public static List<TrackData> Execute(float _unscaledDeltaTime,bool _filterUI = true,EventSystem _eventSystem = null)
         {
+            _eventSystem ??= EventSystem.current;
             for (var i = m_TrackData.Count - 1; i >= 0; i--)
             {
                 var trackData = m_TrackData[i];

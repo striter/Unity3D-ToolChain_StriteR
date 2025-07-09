@@ -10,7 +10,6 @@ namespace CameraController
         [Header("Position")]
         public string m_ChildAnchorName;
         public bool m_UseTransformPosition = false;
-        [Range(0,1f)] public float m_AnchorY = 0f;
         public float3 m_AnchorOffset = 0;
         
         [Header("Rotation")]
@@ -28,7 +27,7 @@ namespace CameraController
         [Header("Pinch")]  
         [MinMaxRange(-10f,10f)] public RangeFloat m_PinchDistanceRange = default;
         [MinMaxRange(-20f,20f)] public RangeFloat m_PinchFovRange = default;
-        protected override AnchoredControllerParameters EvaluateBaseParameters(AControllerInput _input)
+        protected override FCameraControllerOutput EvaluateBaseParameters(AControllerInput _input)
         {
             var parameter = new AnchoredControllerInput {
                 pitch = m_Pitch,
@@ -37,11 +36,8 @@ namespace CameraController
                 distance = m_CameraDistance + m_PinchDistanceRange.Evaluate(_input.InputPinch),
                 viewportX = m_ViewportX,
                 viewportY = m_ViewportY,
-                anchorY = m_AnchorY,
                 childName = m_ChildAnchorName,
                 anchorOffset = m_AnchorOffset,
-                useBoundingBox = m_AnchorY > 0,
-                distanceAABBAdaption = false,
                 useTransformPosition = m_UseTransformPosition,
             };
 
