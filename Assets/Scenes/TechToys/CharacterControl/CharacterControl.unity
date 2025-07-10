@@ -1010,7 +1010,6 @@ GameObject:
   - component: {fileID: 430831301}
   - component: {fileID: 430831304}
   - component: {fileID: 430831303}
-  - component: {fileID: 430831302}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -1033,27 +1032,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1290065006}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!135 &430831302
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 430831300}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &430831303
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4932,6 +4910,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2168394225246848888}
+  - component: {fileID: 3256684803075735974}
   m_Layer: 0
   m_Name: pelvis
   m_TagString: Untagged
@@ -4939,6 +4918,135 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &3256684803075735974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3256684803075735973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29d3a6dd50a45a7920dbfa47e29816d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Weight: 1
+  m_PelvisDamper:
+    mode: 3
+    constant: 0
+    halfLife: 0.1
+    stiffness: 20
+    damping: 4
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+  m_Pelvis: {fileID: 2168394225246848888}
+  m_LeftFoot:
+    m_Foot: {fileID: 4520667810250032814}
+    m_Calf: {fileID: 7284477151584089386}
+    m_Thigh: {fileID: 2914889327321504691}
+    m_ThighRightAxis: 1
+    m_RayLength:
+      start: -0.1
+      length: 0.5
+    m_CullingMask:
+      value: -1
+    m_RotationDamper:
+      mode: 3
+      constant: 0
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_PositionDamper:
+      mode: 3
+      constant: 0
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_RotationCorrection:
+      x: 0
+      y: -90
+      z: -90
+    m_PositionCorrection:
+      x: -0.15
+      y: 0
+      z: 0
+    m_DesirePositionWS:
+      x: 0.6170062
+      y: 1.1235163
+      z: 7.603739
+    m_DesireRotationWS:
+      value:
+        x: -0.7068635
+        y: 0.6945269
+        z: -0.13345116
+        w: -0.012923766
+    m_RadiusCT: 0.4257205
+    m_RadiusCF: 0.40196708
+  m_RightFoot:
+    m_Foot: {fileID: 5176393073462360456}
+    m_Calf: {fileID: 3615524643498846117}
+    m_Thigh: {fileID: 4265496316382423638}
+    m_ThighRightAxis: 1
+    m_RayLength:
+      start: -0.1
+      length: 0.5
+    m_CullingMask:
+      value: -1
+    m_RotationDamper:
+      mode: 3
+      constant: 0
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_PositionDamper:
+      mode: 3
+      constant: 0
+      halfLife: 0.1
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_RotationCorrection:
+      x: 0
+      y: -90
+      z: 90
+    m_PositionCorrection:
+      x: 0.15
+      y: 0
+      z: 0
+    m_DesirePositionWS:
+      x: 0.2980641
+      y: 1.0449882
+      z: 7.2319937
+    m_DesireRotationWS:
+      value:
+        x: -0.69412506
+        y: -0.6567657
+        z: 0.26629686
+        w: 0.12623423
+    m_RadiusCT: 0.4257226
+    m_RadiusCF: 0.53
 --- !u!1 &3259823122597721868
 GameObject:
   m_ObjectHideFlags: 0
@@ -5145,7 +5253,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4071879165415455537}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5, y: 0, z: 0, w: 0.86602545}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

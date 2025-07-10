@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CharacterControl
   m_EditorClassIdentifier: 
   m_InputProcessor: {fileID: 11400000, guid: 649f9e382086d554e93018ea6847d933, type: 2}
-  m_Collision: {fileID: 0}
+  m_Collision: {fileID: 11400000, guid: 9b11137e51e53d84e86f43125259d644, type: 2}
   m_Anchor:
     m_AnchorMode: 0
     m_OriginDamper:

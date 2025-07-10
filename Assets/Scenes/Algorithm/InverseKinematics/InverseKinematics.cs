@@ -44,7 +44,7 @@ namespace Examples.Algorithm.InverseKinematics
 
         private void DrawGizmos3D()
         {
-            float3 control = m_Control3 + (float3)(Quaternion.Euler(math.sin(UTime.time) * 180,math.cos(UTime.time) * 180,0f)* new Vector3(0,1,0));
+            float3 control = m_Control3;// + (float3)(Quaternion.Euler(math.sin(UTime.time) * 180,math.cos(UTime.time) * 180,0f)* new Vector3(0,1,0));
             float3 point = Solve(control, m_Radius31, m_Radius32, m_Direction);
 
             Gizmos.color = Color.white;
@@ -58,8 +58,8 @@ namespace Examples.Algorithm.InverseKinematics
             Gizmos.DrawLine(point,control);
             UGizmos.DrawArrow(Vector3.zero,m_Direction,.5f,.1f);
             
-            new GSphere(0,m_Radius1).DrawGizmos();
-            new GSphere(control,m_Radius2).DrawGizmos();
+            new GSphere(0,m_Radius31).DrawGizmos();
+            new GSphere(control,m_Radius32).DrawGizmos();
         }
         
         private void OnDrawGizmos()
@@ -79,12 +79,12 @@ namespace Examples.Algorithm.InverseKinematics
             return (w*_delta + new float2(-_delta.y,_delta.x)*math.sqrt(s)) * 0.5f/h;
         }
         
-        public static float3 Solve(float3 _delta, float _r1, float _r2,float3 _dir)
+        public static float3 Solve(float3 _p, float _r1, float _r2,float3 _dir)
         {
-            float3 q = _delta*( 0.5f + 0.5f*(_r1*_r1-_r2*_r2)/math.dot(_delta,_delta) );
+            float3 q = _p*( 0.5f + 0.5f*(_r1*_r1-_r2*_r2)/math.dot(_p,_p) );
             float s = _r1*_r1 - math.dot(q,q);
             s = math.max( s, 0.0f );
-            q += math.sqrt(s)*math.normalize(math.cross(_delta,_dir));
+            q += math.sqrt(s)*math.normalize(math.cross(_p,_dir));
             return q;
         }
     }

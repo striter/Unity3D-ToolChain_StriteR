@@ -30,6 +30,7 @@ namespace Runtime.Geometry
         public static readonly GRay kDefault = new GRay(0,kfloat3.forward);
         public float3 Origin => origin;
         public void DrawGizmos() => Gizmos.DrawRay(origin, direction);
+        public void DrawGizmos(float _length) => Gizmos.DrawRay(origin, direction * _length);
         public float SDF(float3 _position)
         {
             var pointToStart = _position - origin;

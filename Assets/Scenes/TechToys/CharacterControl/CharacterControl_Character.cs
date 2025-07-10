@@ -52,7 +52,7 @@ namespace TechToys.CharacterControl
             if(aim || moving)
                 m_DesireRotation = baseRotation + new float3(0,-umath.getRadClockwise(move,kfloat2.up) * kmath.kRad2Deg,0);
             
-            var backward = aim && move.y < 0;
+            var backward = aim && move.y <= 0 && moving;
             if (backward)
             {
                 m_DesireSpeed = -m_Speed;
@@ -71,13 +71,11 @@ namespace TechToys.CharacterControl
                 transform.position = hit.position;
             
             m_Animator.SetFloat(kSpeed, finalSpeed / m_Speed);
-            // m_Animator.Update(_deltaTime);
         }
 
         
         public void LateTick(float _deltaTime)
         {
-            m_Animator.Update(0f);
             m_InverseKinematics.Collect(p=>p.Valid).Traversal(p=>p.Tick(_deltaTime));
         }
 
