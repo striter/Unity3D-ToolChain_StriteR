@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CharacterControl_Env
+  m_Name: CharacterControl_Character
   m_Shader: {fileID: 4800000, guid: 0beb9eae2e43d2f478de2b4b690f7734, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -52,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: badf4f1b9aa11154c9ff71455fa6766f, type: 3}
+        m_Texture: {fileID: 2800000, guid: 174dd8a42304a914fbfc3285f8dac20f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Matcap:
