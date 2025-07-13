@@ -7,7 +7,7 @@ using UnityEngine.Assertions.Must;
 
 namespace TechToys.ThePlanet.Module
 {
-    public class ModuleQuad : PoolBehaviour<GridID>,IQuad
+    public class ModuleQuad : APoolBehaviour<GridID>,IQuad
     {
         public GridID Identity => identity;
         public Quad<GridID> m_NearbyQuadCW { get; private set; }
@@ -33,6 +33,7 @@ namespace TechToys.ThePlanet.Module
         }
         public override void OnPoolRecycle()
         {
+            base.OnPoolRecycle();
             Quad = null;
         }
     }

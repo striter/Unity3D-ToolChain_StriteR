@@ -14,8 +14,8 @@ namespace TechToys.ThePlanet.Module.Prop
     public class ModulePropManager : MonoBehaviour,IModuleControl,IModuleVoxelCallback,IModuleCollapse,IModuleStructure
     {
         public GridManager m_Grid { get; set; }
-        private ObjectPoolBehaviour<PCGID, ModulePropContainer> m_PropContainers;
-        private ObjectPoolClass<int, ModulePropElement> m_PropElements;
+        private GameObjectPool<PCGID, ModulePropContainer> m_PropContainers;
+        private GameObjectPool<ModulePropElement> m_PropElements;
         public IModuleStructureElement CollectStructure(PCGID _voxels)=>m_PropContainers[_voxels];
 
         private readonly List<PCGID> m_PropPropaganda = new List<PCGID>();
@@ -26,8 +26,8 @@ namespace TechToys.ThePlanet.Module.Prop
         public void OnVoxelDeconstruct(PCGID _voxelID)=>m_PropContainers.Recycle(_voxelID);
         public void Init()
         {
-            m_PropContainers = new ObjectPoolBehaviour<PCGID, ModulePropContainer>(transform.Find("Container/Item"));
-            m_PropElements = new ObjectPoolClass<int, ModulePropElement>(transform.Find("Element/Item"));
+            m_PropContainers = new GameObjectPool<PCGID, ModulePropContainer>(transform.Find("Container/Item").GetComponent<ModulePropContainer>());
+            m_PropElements = new GameObjectPool<ModulePropElement>(new ModulePropElement(transform.Find("Element/Item")));
         }
 
         public void Setup()

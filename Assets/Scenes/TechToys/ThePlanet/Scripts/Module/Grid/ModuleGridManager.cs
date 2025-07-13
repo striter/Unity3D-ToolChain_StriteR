@@ -18,15 +18,15 @@ namespace TechToys.ThePlanet.Module
         
         private readonly Stack<ModuleCollapsePropagandaChain> m_PropagandaChains = new Stack<ModuleCollapsePropagandaChain>(12);
         //Local actors
-        private ObjectPoolBehaviour<GridID, ModuleVertex> m_GridVertices;
-        private ObjectPoolBehaviour<GridID,ModuleQuad> m_GridQuads;
+        private GameObjectPool<GridID, ModuleVertex> m_GridVertices;
+        private GameObjectPool<GridID,ModuleQuad> m_GridQuads;
         private PilePool<ModuleCorner> m_Corners;
         private PilePool<ModuleVoxel> m_Voxels;
 
         public void Init()
         {
-            m_GridVertices = new ObjectPoolBehaviour<GridID, ModuleVertex>(transform.Find("Vertex/Item"));
-            m_GridQuads = new ObjectPoolBehaviour<GridID,ModuleQuad>(transform.Find("Quad/Item"));
+            m_GridVertices = new GameObjectPool<GridID, ModuleVertex>(transform.Find("Vertex/Item").GetComponent<ModuleVertex>());
+            m_GridQuads = new GameObjectPool<GridID,ModuleQuad>(transform.Find("Quad/Item").GetComponent<ModuleQuad>());
             m_Corners = new PilePool<ModuleCorner>(transform.Find("Corner/Item"));
             m_Voxels = new PilePool<ModuleVoxel>(transform.Find("Voxel/Item"));
         }

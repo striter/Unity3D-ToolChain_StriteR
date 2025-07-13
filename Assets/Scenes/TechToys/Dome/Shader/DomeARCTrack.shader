@@ -74,12 +74,12 @@ Shader "Dome/Lit_ARCTrack"
 			    return toonSpecular;
 			}
 
-			void SurfaceOverride(BRDFInitializeInput input,inout BRDFSurface surface)
+			void SurfaceOverride(v2ff input,inout BRDFSurface surface)
 			{
 				surface.ao = surface.ao*input.color.a;
 			}
 
-			float4 GetAlbedoOverride(inout BRDFInitializeInput i)
+			float4 GetAlbedoOverride(inout v2ff i)
 			{
 				float4 sample = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv.xy);
 

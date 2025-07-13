@@ -8,7 +8,7 @@ using UnityEngine;
 namespace TechToys.ThePlanet.Module
 {
     [RequireComponent(typeof(MeshCollider))]
-    public class ModuleCorner : PoolBehaviour<PCGID>,ICorner
+    public class ModuleCorner : APoolBehaviour<PCGID>,ICorner
     {
         public PCGID Identity => identity;
         private byte m_Height => identity.height;

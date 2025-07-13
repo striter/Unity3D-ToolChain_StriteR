@@ -89,7 +89,7 @@ Shader "Game/Lit/PBR/ClearCoat"
 
 		    #define BRDF_SURFACE_ADDITIONAL ClearCoatData clearCoat;
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
-            void GetClearCoatData(BRDFInitializeInput input,inout BRDFSurface _surface)
+            void GetClearCoatData(v2ff input,inout BRDFSurface _surface)
             {
             	float4 mask = SAMPLE_TEXTURE2D(_ClearcoatMaskMap, sampler_ClearcoatMaskMap, input.uv);
 				ClearCoatData clearcoatData;

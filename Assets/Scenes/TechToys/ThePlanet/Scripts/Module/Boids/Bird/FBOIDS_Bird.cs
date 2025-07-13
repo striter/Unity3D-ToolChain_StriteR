@@ -11,12 +11,12 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
         private readonly FBirdConfig m_BirdConfig;
         public readonly Dictionary<int, FBirdPerchingRoot> m_PerchingRoots = new Dictionary<int, FBirdPerchingRoot>();
         public readonly Dictionary<int, FBirdFlock> m_Flocks = new Dictionary<int, FBirdFlock>();
-        private readonly ObjectPoolClass<int, FBirdPoop> m_Poops;
+        private readonly TPool.GameObjectPool<FBirdPoop> m_Poops;
 
         public FBOIDS_Bird(FBirdConfig _birdConfig, Transform _transform) : base(_transform)
         {
             m_BirdConfig = _birdConfig;
-            m_Poops = new ObjectPoolClass<int, FBirdPoop>(_transform.Find("Poop"));
+            m_Poops = new GameObjectPool<FBirdPoop>(new FBirdPoop(_transform.Find("Poop")));
         }
 
         public void Clear()
@@ -64,7 +64,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
                         continue;
 
                     var vertex = perching.SwitchRandomSpot(actor.identity);
-                    actor.Initialize(vertex);
+                    actor.SetVertex(vertex);
                     (actor.m_Behaviour as FBirdBehaviour).Initialize(EBirdBehaviour.Perching);
                     (actor.m_Target as FBirdTarget).Initialize(flock, perching);
                     break;
@@ -82,7 +82,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
             {
                 var actor = this[member];
                 Vector3 direction = URandom.RandomDirection();
-                actor.Initialize(new FBoidsVertex() { position = srcPosition + direction * .5f, rotation = Quaternion.LookRotation(-direction, randomDirection) });
+                actor.SetVertex(new FBoidsVertex() { position = srcPosition + direction * .5f, rotation = Quaternion.LookRotation(-direction, randomDirection) });
                 (actor.m_Behaviour as FBirdBehaviour).Initialize(_travelling?EBirdBehaviour.Traveling:EBirdBehaviour.Flying);
                 (actor.m_Target as FBirdTarget).Initialize(flock);
             }

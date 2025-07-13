@@ -3,7 +3,7 @@ using TPool;
 
 namespace TechToys.ThePlanet.Module.Cluster
 {
-    public class ModuleClusterCorner : PoolBehaviour<PCGID>
+    public class ModuleClusterCorner : APoolBehaviour<PCGID>
     {
         public EClusterStatus m_Status { get; private set; }
         public ICorner m_Corner { get; private set; }

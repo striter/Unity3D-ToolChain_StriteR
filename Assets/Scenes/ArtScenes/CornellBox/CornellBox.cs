@@ -14,7 +14,7 @@ namespace Examples.ArtScenes.CornellBox
     {
         public GBox m_Bounding;
         public FCameraControllerSimple m_Controller;
-        private ObjectPoolClass<int,CornellBoxView> m_Views;
+        private GameObjectPool<CornellBoxView> m_Views;
         #region Constants
         private static readonly string kViewModelRoot = "ViewModels";
         private static readonly string kViewsTemplateRoot = "Views/Template";
@@ -22,7 +22,7 @@ namespace Examples.ArtScenes.CornellBox
         private void OnEnable()
         {
             var views = transform.Find(kViewModelRoot);
-            m_Views = new (transform.Find(kViewsTemplateRoot));
+            m_Views = new (new CornellBoxView(transform.Find(kViewsTemplateRoot)));
             var quads  = m_Bounding.GetQuads().FillList(PoolList<GQuad>.Empty(nameof(CornellBox)));
             if (quads.Count != views.childCount)
             {
@@ -86,7 +86,7 @@ namespace Examples.ArtScenes.CornellBox
         }
     }
 
-    public class CornellBoxView : APoolTransform<int>
+    public class CornellBoxView : APoolElement
     {
         public Transform m_ViewRoot;
         public RenderTexture m_RenderTexture;

@@ -13,6 +13,7 @@ namespace Runtime.TouchTracker
         public Vector2 current;
         public Vector2 previous;
         public Vector2 delta;
+        public Vector2 originOffset;
         public TouchPhase phase;
         public Vector2 originNormalized;
         public Vector2 previousNormalized;
@@ -27,6 +28,7 @@ namespace Runtime.TouchTracker
             current = origin;
             previous = current;
             delta = Vector2.zero;
+            originOffset = Vector2.zero;
             lifeTime = 0f;
             phase = _touch.phase;
             
@@ -42,6 +44,7 @@ namespace Runtime.TouchTracker
             previous = current;
             current = _touch.position;
             delta = current - previous;
+            originOffset = origin - current;
             
             phase = _touch.phase;
             previousNormalized = currentNormalized;

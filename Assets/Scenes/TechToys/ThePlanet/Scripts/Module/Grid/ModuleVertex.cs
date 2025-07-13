@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace TechToys.ThePlanet.Module
 {
-    public class ModuleVertex : PoolBehaviour<GridID>,IVertex
+    public class ModuleVertex : APoolBehaviour<GridID>,IVertex
     {
         public PCGVertex m_Vertex { get; private set; }
         public readonly List<Vector3> m_NearbyVertexPositionsLS = new List<Vector3>(6);
@@ -46,6 +46,7 @@ namespace TechToys.ThePlanet.Module
         
         public override void OnPoolRecycle()
         {
+            base.OnPoolRecycle();
             m_Vertex = null;
         }
 

@@ -202,10 +202,10 @@ public partial class TouchConsole
     Counter m_FastKeyCooldownTimer = new Counter(.5f);
     public bool m_ConsoleOpening { get; private set; } = false;
     ScrollRect m_ConsoleCommandScrollRect;
-    ObjectPoolClass<int,CommandContainer> m_CommandContainers;
+    GameObjectPool<CommandContainer> m_CommandContainers;
     int m_CurrentPage;
-    ObjectPoolClass<int,ButtonSelect> m_PageSelection;
-    Dictionary<Type, ObjectPoolClass<int,CommandElementBase>> m_CommandItems = new Dictionary<Type, ObjectPoolClass<int,CommandElementBase>>();
+    GameObjectPool<ButtonSelect> m_PageSelection;
+    Dictionary<Type, GameObjectPool<CommandElementBase>> m_CommandItems = new Dictionary<Type, GameObjectPool<CommandElementBase>>();
 
     Action<bool> OnConsoleShow;
     public void SetOnConsoleShow(Action<bool> _OnConsoleShow)
@@ -216,14 +216,14 @@ public partial class TouchConsole
     void InitConsole()
     {
         m_ConsoleCommandScrollRect = transform.Find("Command").GetComponent<ScrollRect>();
-        m_CommandContainers = new ObjectPoolClass<int,CommandContainer>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/GridItem"));
+        m_CommandContainers = new GameObjectPool<CommandContainer>(new CommandContainer(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/GridItem")));
         Transform containerItemPool = m_ConsoleCommandScrollRect.transform.Find("Viewport/CommandItemPool");
-        UReflection.TraversalAllInheritedClasses<CommandElementBase>(type => m_CommandItems.Add(type, new ObjectPoolClass<int,CommandElementBase>(containerItemPool.Find(type.Name), type)));
+        UReflection.TraversalAllInheritedClasses<CommandElementBase>(type => m_CommandItems.Add(type, new GameObjectPool<CommandElementBase>((CommandElementBase)Activator.CreateInstance(type,new object[]{containerItemPool.Find(type.Name)}))));
 
         m_ConsoleOpening = false;
         m_ConsoleCommandScrollRect.SetActive(m_ConsoleOpening);
 
-        m_PageSelection = new ObjectPoolClass<int,ButtonSelect>(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/PageSelect/GridItem"));
+        m_PageSelection = new GameObjectPool<ButtonSelect>(new ButtonSelect(m_ConsoleCommandScrollRect.transform.Find("Viewport/Content/PageSelect/GridItem")));
     }
     [PartialMethod(EPartialMethods.Reset,EPartialSorting.CommandConsole)]
     void ResetConsole()
@@ -287,7 +287,7 @@ public partial class TouchConsole
             return;
         Time.timeScale = _timeScale;
     }
-    public class ButtonSelect : APoolTransform<int>
+    public class ButtonSelect : APoolElement
     {
         Text m_Title;
         Transform m_Highlight;
@@ -309,7 +309,7 @@ public partial class TouchConsole
             m_Highlight.SetActive(_highlight);
         }
     }
-    public class CommandContainer : APoolTransform<int>
+    public class CommandContainer : APoolElement
     {
         #region Predefine Classes
         #endregion
@@ -358,7 +358,7 @@ public partial class TouchConsole
             m_KeyCode = KeyCode.None;
         }
     }
-    public class CommandElementBase : APoolTransform<int>
+    public class CommandElementBase : APoolElement
     {
         public CommandElementBase(Transform _transform) : base(_transform) { }
         public virtual void OnFastKeyTrigger() { }
@@ -371,10 +371,10 @@ public partial class TouchConsole
     }
     public class CommandElementFlagsSelection : CommandElementBase
     {
-        ObjectPoolComponent<Toggle> m_ToggleGrid;
+        GameObjectPool<Toggle> m_ToggleGrid;
         public CommandElementFlagsSelection(Transform _transform) : base(_transform)
         {
-            m_ToggleGrid = new ObjectPoolComponent<Toggle>(_transform.Find("GridItem"));
+            m_ToggleGrid = new GameObjectPool<Toggle>(_transform.Find("GridItem").GetComponent<Toggle>());
         }
         public void Play<T>(T defaultValue, Action<T> _OnFlagChanged) where T : Enum
         {
@@ -396,10 +396,10 @@ public partial class TouchConsole
     }
     public class CommandElementButtonSelection : CommandElementBase
     {
-        public ObjectPoolClass<int,ButtonSelect> m_ButtonGrid { get; private set; }
+        public GameObjectPool<int,ButtonSelect> m_ButtonGrid { get; private set; }
         public CommandElementButtonSelection(Transform _transform) : base(_transform)
         {
-            m_ButtonGrid = new ObjectPoolClass<int,ButtonSelect>(_transform.Find("GridItem"));
+            m_ButtonGrid = new GameObjectPool<int,ButtonSelect>(new ButtonSelect(_transform.Find("GridItem")));
         }
         public CommandElementButtonSelection Play(List<string> values, Action<int> _OnClick)
         {
@@ -505,6 +505,7 @@ public partial class TouchConsole
             base.OnFastKeyTrigger();
             m_Button.onClick.Invoke();
         }
+
     }
 
     public class CommandElementDrag : CommandElementBase

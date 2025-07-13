@@ -72,7 +72,7 @@ Shader "Game/Lit/PBR/Pre-IntergratedSkinSSS"
 
 			#define BRDF_SURFACE_ADDITIONAL float curvature; float3 sssNormal;
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
-			void CalculateCurvature(BRDFInitializeInput input,inout BRDFSurface surface)
+			void CalculateCurvature(v2ff input,inout BRDFSurface surface)
 			{
 				float3 positionWS = input.positionWS;
 				

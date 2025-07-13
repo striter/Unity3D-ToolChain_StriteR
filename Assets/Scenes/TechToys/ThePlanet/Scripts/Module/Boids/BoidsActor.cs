@@ -4,25 +4,29 @@ using UnityEngine;
 
 namespace TechToys.ThePlanet.Module.BOIDS
 {
-    public class BoidsActor : APoolTransform<int>,IBoidsVertex
+    public class BoidsActor : APoolElement , IBoidsVertex
     {
-        public readonly IBoidsAnimation m_Animation;
-        public readonly ABoidsTarget m_Target;
-        public readonly ABoidsBehaviour m_Behaviour;
+        public IBoidsAnimation m_Animation { get; private set; }
+        public ABoidsTarget m_Target { get; private set; }
+        public ABoidsBehaviour m_Behaviour { get; private set; }
         public Vector3 Position => transform.position;
         public Quaternion Rotation => transform.rotation;
         public Vector3 Up => transform.up;
         public Vector3 Forward => m_Behaviour.m_Direction;
-        public BoidsActor(Transform _transform,ABoidsBehaviour _behaviour,ABoidsTarget _target,IBoidsAnimation _animation) : base(_transform)
+        public BoidsActor(Transform _transform) : base(_transform)
+        {
+        }
+        public BoidsActor Initialize(ABoidsBehaviour _behaviour,ABoidsTarget _target,IBoidsAnimation _animation)
         {
             m_Behaviour = _behaviour;
             m_Target = _target;
             m_Animation = _animation;
-            m_Animation.Init(_transform);
-        }
-        public BoidsActor Initialize(FBoidsVertex _start)
-        {
+            m_Animation.Init(transform);
             m_Animation.Initialize();
+            return this;
+        }
+        public BoidsActor SetVertex(FBoidsVertex _start)
+        {
             m_Target.Initialize(this,_start);
             m_Behaviour.Initialize(this,_start);
             return this;

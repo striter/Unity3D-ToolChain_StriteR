@@ -39,13 +39,13 @@ public class AudioAnalysis : MonoBehaviour
         _ => throw new ArgumentOutOfRangeException(nameof(m_Visualize), m_Visualize, null)
     };
     
-    private ObjectPoolTransform m_TransformPool;
+    private GameObjectPool<Transform> m_TransformPool;
     
     private void Awake()
     {
         m_Audio = GetComponent<AudioSource>();
 
-        m_TransformPool = new ObjectPoolTransform(transform.Find("Element"));
+        m_TransformPool = new GameObjectPool<Transform>(transform.Find("Element"));
         if(RenderSettings.skybox)
             RenderSettings.skybox = new Material(RenderSettings.skybox){hideFlags = HideFlags.HideAndDontSave};
         OnValidate();
@@ -238,8 +238,8 @@ public class AudioAnalysis : MonoBehaviour
 
     public interface IAudioVisualize
     {
-        void Init(ObjectPoolTransform _elements,int _size);
-        void Tick(float _deltaTime,ObjectPoolTransform _elements,IEnumerable<float2> _values);
+        void Init(GameObjectPool<Transform> _elements,int _size);
+        void Tick(float _deltaTime,GameObjectPool<Transform> _elements,IEnumerable<float2> _values);
     }
 
     [Serializable]
@@ -248,14 +248,14 @@ public class AudioAnalysis : MonoBehaviour
         public float m_Width = 100f;
         private Damper[] m_Dampers;
         public Damper m_Damper = Damper.kDefault;
-        public void Init(ObjectPoolTransform _elements, int _size)
+        public void Init(GameObjectPool<Transform> _elements, int _size)
         {
             m_Dampers = new Damper[_size].Remake(_ => m_Damper);
             for(var i = 0; i < _size; i++)
                  _elements.Spawn();
         }
 
-        public void Tick(float _deltaTime,ObjectPoolTransform _elements, IEnumerable<float2> _values)
+        public void Tick(float _deltaTime,GameObjectPool<Transform> _elements, IEnumerable<float2> _values)
         {
             var size = _elements.Count;
             foreach (var (i,value) in _values.LoopIndex())
@@ -286,14 +286,14 @@ public class AudioAnalysis : MonoBehaviour
         public Damper m_ColorDamper = Damper.kDefault;
         
         private Damper[] m_Dampers;
-        public void Init(ObjectPoolTransform _elements, int _size)
+        public void Init(GameObjectPool<Transform> _elements, int _size)
         {
             m_Dampers = new Damper[_size].Remake(p => m_Damper);
             for (var i = 0; i < _size; i++)
                  _elements.Spawn().GetComponentInChildren<Renderer>().material.color = m_ColorPalette.Evaluate(i / (float)_size);
         }
 
-        public void Tick(float _deltaTime,ObjectPoolTransform _elements, IEnumerable<float2> _values)
+        public void Tick(float _deltaTime,GameObjectPool<Transform> _elements, IEnumerable<float2> _values)
         {
             var size = _elements.Count;
             var highest = float.MinValue;

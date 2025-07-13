@@ -131,16 +131,14 @@
             
 			#define V2F_ADDITIONAL float2 detailNormalUV:TEXCOORD8;
             #define V2F_ADDITIONAL_TRANSFER(v,o) o.detailNormalUV = TRANSFORM_TEX_INSTANCE(v.uv,_DetailNormalTex);
-			#define BRDF_SURFACE_INITIALIZE_ADDITIONAL float2 detailnormalUV;
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 
-			void SurfaceInitialize(v2ff i,inout BRDFInitializeInput _input,inout f2of o)
+			void SurfaceInitialize(v2ff _i,BRDFSurface _surface,inout f2of o)
 			{
-				_input.detailnormalUV = i.detailNormalUV;
-				o.depth=i.positionCS.z;
-				ParallaxUVMapping(_input.uv,o.depth,_input.positionWS,_input.TBNWS,_input.viewDirWS);
+				o.depth=_i.positionCS.z;
+				ParallaxUVMapping(_i.uv,o.depth,_i.positionWS,_surface.TBNWS,_i.viewDirWS);
 			}
-			#define BRDF_SURFACE_INITIALIZE_ADDITIONAL_TRANSFER(i,input,o) SurfaceInitialize(i,input,o);
+			#define F2O_TRANSFER(i,surface,o) SurfaceInitialize(i,surface,o);
 
 			half3 GetNormalTS(float2 uv,float2 uv2)
 			{
@@ -151,7 +149,7 @@
 				#endif
 				return normalTS;
 			}
-			#define GET_NORMAL(input) GetNormalTS(input.uv,input.detailnormalUV)
+			#define GET_NORMAL(input) GetNormalTS(input.uv,input.detailNormalUV)
             
 
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"

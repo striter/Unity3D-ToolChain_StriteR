@@ -258,14 +258,14 @@ namespace TechToys.ThePlanet
         
     }
 
-    public class PilePool<Y> : IEnumerable<Y> where Y : PoolBehaviour<PCGID>
+    public class PilePool<Element> : IEnumerable<Element> where Element : APoolBehaviour<PCGID>
     {
         private readonly Dictionary<GridID, List<byte>> m_Piles = new Dictionary<GridID, List<byte>>();
-        readonly ObjectPoolBehaviour<PCGID, Y> m_Pool;
+        readonly GameObjectPool<PCGID, Element> m_Pool;
 
         public PilePool(Transform _transform)
         {
-            m_Pool = new ObjectPoolBehaviour<PCGID, Y>(_transform);
+            m_Pool = new GameObjectPool<PCGID, Element>(_transform.GetComponent<Element>());
         }
         public bool Contains(PCGID _pcgid)
         {
@@ -275,19 +275,19 @@ namespace TechToys.ThePlanet
         }
 
         public bool Contains(GridID _coord) => m_Piles.ContainsKey(_coord);
-        public Y this[PCGID _pcgid] => m_Pool.Get(_pcgid);
-        public Y Spawn(PCGID _pcgid)
+        public Element this[PCGID _pcgid] => m_Pool.Get(_pcgid);
+        public Element Spawn(PCGID _pcgid)
         {
-            Y item = m_Pool.Spawn(_pcgid);
+            Element item = m_Pool.Spawn(_pcgid);
             var location = _pcgid.location;
             if (!m_Piles.ContainsKey(location))
                 m_Piles.Add(location, TSPoolList<byte>.Spawn());
             m_Piles[location].Add(_pcgid.height);
             return item;
         }
-        public Y Recycle(PCGID _pcgid)
+        public Element Recycle(PCGID _pcgid)
         {
-            Y item = m_Pool.Recycle(_pcgid);
+            Element item = m_Pool.Recycle(_pcgid);
             var location = _pcgid.location;
             m_Piles[location].Remove(_pcgid.height);
             if (m_Piles[location].Count == 0)
@@ -309,7 +309,7 @@ namespace TechToys.ThePlanet
             m_Piles.Clear();
             m_Pool.Clear();
         }
-        public IEnumerator<Y> GetEnumerator() => m_Pool.GetEnumerator();
+        public IEnumerator<Element> GetEnumerator() => m_Pool.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
     #endregion

@@ -26,13 +26,13 @@ namespace Examples.Algorithm.SpatialHashGrid
         public float m_Separation;
         
         private TileGraph m_Graph;
-        private ObjectPoolClass<int, Actor> m_Actors;
+        private GameObjectPool<Actor> m_Actors;
         private SpatialHashMap<Node, Actor> m_SpatialHashMap = new ();
         
         private void Awake()
         {
             Instance = this;
-            m_Actors = new ObjectPoolClass<int, Actor>(transform.Find("Actor"));
+            m_Actors = new GameObjectPool<Actor>(new Actor(transform.Find("Actor")));
             m_Graph = new TileGraph(m_SenseRadius.end);
             Spawn();
         }

@@ -11,11 +11,11 @@ namespace TechToys.ThePlanet.Module.BOIDS
     {
         public Transform transform { get; }
         public BoidsActor this[int _index] => m_Actors[_index];
-        private readonly ObjectPoolClass<int, BoidsActor> m_Actors;
+        private readonly GameObjectPool<int, BoidsActor> m_Actors;
         public BoidsFlock(Transform _transform)
         {
             transform = _transform;
-            m_Actors = new ObjectPoolClass<int, BoidsActor>(_transform.Find("Actor"),GetParameters);
+            m_Actors = new GameObjectPool<int, BoidsActor>(new BoidsActor(_transform.Find("Actor")));
         }
 
         protected abstract TBoidsTarget GetTarget();
@@ -31,7 +31,7 @@ namespace TechToys.ThePlanet.Module.BOIDS
 
         protected BoidsActor SpawnActor()
         {
-            var actor = m_Actors.Spawn();
+            var actor = m_Actors.Spawn().Initialize(GetController(),GetTarget(),GetAnimation());
             return actor;
         }
 

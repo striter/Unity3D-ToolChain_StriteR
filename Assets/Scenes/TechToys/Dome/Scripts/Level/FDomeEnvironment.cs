@@ -19,7 +19,7 @@ namespace Dome
         public half2 uv;
     }
 
-    public class DomeCell : APoolTransform<int>
+    public class DomeCell : APoolElement
     {
         private FDomeCell m_Cell;
         private FDomeEnvironment m_Environment;
@@ -40,7 +40,14 @@ namespace Dome
             m_Mesh.MarkDynamic();
             m_Filter.sharedMesh = m_Mesh;
         }
-
+        
+        public override void OnPoolDispose()
+        {
+            base.OnPoolDispose();
+            m_Filter.sharedMesh = null;
+            GameObject.DestroyImmediate(m_Mesh);
+        }
+        
         public void Initialize(FDomeEnvironment _environment, FDomeCell _cell)
         {
             m_Environment = _environment;
@@ -104,13 +111,6 @@ namespace Dome
             m_Mesh.bounds = UGeometry.GetBoundingBox(outerQuad.Concat(innerQuad));
             Mesh.ApplyAndDisposeWritableMeshData(meshDataArray,m_Mesh,MeshUpdateFlags.DontRecalculateBounds);
         }
-        
-        public override void OnPoolDispose()
-        {
-            base.OnPoolDispose();
-            m_Filter.sharedMesh = null;
-            GameObject.DestroyImmediate(m_Mesh);
-        }
     }
 
     [Serializable]
@@ -129,11 +129,11 @@ namespace Dome
     public class FDomeEnvironment : ADomeController
     {
         public EnvironmentShape m_Shape = EnvironmentShape.kDefault;
-        private ObjectPoolClass<int, DomeCell> m_Cells;
+        private GameObjectPool<int, DomeCell> m_Cells;
 
         public override void OnInitialized()
         {
-            m_Cells = new ObjectPoolClass<int, DomeCell>(transform.Find("Cell"));
+            m_Cells = new GameObjectPool<int, DomeCell>(transform.Find("Cell").GetComponent<DomeCell>());
             PopulateMesh();
         }
 

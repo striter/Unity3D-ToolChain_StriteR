@@ -12,12 +12,12 @@ namespace Examples.Algorithm.MarchingSquare
     public class MarchingSquare : MonoBehaviour
     {
         public Int2 m_Size=Int2.kOne;
-        private ObjectPoolClass<Int2, Node> m_Nodes;
-        private ObjectPoolClass<Int2, Square> m_Squares;
+        private GameObjectPool<Int2, Node> m_Nodes;
+        private GameObjectPool<Int2, Square> m_Squares;
         private void Awake()
         {
-            m_Nodes = new ObjectPoolClass<Int2, Node>(transform.Find("Nodes/Node"));
-            m_Squares = new ObjectPoolClass<Int2, Square>(transform.Find("Squares/Square"));
+            m_Nodes = new GameObjectPool<Int2, Node>(new Node(transform.Find("Nodes/Node")));
+            m_Squares = new GameObjectPool<Int2, Square>(new Square(transform.Find("Squares/Square")));
             TouchConsole.Command("Clear",KeyCode.R).Button(()=>Initialize(m_Size));
             TouchConsole.Command("Random",KeyCode.T).Button(Random);
             
@@ -94,39 +94,24 @@ namespace Examples.Algorithm.MarchingSquare
 #endif
     }
 
-    public class Node : ITransform,IPoolCallback<Int2>
+    public class Node : APoolElement<Int2>
     {
-        public Action<Int2> DoRecycle { get; set; }
-        public Transform transform { get; }
-        public Int2 identity { get; set; }
         public bool m_Available { get; private set; }
         private MeshRenderer m_Renderer;
         private MaterialPropertyBlock m_Properties;
         private static readonly int ID_Color = Shader.PropertyToID("_Color");
 
-        public Node(Transform _transform)
+        public Node(Transform _transform) : base(_transform)
         {
-            transform = _transform;
             m_Properties = new MaterialPropertyBlock();
             m_Renderer = _transform.GetComponent<MeshRenderer>();
         }
 
-        public void OnPoolCreate()
+        public override void OnPoolSpawn()
         {
-        }
-
-        public void OnPoolSpawn()
-        {
+            base.OnPoolSpawn();
             transform.localPosition = new Vector3(identity.x, 0f, identity.y);
             Set(false);
-        }
-
-        public void OnPoolRecycle()
-        {
-        }
-
-        public void OnPoolDispose()
-        {
         }
 
         public void Switch() => Set(!m_Available);

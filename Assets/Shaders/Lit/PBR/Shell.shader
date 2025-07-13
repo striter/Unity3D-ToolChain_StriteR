@@ -91,8 +91,6 @@
 			
 			#define V2F_ADDITIONAL float2 furUV:TEXCOORD8;
 			#define V2F_ADDITIONAL_TRANSFER(v,o) o.furUV = TRANSFORM_TEX(v.uv,_FurTex)+float2(0,pow2(INSTANCE(_ShellDelta))*INSTANCE(_FURUVDelta));
-			#define BRDF_SURFACE_INITIALIZE_ADDITIONAL half2 furUV;
-			#define BRDF_SURFACE_INITIALIZE_ADDITIONAL_TRANSFER(i,input,o) input.furUV=i.furUV;
 			
 #if _ANISOTROPIC
     #define BRDF_SURFACE_ADDITIONAL  half roughnessT; half roughnessB;

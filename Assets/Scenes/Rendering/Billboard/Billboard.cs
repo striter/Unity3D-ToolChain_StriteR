@@ -9,12 +9,12 @@ namespace Examples.Rendering.Billboard
     public class Billboard : MonoBehaviour
     {
         private Transform m_CameraRoot;
-        private ObjectPoolTransform m_TerrainPool;
+        private GameObjectPool<Transform> m_TerrainPool;
         private float m_Forward;
         private int m_Index;
         private void Awake()
         {
-            m_TerrainPool = new ObjectPoolTransform(transform.Find("TerrainPool/Terrain"));
+            m_TerrainPool = new GameObjectPool<Transform>(transform.Find("TerrainPool/Terrain"));
             m_CameraRoot = transform.Find("CameraRoot");
             m_Forward = 0;
             m_Index = 0;

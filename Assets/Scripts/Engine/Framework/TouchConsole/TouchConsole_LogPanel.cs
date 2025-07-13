@@ -20,7 +20,7 @@ public partial class TouchConsole
     ScrollRect m_LogPanelRect;
     RectTransform m_LogFilter;
     LogToggle m_FilterLog, m_FilterWarning, m_FilterError, m_FilterCollapse;
-    ObjectPoolClass<int,LogTransformHandle> m_Logs;
+    GameObjectPool<LogTransformHandle> m_Logs;
     StackPanel m_Stack;
     [PartialMethod(EPartialMethods.Init,EPartialSorting.LogPanel)]
     void InitLog()
@@ -32,7 +32,7 @@ public partial class TouchConsole
         m_FilterWarning = new LogToggle(m_LogFilter.Find("Warning"), m_Data.m_Warning, OnLogToggled);
         m_FilterError = new LogToggle(m_LogFilter.Find("Error"), m_Data.m_Error, OnLogToggled);
         m_FilterCollapse = new LogToggle(m_LogFilter.Find("Collapse"), m_Data.m_Collapse, OnLogToggled);
-        m_Logs = new ObjectPoolClass<int,LogTransformHandle>(m_LogPanelRect.transform.Find("Viewport/Content/LogItem"));
+        m_Logs = new GameObjectPool<LogTransformHandle>(new LogTransformHandle(m_LogPanelRect.transform.Find("Viewport/Content/LogItem")));
 
         m_Stack = new StackPanel(transform.Find("Stack"));
 
@@ -162,7 +162,7 @@ public partial class TouchConsole
     }
 
 
-    class LogTransformHandle : APoolTransform<int>
+    class LogTransformHandle : APoolElement
     {
         LogData m_Data;
         Button m_Stack;

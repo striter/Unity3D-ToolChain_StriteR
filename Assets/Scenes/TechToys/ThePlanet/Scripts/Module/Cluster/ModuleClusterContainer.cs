@@ -14,7 +14,7 @@ using Gizmos = UnityEngine.Gizmos;
 
 namespace TechToys.ThePlanet.Module.Cluster
 {
-    public class ModuleClusterContainer : PoolBehaviour<PCGID> ,IModuleStructureElement,IBirdPerchingRoot
+    public class ModuleClusterContainer : APoolBehaviour<PCGID> ,IModuleStructureElement,IBirdPerchingRoot
     {
         public IVoxel m_Voxel { get; private set; }
         public Qube<ModuleClusterInputData> m_Input;

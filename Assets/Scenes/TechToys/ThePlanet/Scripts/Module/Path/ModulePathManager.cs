@@ -11,7 +11,7 @@ namespace TechToys.ThePlanet.Module.Path
     {
         public GridManager m_Grid { get; set; }
 
-        private ObjectPoolBehaviour<PCGID, ModulePath> m_Paths;
+        private GameObjectPool<PCGID, ModulePath> m_Paths;
         public IModuleStructureElement CollectStructure(PCGID _voxelID)=> m_Paths[_voxelID];
         
         private readonly List<PCGID> m_VoxelPathPropaganda = new List<PCGID>();
@@ -20,7 +20,7 @@ namespace TechToys.ThePlanet.Module.Path
 
         public void Init()
         {
-            m_Paths = new ObjectPoolBehaviour<PCGID, ModulePath>(transform.Find("Item"));
+            m_Paths = new GameObjectPool<PCGID, ModulePath>(transform.Find("Item").GetComponent<ModulePath>());
         }
 
         public void Setup()

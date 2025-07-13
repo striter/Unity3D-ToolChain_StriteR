@@ -40,7 +40,7 @@ namespace TheVoxel
         };
     }
     
-    public class ChunkElement : PoolBehaviour<Int2>
+    public class ChunkElement : APoolBehaviour<Int2>
     {
         [Readonly] public ChunkData m_Data;
         public EChunkDirty m_DirtyStatus;

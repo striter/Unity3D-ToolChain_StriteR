@@ -46,25 +46,6 @@ struct f2of
 #endif
 };
 
-
-struct BRDFInitializeInput
-{
-    float2 uv;
-    float3 normalWS;
-    float3 viewDirWS;
-    float4 positionHCS;
-    float4 color;
-    float3 positionWS;
-    half3 tangentWS;
-    half3 biTangentWS;
-    half3x3 TBNWS;
-    half3 normalTS;
-
-    #if defined(BRDF_SURFACE_INITIALIZE_ADDITIONAL)
-        BRDF_SURFACE_INITIALIZE_ADDITIONAL
-    #endif
-};
-    
 struct BRDFSurface
 {
     half3 diffuse;
@@ -90,6 +71,7 @@ struct BRDFSurface
     half BDV;
 
     half3 normalTS;
+    half3x3 TBNWS;
     
     #if defined(BRDF_SURFACE_ADDITIONAL)
         BRDF_SURFACE_ADDITIONAL

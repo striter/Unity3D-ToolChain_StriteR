@@ -87,8 +87,6 @@
 
 			#define V2F_ADDITIONAL float2 furUV:TEXCOORD8;
 			#define V2F_ADDITIONAL_TRANSFER(v,o) o.furUV = TRANSFORM_TEX(v.uv,_FurTex);
-			#define BRDF_SURFACE_INITIALIZE_ADDITIONAL half2 furUV;
-			#define BRDF_SURFACE_INITIALIZE_ADDITIONAL_TRANSFER(i,input,o) input.furUV=i.furUV;
 			
 			float3 GetPositionWS(float3 positionOS,float3 normalWS)
 			{

@@ -23,7 +23,7 @@ namespace TechToys.ThePlanet
         public static PCGAudios Instance;
         public AudioClip[] m_Clips;
         private AudioSource m_BG;
-        private ObjectPoolClass<int, AudioInstance> m_Pool;
+        private GameObjectPool< AudioInstance> m_Pool;
         private float m_Time;
         
         private Counter m_AudioPitcher = new Counter(.3f);
@@ -34,7 +34,7 @@ namespace TechToys.ThePlanet
         {
             Instance = this;
             m_BG = transform.Find("BG").GetComponent<AudioSource>();
-            m_Pool = new ObjectPoolClass<int, AudioInstance>(transform.Find("AudioElements/Item"));
+            m_Pool = new GameObjectPool< AudioInstance>(new AudioInstance(transform.Find("AudioElements/Item")));
         }
 
         public void Tick(float _deltaTime)
@@ -84,7 +84,7 @@ namespace TechToys.ThePlanet
         }
         public static void Play(string _name) => Instance.InternalPlay(_name);
         
-        private class AudioInstance : APoolTransform<int>
+        private class AudioInstance : APoolElement
         {
             public float m_EndTime { get; private set; }
             private AudioSource m_AudiosSource;

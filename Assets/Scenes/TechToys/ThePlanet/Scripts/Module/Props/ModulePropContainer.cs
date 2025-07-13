@@ -10,17 +10,15 @@ using UnityEngine;
 
 namespace TechToys.ThePlanet.Module.Prop
 {
-    public class ModulePropContainer : PoolBehaviour<PCGID>,IModuleStructureElement,IButterflyAttractions
+    public class ModulePropContainer : APoolBehaviour<PCGID>,IModuleStructureElement,IButterflyAttractions
     {
         public IVoxel m_Voxel { get; private set; }
         public float m_Random { get; private set;}
-        public readonly Dictionary<int, ModulePropCollapseData> m_PropIndexes = new Dictionary<int, ModulePropCollapseData>();
-        public readonly List<ModulePropElement> m_Props = new List<ModulePropElement>();
-        
+        public readonly Dictionary<int, ModulePropCollapseData> m_PropIndexes = new();
+        public readonly List<ModulePropElement> m_Props = new();
         public int Identity => identity.GetIdentity(DModule.kIDProp);
         public Action<int> SetDirty { get; set; }
-        public List<FBoidsVertex> m_ButterflyPositions { get; } = new List<FBoidsVertex>();
-        
+        public List<FBoidsVertex> m_ButterflyPositions { get; } = new();
         public void Init(IVoxel _voxel)
         {
             m_Voxel = _voxel;
@@ -38,7 +36,7 @@ namespace TechToys.ThePlanet.Module.Prop
             m_Props.Clear();
         }
 
-        public void BeginCollapse(ObjectPoolClass<int,ModulePropElement> _propPool)
+        public void BeginCollapse(GameObjectPool<ModulePropElement> _propPool)
         {
             TSPoolList<int>.Spawn(out var emptyTypes);
             foreach (var type in m_PropIndexes.Keys)
@@ -57,7 +55,7 @@ namespace TechToys.ThePlanet.Module.Prop
             TSPoolList<int>.Recycle(emptyTypes);
         }
         
-        public void Finalize(int _type,ModulePropCollapseData _propCollapse,ObjectPoolClass<int,ModulePropElement> _elementPool)
+        public void Finalize(int _type,ModulePropCollapseData _propCollapse,GameObjectPool<ModulePropElement> _elementPool)
         {
             if(!m_PropIndexes.ContainsKey(_type))
                 m_PropIndexes.Add(_type,ModulePropCollapseData.Invalid);
@@ -68,7 +66,7 @@ namespace TechToys.ThePlanet.Module.Prop
             RefreshProps(_elementPool);
         }
 
-        void RefreshProps(ObjectPoolClass<int,ModulePropElement> _propPool)
+        void RefreshProps(GameObjectPool<ModulePropElement> _propPool)
         {
             foreach (var prop in m_Props)
                 prop.TryRecycle();

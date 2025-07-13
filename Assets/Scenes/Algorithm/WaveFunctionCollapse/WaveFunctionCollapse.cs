@@ -12,14 +12,14 @@ namespace Examples.Algorithm.WaveFunctionCollapse
     public class WaveFunctionCollapse : MonoBehaviour
     {
         public int m_ResolvePerFrame = 1;
-        private ObjectPoolBehaviour<int,WaveFunctionContainer>[] m_PossibilitiesPool;
-        private ObjectPoolClass<int,WFCTileContainer> m_ObjectPool;
+        private GameObjectPool<WaveFunctionContainer>[] m_PossibilitiesPool;
+        private GameObjectPool<WFCTileContainer> m_ObjectPool;
         private readonly Dictionary<Int2, WFCTileContainer> m_Axis=new();
         private readonly List<Int2> m_NoneFinalized=new();
         private void Awake()
         {
-            m_ObjectPool = new ObjectPoolClass<int,WFCTileContainer>(transform.Find("Grids/Container"));
-            m_PossibilitiesPool = transform.Find("Possibilities").GetComponentsInChildren<WaveFunctionContainer>().Select(p => new ObjectPoolBehaviour<int,WaveFunctionContainer>(p.transform)).ToArray();
+            m_ObjectPool = new GameObjectPool<WFCTileContainer>(new WFCTileContainer(transform.Find("Grids/Container")));
+            m_PossibilitiesPool = transform.Find("Possibilities").GetComponentsInChildren<WaveFunctionContainer>().Select(p => new GameObjectPool<WaveFunctionContainer>(p.transform.GetComponent<WaveFunctionContainer>())).ToArray();
             Begin();
         }
 
@@ -119,7 +119,7 @@ namespace Examples.Algorithm.WaveFunctionCollapse
             return m_FillDic;
         }
         
-        class WFCTileContainer:AWFCTile<ETileDirection,WaveFunctionData>,ITransform,IPoolCallback<int>
+        class WFCTileContainer:AWFCTile<ETileDirection,WaveFunctionData>,ITransform,IPoolCallback
         {
             public Transform transform { get; }
             public Action<int> DoRecycle { get; set; }
@@ -201,33 +201,21 @@ namespace Examples.Algorithm.WaveFunctionCollapse
                 return removeList.Count > 0;
             }
 
-            public void OnPoolCreate()
-            {
-            }
-
-            public void OnPoolSpawn()
-            {
-            }
-
             public void OnPoolRecycle()
             {
                 m_Possibilities.Clear();
-            }
-
-            public void OnPoolDispose()
-            {
             }
         }
     }
 
     public abstract class AWFCTile<T,Y> where T:Enum where Y:struct,IWFCCompare<T, Y>
     {
-        public Dictionary<int, AWFCContainer<T, Y>> m_Possibilities = new Dictionary<int, AWFCContainer<T, Y>>();
+        public Dictionary<int, AWFCContainer<T, Y>> m_Possibilities = new();
         public IEnumerable<AWFCContainer<T,Y>> GetAllAvailablePossibilities() => m_Possibilities.Values;
         public bool m_Finalized { get; protected set; }
     }
 
-    public abstract class AWFCContainer<T,Y> :PoolBehaviour<int> where T:Enum where Y:struct,IWFCCompare<T, Y>
+    public abstract class AWFCContainer<T,Y> :APoolBehaviour where T:Enum where Y:struct,IWFCCompare<T, Y>
     {
         [SerializeField] public Y m_Data;
     }

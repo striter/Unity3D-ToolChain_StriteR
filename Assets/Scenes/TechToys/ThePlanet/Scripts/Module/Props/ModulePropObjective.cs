@@ -185,7 +185,7 @@ namespace TechToys.ThePlanet.Module.Prop
         }
     }
     
-    public class ModulePropElement:APoolTransform<int>
+    public class ModulePropElement: APoolElement
     {
         public EModulePropType m_Type { get; private set; }
         private readonly MeshRenderer m_MeshRenderer;

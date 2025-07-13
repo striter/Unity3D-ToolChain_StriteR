@@ -4,13 +4,10 @@ using Rendering.Pipeline;
 using TPool;
 using UnityEngine;
 
-public class FBirdPoop : ITransform , IPoolCallback<int>
+public class FBirdPoop : APoolElement
 {
-    public Transform transform { get; }
 
     private Counter m_PoopRecycler = new Counter(15f);
-    public Action<int> DoRecycle { get; set; }
-    public int identity { get; set; }
 
     private MeshRenderer m_Mesh;
     private MaterialPropertyBlock m_Block = new MaterialPropertyBlock();
@@ -20,19 +17,16 @@ public class FBirdPoop : ITransform , IPoolCallback<int>
     private Vector3 m_LocalPosition;
     public Quaternion m_LocalRotation;
     
-    public FBirdPoop(Transform _transform)
+    public FBirdPoop(Transform _transform) : base(_transform)
     {
-        transform = _transform;
         m_Mesh = _transform.GetComponentInChildren<MeshRenderer>();
         m_BaseColor = m_Mesh.sharedMaterial.GetColor(KShaderProperties.kColor);
     }
 
-    public void OnPoolCreate()
-    {
-    }
 
-    public void OnPoolSpawn()
+    public override void OnPoolSpawn()
     {
+        base.OnPoolSpawn();
         m_PoopRecycler.Replay();
     }
 
@@ -62,13 +56,15 @@ public class FBirdPoop : ITransform , IPoolCallback<int>
         transform.SetPositionAndRotation(localToWorldMatrix.MultiplyPoint(m_LocalPosition),localToWorldMatrix.rotation*m_LocalRotation);
     }
 
-    public void OnPoolRecycle()
+    public override void OnPoolRecycle()
     {
+        base.OnPoolRecycle();
         m_Sticking = null;
     }
 
-    public void OnPoolDispose()
+    public override void OnPoolDispose()
     {
+        base.OnPoolDispose();
         m_PoopRecycler.Replay();
     }
 }

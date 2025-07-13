@@ -33,59 +33,50 @@ v2ff ForwardVertex(a2vf v)
 	return o;
 }
 
-BRDFInitializeInput InitializeFragmentInput(v2ff i)
-{
-	BRDFInitializeInput input;
-	ZERO_INITIALIZE(BRDFInitializeInput,input);
-	input.uv = i.uv;
-	input.color = i.color;
-	input.positionWS = i.positionWS;
-	input.normalWS = normalize(i.normalWS);
-	input.viewDirWS = normalize(i.viewDirWS);
-	input.tangentWS = normalize(i.tangentWS);
-	input.biTangentWS = normalize(i.biTangentWS);
-	input.TBNWS = half3x3(i.tangentWS,i.biTangentWS,i.normalWS);
-	input.normalTS = half3(0,0,1);
-	return input;
-}
 
-BRDFSurface InitializeFragmentSurface(BRDFInitializeInput input)
+BRDFSurface InitializeFragmentSurface(v2ff i)
 {
 	BRDFSurface surface;
 	ZERO_INITIALIZE(BRDFSurface, surface)
+	i.normalWS = normalize(i.normalWS);
+	i.viewDirWS = normalize(i.viewDirWS);
+	i.tangentWS = normalize(i.tangentWS);
+	i.biTangentWS = normalize(i.biTangentWS);
+	surface.TBNWS = half3x3(i.tangentWS,i.biTangentWS,i.normalWS);
 	
 	half4 albedoAlpha = 
 #if defined(GET_ALBEDO)
-	GET_ALBEDO(input);
+	GET_ALBEDO(i);
 #else
-	SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,input.uv)*INSTANCE(_Color);
+	SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*INSTANCE(_Color);
 #endif
 	float3 normalTS = float3(0,0,1);
-	float3 normalWS = input.normalWS;
+	float3 normalWS = i.normalWS;
 #if !defined (_NORMALOFF)
 	#if defined(GET_NORMAL)
-		normalTS = GET_NORMAL(input);
+		normalTS = GET_NORMAL(i);
 	#else
-		normalTS = DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,input.uv));
+		normalTS = DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,i.uv));
 	#endif
-	normalWS = normalize(mul(transpose(input.TBNWS), normalTS));
+	
+	normalWS = normalize(mul(transpose(surface.TBNWS), normalTS));
 #endif
 	
 	half3 emission =0;
 #if !defined(_EMISSIONOFF)
 	#if defined(GET_EMISSION)
-		emission = GET_EMISSION(input); 
+		emission = GET_EMISSION(i); 
 	#else
-		emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,input.uv).rgb*INSTANCE(_EmissionColor).rgb;
+		emission = SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*INSTANCE(_EmissionColor).rgb;
 	#endif
 #endif
 
 float smoothness=0.5,metallic=0,ao =1;
 #if !defined(_PBROFF)
 	#if defined(GET_PBRPARAM)
-		GET_PBRPARAM(input,smoothness,metallic,ao);
+		GET_PBRPARAM(i,smoothness,metallic,ao);
 	#else
-		half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,input.uv).rgb;
+		half3 mix=SAMPLE_TEXTURE2D(_PBRTex,sampler_PBRTex,i.uv).rgb;
 		smoothness=mix.r;
 		metallic=mix.g;
 		ao=mix.b;
@@ -106,9 +97,9 @@ float smoothness=0.5,metallic=0,ao =1;
 	surface.ao = ao;
     
 	surface.normal = normalWS;
-	surface.tangent = input.tangentWS;
-	surface.biTangent = input.biTangentWS;
-	surface.viewDir = input.viewDirWS;
+	surface.tangent = i.tangentWS;
+	surface.biTangent = i.biTangentWS;
+	surface.viewDir = i.viewDirWS;
 	surface.reflectDir = normalize(reflect(-surface.viewDir, surface.normal));
 	surface.NDV = dot(surface.normal,surface.viewDir);
 	surface.TDV = dot(surface.tangent,surface.viewDir);
@@ -123,7 +114,7 @@ float smoothness=0.5,metallic=0,ao =1;
 	surface.normalTS = normalTS;
     
 	#if defined(BRDF_SURFACE_ADDITIONAL_TRANSFER)
-		BRDF_SURFACE_ADDITIONAL_TRANSFER(input,surface);
+		BRDF_SURFACE_ADDITIONAL_TRANSFER(i,surface);
 	#endif
 	
 	return surface;
@@ -156,12 +147,7 @@ f2of ForwardFragment(v2ff i)
 	UNITY_SETUP_INSTANCE_ID(i);
 	f2of o;
 	ZERO_INITIALIZE(f2of,o);
-	BRDFInitializeInput input = InitializeFragmentInput(i);
-#if defined(BRDF_SURFACE_INITIALIZE_ADDITIONAL_TRANSFER)
-	BRDF_SURFACE_INITIALIZE_ADDITIONAL_TRANSFER(i,input,o)
-#endif
-	
-	BRDFSurface surface = InitializeFragmentSurface(input);
+	BRDFSurface surface = InitializeFragmentSurface(i);
 	float3 positionWS = i.positionWS;
 	
 	half3 finalCol=0;
@@ -192,7 +178,7 @@ f2of ForwardFragment(v2ff i)
 	o.result = float4(finalCol,surface.alpha);
 	
 	#if defined(F2O_TRANSFER)
-		F2O_TRANSFER(surface,o)
+		F2O_TRANSFER(i,surface,o)
 	#endif
 	return o;
 }

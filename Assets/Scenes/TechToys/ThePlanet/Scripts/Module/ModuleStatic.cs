@@ -28,13 +28,13 @@ namespace TechToys.ThePlanet.Module
         public GTriangle m_BoatLeverage = GTriangle.kDefault;
         
         public GridManager m_Grid { get; set; }
-        private ObjectPoolClass<GridID, StaticFoliage> m_Foliage;
-        private ObjectPoolClass<GridID, StaticBoat> m_Boat;
+        private GameObjectPool<GridID, StaticFoliage> m_Foliage;
+        private GameObjectPool<GridID, StaticBoat> m_Boat;
         
         public void Init()
         {
-            m_Foliage = new ObjectPoolClass<GridID, StaticFoliage>(transform.Find("Foliage/Item"));
-            m_Boat = new ObjectPoolClass<GridID, StaticBoat>(transform.Find("Boat/Item"));
+            m_Foliage = new GameObjectPool<GridID, StaticFoliage>(new StaticFoliage(transform.Find("Foliage/Item")));
+            m_Boat = new GameObjectPool<GridID, StaticBoat>(new StaticBoat(transform.Find("Boat/Item")));
             kBoatLeverage = m_BoatLeverage;
         }
 
@@ -100,7 +100,7 @@ namespace TechToys.ThePlanet.Module
         {
         }
 
-        public abstract class StaticElement:APoolTransform<int>
+        public abstract class StaticElement: APoolElement
         {
             protected GameObject m_Model { get; private set; }
             protected StaticElement(Transform _transform) : base(_transform)

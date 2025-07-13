@@ -8,7 +8,7 @@ using Gizmos = UnityEngine.Gizmos;
 
 namespace TechToys.ThePlanet.Module.Prop
 {
-    public class ModulePath : PoolBehaviour<PCGID>,IModuleStructureElement
+    public class ModulePath : APoolBehaviour<PCGID>,IModuleStructureElement
     {
         public IVoxel m_Voxel { get; private set; }
         

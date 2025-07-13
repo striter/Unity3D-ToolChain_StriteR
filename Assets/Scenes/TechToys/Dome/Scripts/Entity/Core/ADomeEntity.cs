@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Dome.Entity
 {
-    public class DomeEntityContainer : APoolTransform<int>
+    public class DomeEntityContainer : APoolElement
     {
         public ADomeEntity m_Entity;
         

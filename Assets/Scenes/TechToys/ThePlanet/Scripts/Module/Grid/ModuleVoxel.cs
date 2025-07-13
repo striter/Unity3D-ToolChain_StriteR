@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace TechToys.ThePlanet.Module
 {
-    public class ModuleVoxel : PoolBehaviour<PCGID>,IVoxel
+    public class ModuleVoxel : APoolBehaviour<PCGID>,IVoxel
     {
         private Action<Transform, List<IMeshFragment>> populateMesh;
         public PCGID Identity => identity;

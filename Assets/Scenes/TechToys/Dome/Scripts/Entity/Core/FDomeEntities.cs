@@ -8,13 +8,13 @@ namespace Dome.Entity
 {
     public class FDomeEntities : ADomeController
     {
-        private ObjectPoolClass<int,DomeEntityContainer> m_Entities;
+        private GameObjectPool<DomeEntityContainer> m_Entities;
         private List<DomeEntityContainer> m_IterateEntities = new List<DomeEntityContainer>();
         
         public override void OnInitialized()
         {
             IEntity.kEntities = this;
-            m_Entities = new ObjectPoolClass<int, DomeEntityContainer>(transform.Find("Entity"));
+            m_Entities = new GameObjectPool<DomeEntityContainer>(new DomeEntityContainer(transform.Find("Entity")));
         }
 
         public override void Tick(float _deltaTime)

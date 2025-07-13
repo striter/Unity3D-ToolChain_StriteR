@@ -30,7 +30,7 @@ public class DrawShapes : MonoBehaviour
 
     private float2[] m_Results;
     private ComputeBuffer m_CircleResults;
-    private ObjectPoolComponent<Image> m_Images;
+    private GameObjectPool<Image> m_Images;
 
     private bool Available => Application.isPlaying && m_Shader;
     
@@ -51,7 +51,7 @@ public class DrawShapes : MonoBehaviour
             msaaSamples = 1,
         });
         m_RawImage.texture = m_Texture;
-        m_Images = new ObjectPoolComponent<Image>(transform.Find("Image"));
+        m_Images = new GameObjectPool<Image>(transform.Find("Image").GetComponent<Image>());
         
         OnValidate();
     }

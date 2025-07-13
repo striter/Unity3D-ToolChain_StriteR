@@ -11,7 +11,7 @@ namespace Dome
 
         private static readonly Transform kPrefabsRoot = new GameObject("ModelPool").transform;
         private static Dictionary<int, int> kModelPoolIndexer = new Dictionary<int, int>();
-        private static readonly Dictionary<string, ObjectPoolGameObject> kModelPool = new Dictionary<string, ObjectPoolGameObject>();
+        private static readonly Dictionary<string, GameObjectPool> kModelPool = new ();
 
         static void PrecacheAsset(string _path, Object _asset)
         {
@@ -20,7 +20,7 @@ namespace Dome
             var prefabAsset = (GameObject) _asset;
             if (prefabAsset == null) return;
             if (kModelPool.ContainsKey(_path)) return;
-            kModelPool.Add(_path,new ObjectPoolGameObject(((GameObject)Object.Instantiate(_asset,kPrefabsRoot)).transform));
+            kModelPool.Add(_path,new GameObjectPool(((GameObject)Object.Instantiate(_asset,kPrefabsRoot)).transform));
         }
         
         public static void PrecachePrefabsAtPath(string _path)
@@ -69,7 +69,7 @@ namespace Dome
             kModelPoolIndexer.Add(_model.GetInstanceID(),poolHandler);
             if(_root!=null) _model.transform.SetParent(_root);
             _model.transform.SetLocalPositionAndRotation(Vector3.zero,Quaternion.identity);
-            return _model;
+            return _model.gameObject;
         }
 
         public static bool ClearModel(string _path, GameObject _model)
