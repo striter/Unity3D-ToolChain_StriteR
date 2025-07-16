@@ -11,9 +11,9 @@ namespace Examples.Mathematics
         public float m_RotateAngle;
 
         [Header("From To")]
-        public Vector3 m_FromVector=Vector3.up;
-        public Vector3 m_ToVector = Vector3.forward;
-        public Vector3 m_FromToRotateVector = Vector3.up;
+        [PostNormalize] public Vector3 m_FromVector=Vector3.up;
+        [PostNormalize] public Vector3 m_ToVector = Vector3.forward;
+        [PostNormalize] public Vector3 m_FromToRotateVector = Vector3.up;
 
         [Header("Slerp")] public Vector3 m_SlerpFrom = kfloat3.left;
         public Vector3 m_SlerpTo = kfloat3.right;
@@ -48,7 +48,7 @@ namespace Examples.Mathematics
             Gizmos.color = Color.blue;
             Gizmos.DrawLine(Vector3.zero,umath.FromToQuaternion(from,to).mul(m_FromToRotateVector));
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(Vector3.zero,umath.FromTo3x3(from,to)*m_FromToRotateVector*.5f);
+            Gizmos.DrawLine(Vector3.zero,math.mul(umath.FromToRotationMatrix(from,to),(m_FromToRotateVector))*.5f);
 
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * 4f);
             Gizmos.color = Color.red;

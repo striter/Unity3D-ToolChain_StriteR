@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace TechToys.CharacterControl
 {
-    public class CharacterControl_Camera : SingletonMono<CharacterControl_Camera> , ICharacterControl
+    public class CharacterControl_Camera : SingletonMono<CharacterControl_Camera> , ICharacterControlMgr
     {
         [field: SerializeField] public FCameraControllerCore m_ControllerCore { get; private set; }
         [field: SerializeField] public FControllerInput m_CameraInput;

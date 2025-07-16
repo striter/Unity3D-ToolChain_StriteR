@@ -63,6 +63,18 @@ public static partial class umath
         var b = sin(t * theta) / sin_theta;
         return from * a + to * b;
     }
+
+    public static float3 slerpPosition(float3 _start, float3 _end, float _t,float3 _up)
+    {
+        var mid = math.lerp(_start, _end, .5f);
+        var startDirection = _start - mid;
+        var endDirection = _end - mid;
+        var length = startDirection.magnitude();
+        startDirection /= length;
+        endDirection /= length;
+        var direction = slerp(startDirection, endDirection, _t, _up);
+        return mid + direction * length;
+    }
     
     public static float2 tripleProduct(float2 _a, float2 _b, float2 _c) => _b *math.dot(_a, _c)  - _a * math.dot(_c, _b);
     public static float3 tripleProduct(float3 _a, float3 _b, float3 _c) => _b *math.dot(_a, _c)  - _a * math.dot(_c, _b);

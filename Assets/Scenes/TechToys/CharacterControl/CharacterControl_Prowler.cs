@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Extensions;
 using TechToys.CharacterControl.InverseKinematics;
 using Unity.Mathematics;
@@ -9,61 +7,63 @@ using UnityEngine.AI;
 
 namespace TechToys.CharacterControl
 {
-    //https://x.com/CodeerDev/status/1244995268065538048?s=20
     [ExecuteInEditMode]
-    public class CharacterControl_Prowler :  MonoBehaviour , ICharacterControl
+    public class CharacterControl_Prowler :  MonoBehaviour , ICharacterControlMgr
     {
-        [Readonly] public List<InverseKinematic_SimpleIK> m_InverseKinematics;
-
-        public float m_Extrude;
-        public float m_Tolerance;
+        public float m_Speed = 5f;
+        public float3 m_DesireRotation;
+        public float m_DesireSpeed;
+        [Header("Damping")] 
+        public Damper m_SpeedDamper = Damper.kDefault;
+        public Damper m_AngleDamper = Damper.kDefault;
+        private AInverseKinematic[] m_InverseKinematics;
         public void Initialize()
         {
-            m_InverseKinematics = GetComponentsInChildren<InverseKinematic_SimpleIK>().ToList();
+            m_InverseKinematics = GetComponentsInChildren<AInverseKinematic>();
+            m_InverseKinematics.Traversal(p=>p.Initialize());
         }
 
         public void Dispose()
         {
+            m_InverseKinematics.Traversal(p=>p.UnInitialize());
+            m_InverseKinematics = null;
         }
 
         public void Tick(float _deltaTime)
         {
-            var finalPos = transform.position;
-            if(NavMesh.SamplePosition(finalPos,out var hit,1f,NavMesh.AllAreas))
-                transform.position = hit.position;
-            foreach (var ik in m_InverseKinematics)
-            {
-                var extrudePosition = ik.transform.position + ik.transform.right * m_Extrude;
-                var nextPosition = ik.m_Evaluate;
-                if (Physics.Raycast(extrudePosition, Vector3.down, out var hit2, 3f, -1))
-                    nextPosition = hit2.point;
-                if (Vector3.Distance(ik.m_Evaluate, nextPosition) > m_Tolerance)
-                    ik.m_Evaluate = nextPosition;
-            }
+            var input = CharacterControl_Input.Instance.m_Input;
+            CharacterControl_Input.Instance.ClearInput();
+            var move = input.move;
+            var aim = input.aim;
+
+            var moving = move.sqrmagnitude() > 0f;
+            
+            var baseRotation = CharacterControl_Camera.Instance.m_CameraInput.euler.setX(0);
+            m_DesireSpeed = 0f;
+            if (moving)
+                m_DesireSpeed = m_Speed;
+            
+            if(aim)
+                m_DesireRotation = baseRotation;
+            
+            
+            var finalSpeed = m_SpeedDamper.Tick(_deltaTime,m_DesireSpeed);
+            
+            var rotation = quaternion.Euler(baseRotation * kmath.kDeg2Rad);
+            var right = math.mul(rotation,kfloat3.right);
+            var forward = math.mul(rotation,kfloat3.forward);
+
+            var finalPos = transform.position + (Vector3)(forward * move.y + right * move.x) * finalSpeed * _deltaTime;
+            if (NavMesh.SamplePosition(finalPos, out var hit, 3f, NavMesh.AllAreas))
+                finalPos = hit.position;
+
+            transform.position = finalPos;
+            transform.rotation = quaternion.Euler(m_AngleDamper.TickAngle(_deltaTime, m_DesireRotation) * kmath.kDeg2Rad);
         }
 
         public void LateTick(float _deltaTime)
         {
             m_InverseKinematics.Traversal(p=>p.Tick(_deltaTime));
         }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.matrix = Matrix4x4.identity;
-            foreach (var ik in m_InverseKinematics)
-            {
-                var extrudePosition = ik.transform.position + ik.transform.right * m_Extrude;
-                Gizmos.DrawSphere(extrudePosition,0.1f);
-                var desirePosition = ik.m_Evaluate;
-                if (Physics.Raycast(extrudePosition, Vector3.down, out var hit, 3f, -1))
-                    desirePosition = hit.point;
-                Gizmos.DrawLine(ik.m_Evaluate,desirePosition);
-            }
-        }
-
-        private void Awake() { if (!Application.isPlaying) Initialize(); }
-        private void OnDestroy() { if (!Application.isPlaying) return; Dispose(); }
-        private void LateUpdate() { if(!Application.isPlaying) LateTick(UTime.deltaTime); }
-        private void Update() { if (!Application.isPlaying) Tick(UTime.deltaTime); }
     }
 }

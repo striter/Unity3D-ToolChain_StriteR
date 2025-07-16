@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: CharacterControl_CameraCollision
   m_EditorClassIdentifier: 
   m_CollisionMin: 0
-  m_CollisionForward: 0.1
+  m_CollisionForward: 0
   m_CullingMask: -1
-  m_ColliderRadius: 0.205
+  m_ColliderRadius: 0.1
   m_ForceSyncEveryFrame: 0
   m_LastHitObject: {fileID: 0}
   m_LastOutput:

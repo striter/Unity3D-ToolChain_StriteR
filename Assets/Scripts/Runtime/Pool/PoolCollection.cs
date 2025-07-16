@@ -3,14 +3,35 @@ using System.Collections.Generic;
 
 namespace Runtime.Pool
 {
+    public class Pool<T> : IDisposable where T : new()
+    {
+        private Stack<T> inActiveElements = new ();
+        public Pool(int _initialSize = 32)
+        {
+            for(var i = 0; i < _initialSize;i++)
+                inActiveElements.Push(new T());
+        }
+
+        public void Dispose()
+        {
+            inActiveElements.Clear();
+        }
+        
+        public virtual T Spawn() => inActiveElements.Count > 0 ? inActiveElements.Pop() : new();
+        public void Spawn(out T element) => element = Spawn();
+        public virtual void Despawn(T _element)
+        {
+            if (_element == null)
+                return;
+            inActiveElements.Push(_element);
+        }
+    }
+    
     public abstract class APoolCollection<InstanceClass,PoolElement> : Pool<PoolElement>
         where InstanceClass : APoolCollection<InstanceClass,PoolElement>, new()
         where PoolElement : new()
     {
-        protected virtual void ClearCollection(PoolElement _collection)
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract void ClearCollection(PoolElement _collection);
         public sealed override void Despawn(PoolElement _element)
         {
             base.Despawn(_element);

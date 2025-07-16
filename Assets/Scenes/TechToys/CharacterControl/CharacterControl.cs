@@ -1,13 +1,9 @@
-using System;
 using System.Linq.Extensions;
-using CameraController;
-using CameraController.Demo;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace TechToys.CharacterControl 
 {
-    interface ICharacterControl
+    interface ICharacterControlMgr
     {
         public void Initialize();
         public void Dispose();
@@ -15,12 +11,13 @@ namespace TechToys.CharacterControl
         public void Tick(float _deltaTime);
         public void LateTick(float _deltaTime);
     }
+
     public class CharacterControl : MonoBehaviour
     {
-        private ICharacterControl[] m_Controllers;
+        private ICharacterControlMgr[] m_Controllers;
         private void Awake()
         {
-            m_Controllers = GetComponentsInChildren<ICharacterControl>();
+            m_Controllers = GetComponentsInChildren<ICharacterControlMgr>();
             m_Controllers.Traversal(p=>p.Initialize());
         }
 

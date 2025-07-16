@@ -5,8 +5,8 @@ namespace TechToys.CharacterControl.InverseKinematics
     public abstract class AInverseKinematic : MonoBehaviour
     {
         public abstract bool Valid { get; }
-        public abstract void Initialize();
-        public abstract void UnInitialize();
+        public virtual void Initialize(){}
+        public virtual void UnInitialize(){}
         public abstract void Tick(float _deltaTime);
         public abstract void Reset();
     }

@@ -8,38 +8,29 @@ namespace TechToys.CharacterControl.InverseKinematics
     [ExecuteInEditMode]
     public class InverseKinematic_SimpleIK : AInverseKinematic
     {
-        public Transform m_Root;
-        public Transform m_Joint;
+        public Transform m_DirectionRoot;
+        public ETransformAxis m_Direction;
+        public Transform m_Joint0;
+        public Transform m_Joint1;
         public float m_RootRadius = 1f;
         public float m_EvaluateRadius = 1f;
-        public ETransformAxis m_RootAxis;
         public float3 m_RotationCorrection;
         [Position] public Vector3 m_Evaluate;
-        public float3 Forward =>  transform.GetAxis(m_RootAxis);
-        public override bool Valid => m_Root != null && m_Joint != null;
-        public override void Initialize()
-        {
-            
-        }
-
-        public override void UnInitialize()
-        {
-        }
-
+        public override bool Valid => m_DirectionRoot != null && m_Joint0 != null && m_Joint1 != null;
         public override void Tick(float _deltaTime)
         {
-            var rootPos = (float3)m_Root.position;
-            var dir = transform.GetAxis(m_RootAxis);
+            var dir = transform.GetAxis(m_Direction);
+            var rootPos = (float3)m_DirectionRoot.position;
             var evaluate = (float3)m_Evaluate;
             var jointDesirePos = Solve( rootPos, m_RootRadius, evaluate,m_EvaluateRadius, dir);
             var correction = quaternion.Euler(m_RotationCorrection * kmath.kDeg2Rad);
             var rootRotation = quaternion.LookRotation((jointDesirePos-rootPos).normalize(),dir);
-            m_Root.transform.rotation = math.mul(rootRotation,correction);
+            m_Joint0.transform.rotation = math.mul(rootRotation,correction);
             
             var jointRotation = quaternion.LookRotation((evaluate-jointDesirePos).normalize(),dir);
             
-            m_Joint.transform.position = jointDesirePos;
-            m_Joint.transform.rotation = math.mul(jointRotation,correction);
+            m_Joint1.transform.position = jointDesirePos;
+            m_Joint1.transform.rotation = math.mul(jointRotation,correction);
         }
 
         public override void Reset()
@@ -63,8 +54,8 @@ namespace TechToys.CharacterControl.InverseKinematics
             if (!m_DrawGizmos || !Valid)
                 return;
             
-            var rootPos = (float3)m_Root.position;
-            var dir = transform.GetAxis(m_RootAxis);
+            var rootPos = (float3)m_DirectionRoot.position;
+            var dir = transform.GetAxis(m_Direction);
             var jointDesirePos = Solve( rootPos, m_RootRadius, m_Evaluate,m_EvaluateRadius, dir);
             
             Gizmos.matrix = Matrix4x4.identity;

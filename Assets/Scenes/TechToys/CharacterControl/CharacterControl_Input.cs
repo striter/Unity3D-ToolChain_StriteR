@@ -14,9 +14,18 @@ namespace TechToys.CharacterControl
         public float cameraZoom;
     }
     
-    public class CharacterControl_Input : SingletonMono<CharacterControl_Input> , ICharacterControl
+    public class CharacterControl_Input : SingletonMono<CharacterControl_Input> , ICharacterControlMgr
     {
         [field : SerializeField] public FCharacterControlInput m_Input { get; private set; }
+
+        public void ClearInput()
+        {
+            m_Input = new FCharacterControlInput()
+            {
+                cameraMove = m_Input.cameraMove,
+                cameraZoom = m_Input.cameraZoom,
+            };
+        }
         public void Initialize()
         {
             

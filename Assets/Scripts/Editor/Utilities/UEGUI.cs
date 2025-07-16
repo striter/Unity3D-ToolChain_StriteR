@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -72,15 +73,14 @@ namespace UnityEditor.Extensions
                     var indexString = paths[i];
                     var start = indexString.IndexOf('[') + 1;
                     var index = int.Parse(indexString.Substring(start, indexString.Length - start - 1));
-                    targetType = targetType.GetElementType();
-                    targetObject = ((Array)targetObject).GetValue(index);
+                    targetObject = ((IList)targetObject)[index];
                 }
                 else
                 {
                     FieldInfo targetField = targetType.GetField(pathName, _flags);
-                    targetType = targetField.FieldType;
                     targetObject = targetField.GetValue(targetObject);
                 }
+                targetType = targetObject.GetType();
             }
 
             foreach (var subfield in targetType.GetFields(_flags))

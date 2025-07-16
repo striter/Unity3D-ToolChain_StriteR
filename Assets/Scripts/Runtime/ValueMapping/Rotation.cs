@@ -64,7 +64,7 @@ public static partial class umath
             t * x * z - s * y, t * y * z + s * x, t * z * z + c);
     }
 
-    public static float3x3 QuaternionToMatrix3x3(quaternion _quaternion)
+    public static float3x3 ToRotationMatrix(quaternion _quaternion)
     {
         var x = _quaternion.value.x;
         var y = _quaternion.value.y;
@@ -72,9 +72,40 @@ public static partial class umath
         var w = _quaternion.value.w;
         return new float3x3(
             1f - 2 * y * y - 2 * x * x,     2f * x * y - 2 * w * z,         2 * x * z + 2 * w * y,
-            2 * x * y + 2 * w * z,         1f - 2 * x * x - 2 * z * z,     2 * y * z - 2 * w * x,
-            2 * x * z - 2 * w * y,         2 * y * z + 2 * w * x,         1f - 2 * x * x - 2 * y * y
+            2 * x * y + 2 * z * w,         1f - 2 * x * x - 2 * z * z,     2 * y * z - 2 * w * x,
+            2 * x * z - 2 * y * w,         2 * y * z + 2 * w * x,         1f - 2 * x * x - 2 * y * y
         );
+    }
+
+    public static quaternion ToQuaternion(float3x3 _matrix)
+    {
+        var m00 = _matrix.c0.x; var m01 = _matrix.c1.x; var m02 = _matrix.c2.x; 
+        var m10 = _matrix.c0.y; var m11 = _matrix.c1.y; var m12 = _matrix.c2.y;
+        var m20 = _matrix.c0.z; var m21 = _matrix.c1.z; var m22 = _matrix.c2.z;
+        float4 q;
+        float t;
+        if (m22 < 0) {
+            if (m00 >m11) {
+                t = 1 + m00 -m11 -m22;
+                q = float4( t, m01+m10, m20+m02, m12-m21 );
+            }
+            else {
+                t = 1 -m00 + m11 -m22;
+                q = float4( m01+m10, t, m12+m21, m20-m02 );
+            }
+        }
+        else {
+            if (m00 < -m11) {
+                t = 1 -m00 -m11 + m22;
+                q = float4( m20+m02, m12+m21, t, m01-m10 );
+            }
+            else {
+                t = 1 + m00 + m11 + m22;
+                q = float4( m12-m21, m20-m02, m01-m10, t );
+            }
+        }
+        q *= (0.5f / sqrt(t));
+        return q;
     }
 
     public static float GetAngle(quaternion _q1, quaternion _q2)
@@ -85,18 +116,18 @@ public static partial class umath
         return acos(dt);
     }
 
-    public static quaternion Slerp(quaternion _q1, quaternion _q2,float _t)
+    public static quaternion slerp(quaternion _q1, quaternion _q2,float _t)
     {
-        float dt = math.dot(_q1.value, _q2.value);
+        var dt = math.dot(_q1.value, _q2.value);
         if (dt < 0.0f)
             dt = -dt;
 
         if (dt < 0.9995f)
         {
-            float angle = acos(dt);
-            float s = rsqrt(1.0f - dt * dt);    // 1.0f / sin(angle)
-            float w1 = sin(angle* (1.0f - _t))  * s;
-            float w2 = sin(angle * _t)  * s;
+            var angle = acos(dt);
+            var s = rsqrt(1.0f - dt * dt);    // 1.0f / sin(angle)
+            var w1 = sin(angle* (1.0f - _t))  * s;
+            var w2 = sin(angle * _t)  * s;
             return quaternion(_q1.value * w1 + _q2.value * w2);
         }
 
@@ -105,20 +136,19 @@ public static partial class umath
     
     public static quaternion FromToQuaternion(float3 _from, float3 _to)
     {
-        var e = dot(_from, _to);
-        var v = math.cross(_from, _to);
-        var sqrt1Pe = sqrt(2 * (1 + e));
-        var Qv = v * (1f / sqrt1Pe);
-        var Qw = sqrt1Pe / 2f;
-        return new quaternion(Qv.x, Qv.y, Qv.z, Qw);
+        var dot = math.dot(_from, _to);
+        var s = math.sqrt((1 + dot) * 2);
+        var invs = 1 / s;
+        var cross = math.cross(_from, _to) * invs;
+        return new quaternion(cross.x, cross.y, cross.z, s * 0.5f);
     }
 
-    public static Matrix3x3 FromTo3x3(float3 _from, float3 _to)
+    public static float3x3 FromToRotationMatrix(float3 _from, float3 _to) 
     {
+        var e = dot(_from, _to);
         var v = math.cross(_from, _to);
-        var e = math.dot(_from, _to);
         var h = 1 / (1 + e);
-        return new Matrix3x3(e + h * v.x * v.x, h * v.x * v.y - v.z, h * v.x * v.z + v.y,
+        return new float3x3(e + h * v.x * v.x, h * v.x * v.y - v.z, h * v.x * v.z + v.y,
             h * v.x * v.y + v.z, e + h * v.y * v.y, h * v.y * v.z - v.x,
             h * v.x * v.z - v.y, h * v.y * v.z + v.x, e * h * v.z * v.z
         );

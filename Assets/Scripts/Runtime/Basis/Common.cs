@@ -164,6 +164,7 @@ public struct Counter
 {
     public float duration;
     public float timeElapsed;
+    public static Counter kDefault = new Counter(1f);
     public bool Playing => TimeLeft > 0;
     public float TimeLeft => duration - timeElapsed;
     public float TimeLeftScale => TimeLeft / duration;

@@ -121,7 +121,7 @@ namespace Runtime.Geometry.Extension
         {
             kProjectedVertices.Clear();
             for (int i = 0; i < _vertices.Count; i++)
-                kProjectedVertices.Add(UGeometry.Projection(_projectionPlane,_vertices[i],_poleOrigin).xz);
+                kProjectedVertices.Add(_projectionPlane.Projection(_vertices[i],_poleOrigin).xz);
             
             BowyerWatson(kProjectedVertices,ref kTempTriangles);
             _triangles.AddRange(kTempTriangles);

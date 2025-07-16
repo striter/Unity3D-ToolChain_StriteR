@@ -7,7 +7,8 @@ using UnityEngine.AI;
 
 namespace TechToys.CharacterControl
 {
-    public class CharacterControl_Character : MonoBehaviour , ICharacterControl
+    //https://x.com/CodeerDev/status/1244995268065538048?s=20
+    public class CharacterControl_Humanoid : MonoBehaviour , ICharacterControlMgr
     {
         public float m_Speed = 5f;
         public float m_SprintMultiplier = 2f;
