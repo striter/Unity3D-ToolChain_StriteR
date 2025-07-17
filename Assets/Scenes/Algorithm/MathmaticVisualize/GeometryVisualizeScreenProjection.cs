@@ -2,7 +2,7 @@ using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using UnityEngine;
 
-namespace Examples.Algorithm.Geometry
+namespace Examples.Algorithm.MathmaticVisualize
 {
     public class GeometryVisualizeScreenProjection : MonoBehaviour
     {

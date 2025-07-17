@@ -4,7 +4,7 @@ using Runtime.Geometry.Curves.Spline;
 using Runtime.Geometry.Curves.LineSegments;
 using UnityEngine;
 
-namespace Examples.Algorithm.Geometry
+namespace Examples.Algorithm.MathematicsVisualize
 {
     public class GeometryVisualizeCurves : MonoBehaviour
     {

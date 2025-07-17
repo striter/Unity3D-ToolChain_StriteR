@@ -5,7 +5,7 @@ using System.Linq.Extensions;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
 
-namespace Examples.Algorithm.Geometry
+namespace Examples.Algorithm.MathematicsVisualize
 {
     public class GeometryIntersectFrustum : MonoBehaviour
     {

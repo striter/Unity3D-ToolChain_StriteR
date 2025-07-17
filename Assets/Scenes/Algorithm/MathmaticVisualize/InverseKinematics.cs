@@ -64,9 +64,9 @@ namespace Examples.Algorithm.InverseKinematics
         
         private void OnDrawGizmos()
         {
-            Gizmos.matrix = Matrix4x4.identity;
+            Gizmos.matrix = transform.localToWorldMatrix;
             DrawGizmos2D();
-            Gizmos.matrix = Matrix4x4.Translate(new float3(20f, 0f, 0f));
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(new float3(20f, 0f, 0f));
             DrawGizmos3D();
         }
 

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Examples.Mathmatics
+namespace Examples.Algorithm.MathematicsVisualize
 {
     public class ValueMappingVisualize : MonoBehaviour
     {

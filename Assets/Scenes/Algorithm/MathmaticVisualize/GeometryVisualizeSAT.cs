@@ -5,7 +5,7 @@ using System.Linq.Extensions;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Examples.Algorithm.Geometry
+namespace Examples.Algorithm.MathmaticVisualize
 {
     public class GeometryVisualizeSAT : MonoBehaviour
     {

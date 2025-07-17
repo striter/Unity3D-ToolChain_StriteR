@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
 
-namespace Examples.Algorithm.Geometry
+namespace Examples.Algorithm.MathematicsVisualize
 {
     public class GeometryVisualizePCA : MonoBehaviour
     {

@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Examples.Algorithm.Geometry
+namespace Examples.Algorithm.MathematicsVisualize
 {
     public class GeometryVisualizeSupportPoints : MonoBehaviour
     {

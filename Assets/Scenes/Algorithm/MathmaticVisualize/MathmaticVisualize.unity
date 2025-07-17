@@ -629,6 +629,65 @@ Transform:
   - {fileID: 1004309177}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1250999394
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1250999395}
+  - component: {fileID: 1250999396}
+  m_Layer: 0
+  m_Name: InverseKinematics
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1250999395
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1250999394}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 22.7, y: -4.65, z: -34.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1250999396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1250999394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d71d6e29bd57884b999ca05d72f2c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Radius1: 5
+  m_Radius2: 2
+  m_Control:
+    x: -2.43
+    y: 4.92
+  m_Radius31: 5
+  m_Radius32: 2
+  m_Control3:
+    x: -0.52
+    y: -5.33
+    z: 1.55
+  m_Direction:
+    x: -1
+    y: -0.56
+    z: 0
 --- !u!1 &1344025775
 GameObject:
   m_ObjectHideFlags: 0
@@ -1016,6 +1075,89 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1515569981
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1515569983}
+  - component: {fileID: 1515569982}
+  m_Layer: 0
+  m_Name: ValueMappingInspector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1515569982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515569981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5416819d4937b7443858d400644ce964, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LinearPolynomial:
+    linear: 2
+    constant: 1
+  m_QuadraticPolynomial:
+    quadratic: 3
+    linear: 2
+    constant: 1
+  m_CubicPolynomial:
+    cubic: 3
+    quadratic: 2
+    linear: 1
+    constant: 0
+  m_Damper:
+    mode: 3
+    constant: 0
+    halfLife: 0.1
+    stiffness: 20
+    damping: 4
+    secondOrderDynamics:
+      f: 5
+      z: 0.35
+      r: -0.5
+      poleMatching: 1
+  m_Identity:
+    type: 0
+    n: 0
+    T: 1
+  m_Impulse:
+    type: 0
+    impulsePeak: 0.3
+    degree: 180
+    attack: 5
+    release: 2
+    frequency: 5
+  m_UnitaryRemapping:
+    type: 0
+    k: 1
+    powercurveA: 0.5
+    powercurveB: 0.5
+--- !u!4 &1515569983
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515569981}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 22.7, y: -4.65, z: -34.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1673,7 +1815,7 @@ GameObject:
   - component: {fileID: 1931283630}
   - component: {fileID: 1931283629}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: RotationVisualize
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2193,3 +2335,5 @@ SceneRoots:
   - {fileID: 1196101758}
   - {fileID: 723239860}
   - {fileID: 1931283630}
+  - {fileID: 1515569983}
+  - {fileID: 1250999395}
