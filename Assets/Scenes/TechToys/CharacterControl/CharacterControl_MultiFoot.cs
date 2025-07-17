@@ -8,7 +8,7 @@ using UnityEngine.AI;
 namespace TechToys.CharacterControl
 {
     [ExecuteInEditMode]
-    public class CharacterControl_Prowler :  MonoBehaviour , ICharacterControlMgr
+    public class CharacterControl_MultiFoot :  MonoBehaviour , ICharacterControlMgr
     {
         public float m_Speed = 5f;
         public float3 m_DesireRotation;
@@ -18,7 +18,10 @@ namespace TechToys.CharacterControl
         public Damper m_AngleDamper = Damper.kDefault;
         private AInverseKinematic[] m_InverseKinematics;
         public void Initialize()
-        {
+        {        
+            var finalPos = transform.position;
+            if (NavMesh.SamplePosition(finalPos, out var hit, 3f, NavMesh.AllAreas))
+                transform.position = hit.position;
             m_InverseKinematics = GetComponentsInChildren<AInverseKinematic>();
             m_InverseKinematics.Traversal(p=>p.Initialize());
         }

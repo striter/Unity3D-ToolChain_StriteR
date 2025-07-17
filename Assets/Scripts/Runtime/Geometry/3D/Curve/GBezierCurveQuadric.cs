@@ -33,13 +33,14 @@ namespace Runtime.Geometry.Curves
             tangentDestination = normalize(destination - control);
         }
         
-        public float3 Evaluate(float _value)
+        public float3 Evaluate(float _value) => Evaluate(source, destination, control, _value); 
+
+        public static float3 Evaluate(float3 _src, float3 _dst, float3 _control, float _value)
         {
             float value = _value;
             float oneMinusValue = 1 - value;
-            return sqr(oneMinusValue) * source + 2 * (oneMinusValue) * value * control + sqr(value) * destination;
+            return sqr(oneMinusValue) * _src + 2 * (oneMinusValue) * value * _control + sqr(value) * _dst;
         }
-
         public float3 EvaluateTangent(float _value) => normalize(lerp(tangentSource, tangentDestination, _value));
 
         public float3 Origin => source;

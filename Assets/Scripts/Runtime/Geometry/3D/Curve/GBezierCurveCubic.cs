@@ -24,11 +24,12 @@ namespace Runtime.Geometry.Curves
             controlDestination = _dstCtr;
         }
         
-        public float3 Evaluate(float _value)
-        {
+        public float3 Evaluate(float _value) => Evaluate(source, destination, controlSource, controlDestination, _value);
+        public static float3 Evaluate(float3 _src, float3 _dst, float3 _srcCtr, float3 _dstCtr, float _value)
+        {    
             float value = _value;
             float oneMinusValue = 1 - value;
-            return pow3(oneMinusValue) * source +  3 * sqr(oneMinusValue) * value * controlSource +  3 * oneMinusValue * sqr(value) * controlDestination + pow3(value) * destination;
+            return pow3(oneMinusValue) * _src +  3 * sqr(oneMinusValue) * value * _srcCtr +  3 * oneMinusValue * sqr(value) * _dstCtr + pow3(value) * _dst;
         }
 
 

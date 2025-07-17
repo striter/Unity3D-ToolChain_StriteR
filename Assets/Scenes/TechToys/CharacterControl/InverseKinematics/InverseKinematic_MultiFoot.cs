@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry;
+using Runtime.Geometry.Curves;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -23,6 +24,8 @@ namespace TechToys.CharacterControl.InverseKinematics
 
         public override void Initialize()
         {
+            if (m_Pelvis == null || m_Root == null)
+                return;
             m_Pelvis.transform.SetLocalPositionAndRotation(new Vector3(0f,m_VerticalOffset,0f),quaternion.identity);
             GetComponentsInChildren<InverseKinematic_SimpleIK>(false).Select(ik => new FootControlDamper(ik,m_Root)).FillList(m_ControlPointDampers);
             m_ControlPointDampers.Traversal(p=>p.Initialize(m_Data));
@@ -94,8 +97,6 @@ namespace TechToys.CharacterControl.InverseKinematics
         private void Update() { if (!Application.isPlaying && Valid) Tick(UTime.deltaTime); }
         private void OnValidate()
         {
-            if (Application.isPlaying)
-                return;
             UnInitialize();
             Initialize();
         }
@@ -106,70 +107,100 @@ namespace TechToys.CharacterControl.InverseKinematics
             public float extrude;
             public CullingMask cullingMask;
             public RangeFloat topDownRayOffset;
-            public float tolerance;
-            public Damper damper;
+            [Header("Foot Move")]
+            public RangeFloat toleranceRange;
+            public float controlPointOffset;
+            public float moveDuration;
             public static readonly FootControlData kDefault = new FootControlData
             {
                 extrude = 0.2f,
-                tolerance = 0.05f, 
-                damper = Damper.kDefault,
+                toleranceRange = new RangeFloat(0.25f,0.15f), 
+                moveDuration = 0.1f,
+                controlPointOffset = 0.1f,
                 cullingMask = -1,
                 topDownRayOffset = new RangeFloat(-.2f, 0.4f),
             }; 
         }
-        
+
         [Serializable]
         public class FootControlDamper
         {
-            [field : SerializeField]public InverseKinematic_SimpleIK m_IK { get; private set; }
-            public bool Moving => m_Data.damper.velocity.sqrmagnitude() > 0.01f;
-            private float3 m_AnchorPosition;
+            [field: SerializeField] public InverseKinematic_SimpleIK m_IK { get; private set; }
+            public bool Moving => m_MoveDuration.Playing;
             private FootControlData m_Data;
             private Transform m_Root;
             private RaycastHit m_HitInfo;
             public float3 PositionOffsetWS => CurrentPositionWS - DesirePositionWS;
-            public float3 CurrentPositionWS =>  m_HitInfo.collider == null ? DesirePositionWS : m_HitInfo.point;
+            public float3 CurrentPositionWS => m_HitInfo.collider == null ? DesirePositionWS : m_HitInfo.point;
             public float3 RotationOffsetWS => m_HitInfo.collider == null ? kfloat3.up : m_HitInfo.normal;
-            public float3 DesirePositionWS => m_Root.localToWorldMatrix.MultiplyPoint(m_RootPositionLS.setY(0f)) + m_Root.localToWorldMatrix.MultiplyVector(m_ExtrudeDirectionLS) * m_Data.extrude;
-            public GLine HitDetectionTopDownRayWS => new (DesirePositionWS - (float3)m_Root.up * m_Data.topDownRayOffset.start, DesirePositionWS - (float3)m_Root.up *m_Data.topDownRayOffset.end);
+
+            public float3 DesirePositionWS => m_Root.localToWorldMatrix.MultiplyPoint(m_RootPositionLS.setY(0f)) +
+                                              m_Root.localToWorldMatrix.MultiplyVector(m_ExtrudeDirectionLS) *
+                                              m_Data.extrude;
+
+            public GLine HitDetectionTopDownRayWS =>
+                new(DesirePositionWS - (float3)m_Root.up * m_Data.topDownRayOffset.start,
+                    DesirePositionWS - (float3)m_Root.up * m_Data.topDownRayOffset.end);
+
             public GLine HitDetectionSideRayWS => new GLine(m_Root.localToWorldMatrix.MultiplyPoint(m_RootPositionLS),
                 DesirePositionWS + (float3)m_Root.up * new Vector3(0f, m_RootPositionLS.y, 0f));
+
             private float3 m_RootPositionLS = float3.zero;
             private float3 m_ExtrudeDirectionLS = float3.zero;
-            public FootControlDamper(InverseKinematic_SimpleIK _ik,Transform _root)
+            private float3 m_LastPositionWS;
+            private Counter m_MoveDuration = new Counter();
+
+            public FootControlDamper(InverseKinematic_SimpleIK _ik, Transform _root)
             {
                 m_Root = _root;
                 m_IK = _ik;
-
                 m_RootPositionLS = _root.worldToLocalMatrix.MultiplyPoint(_ik.transform.position);
                 m_ExtrudeDirectionLS = _root.worldToLocalMatrix.MultiplyVector(_ik.transform.right);
-                m_AnchorPosition = m_IK.m_Evaluate;
             }
 
             public FootControlDamper Initialize(FootControlData _data)
             {
                 m_Data = _data;
+                m_MoveDuration.Set(_data.moveDuration);
                 return this;
             }
-            public void Tick(float _deltaTime,bool _validMove)
+
+            public void Tick(float _deltaTime, bool _validMove)
             {
-                if (_validMove)
+                if (!Physics.Raycast(HitDetectionSideRayWS.start, HitDetectionSideRayWS.direction, out m_HitInfo, HitDetectionSideRayWS.length, m_Data.cullingMask))
+                    Physics.Raycast(HitDetectionTopDownRayWS.start, HitDetectionTopDownRayWS.direction, out m_HitInfo, HitDetectionTopDownRayWS.length, m_Data.cullingMask);
+
+                if (m_MoveDuration.Playing)
                 {
-                    if (!Physics.Raycast(HitDetectionSideRayWS.start, HitDetectionSideRayWS.direction, out m_HitInfo, HitDetectionSideRayWS.length, m_Data.cullingMask))
-                        Physics.Raycast(HitDetectionTopDownRayWS.start, HitDetectionTopDownRayWS.direction, out m_HitInfo, HitDetectionTopDownRayWS.length, m_Data.cullingMask);
-                    
-                    if (Vector3.Distance(m_AnchorPosition, CurrentPositionWS) > m_Data.tolerance)
-                        m_AnchorPosition = CurrentPositionWS;
+                    m_MoveDuration.Tick(_deltaTime);
+                    m_IK.m_Evaluate =
+                        GBezierCurveQuadratic.Evaluate(m_LastPositionWS, CurrentPositionWS,
+                            (m_LastPositionWS + CurrentPositionWS) / 2 + (float3)m_Root.up * m_Data.controlPointOffset,
+                            m_MoveDuration.TimeElapsedScale);
+                    // math.lerp(m_LastPositionWS, CurrentPositionWS, m_MoveDuration.TimeElapsedScale);
+                    return;
                 }
 
-                m_IK.m_Evaluate = m_Data.damper.Tick(_deltaTime,m_AnchorPosition);
+                m_LastPositionWS = m_IK.m_Evaluate;
+                
+                var distance = Vector3.Distance(m_LastPositionWS, CurrentPositionWS);
+                var reposition = distance > m_Data.toleranceRange.end;
+                reposition |= _validMove && distance > m_Data.toleranceRange.start;
+                if (reposition)
+                {
+                    m_LastPositionWS = m_IK.m_Evaluate;
+                    m_MoveDuration.Set(m_Data.moveDuration);
+                }
+
             }
 
             public void Reset()
             {
-                Tick(0f,true);
+                if (!Physics.Raycast(HitDetectionSideRayWS.start, HitDetectionSideRayWS.direction, out m_HitInfo, HitDetectionSideRayWS.length, m_Data.cullingMask))
+                    Physics.Raycast(HitDetectionTopDownRayWS.start, HitDetectionTopDownRayWS.direction, out m_HitInfo, HitDetectionTopDownRayWS.length, m_Data.cullingMask);
                 m_IK.m_Evaluate = CurrentPositionWS;
-                m_Data.damper.Initialize(CurrentPositionWS);
+                m_LastPositionWS = m_IK.m_Evaluate;
+                m_MoveDuration.Stop();
             }
 
             public void DrawGizmos()
@@ -178,19 +209,26 @@ namespace TechToys.CharacterControl.InverseKinematics
                 HitDetectionTopDownRayWS.DrawGizmos();
                 HitDetectionSideRayWS.DrawGizmos();
                 Gizmos.color = Color.white;
-                var extrudePositionWS = m_Root.localToWorldMatrix.MultiplyPoint(m_RootPositionLS); 
-                Gizmos.DrawWireSphere(extrudePositionWS,.05f);
-                Gizmos.DrawLine(extrudePositionWS,DesirePositionWS);
-                Gizmos.DrawWireSphere(DesirePositionWS,0.05f);
+                var extrudePositionWS = m_Root.localToWorldMatrix.MultiplyPoint(m_RootPositionLS);
+                Gizmos.DrawWireSphere(extrudePositionWS, .05f);
+                Gizmos.DrawLine(extrudePositionWS, DesirePositionWS);
+                Gizmos.DrawWireSphere(DesirePositionWS, 0.05f);
                 Gizmos.color = Color.green;
-                Gizmos.DrawWireSphere(m_AnchorPosition,0.05f);
-                Gizmos.DrawLine(DesirePositionWS,m_AnchorPosition);
+                Gizmos.DrawWireSphere(m_LastPositionWS, 0.05f);
+                Gizmos.DrawLine(DesirePositionWS, m_LastPositionWS);
                 Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(CurrentPositionWS,0.05f);
-                Gizmos.DrawLine(CurrentPositionWS,m_AnchorPosition);
+                Gizmos.DrawWireSphere(CurrentPositionWS, 0.05f);
+                Gizmos.DrawLine(CurrentPositionWS, m_LastPositionWS);
+                if (m_MoveDuration.Playing)
+                {
+                    new GBezierCurveQuadratic(m_LastPositionWS, CurrentPositionWS,
+                            (m_LastPositionWS + CurrentPositionWS) / 2 + (float3)m_Root.up * m_Data.controlPointOffset)
+                        .DrawGizmos();
+                }
             }
         }
-    
+
+
     }
     
 }
