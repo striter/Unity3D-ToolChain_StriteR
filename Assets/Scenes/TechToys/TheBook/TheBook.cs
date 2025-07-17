@@ -1,10 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq.Extensions;
 using Rendering;
-using Runtime.Geometry;
-using Runtime.Geometry.Extension;
 using Runtime.Pool;
 using Runtime.TouchTracker;
 using TMPro;
@@ -113,6 +108,11 @@ namespace TechToys.TheBook
             var progressAnimation = math.clamp( fFlip - iFlip , 0, 1);;     //Output progress animation
             m_Renderer.material.SetFloat(kProgressID, progressAnimation);
             m_Renderer.material.EnableKeyword(kPictureKeyword, m_PictureBook);
+        }
+
+        private void OnValidate()
+        {
+            m_Pages?.Clear();
         }
     }
 

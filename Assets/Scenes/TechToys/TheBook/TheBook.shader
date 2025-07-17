@@ -5,7 +5,7 @@ Shader "Hidden/TheBook"
         _MainTex("Main Tex",2D)="white"{}
         _Color("Color Tint",Color)=(1,1,1,1)
 		[NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
-		[NoScaleOffset]_PBRTex("PBR Tex(Glossiness.Metallic.AO)",2D)="black"{}
+		[NoScaleOffset]_PBRTex("PBR Tex(Roughness.Metallic.AO)",2D)="black"{}
     	[Toggle(_PICTURE)]_PICTURE("Picture Book",int)=1
         
 		[Header(Pages)]

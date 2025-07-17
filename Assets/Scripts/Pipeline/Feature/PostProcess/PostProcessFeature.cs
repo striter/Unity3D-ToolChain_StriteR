@@ -40,7 +40,7 @@ namespace Rendering.Pipeline
             
             m_PostprocessQueue.Clear();
             
-            if (_renderingData is { postProcessingEnabled: true, cameraData: { postProcessEnabled: true } })
+            if (!_renderingData.cameraData.isSceneViewCamera && _renderingData is { postProcessingEnabled: true, cameraData: { postProcessEnabled: true } })
             {
                 var antiAliasing = m_AntiAliasing.mode;
                 if(antiAliasing != EAntiAliasing.None)
