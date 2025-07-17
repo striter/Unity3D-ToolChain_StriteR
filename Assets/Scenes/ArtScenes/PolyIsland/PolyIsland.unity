@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000002, guid: 6ae4563ecc3ab6b49acda5b8d0fe9534,
+  m_LightingDataAsset: {fileID: 112000002, guid: 1bb374de61adc9f46bfb915338372f18,
     type: 2}
   m_LightingSettings: {fileID: 1785458812}
 --- !u!196 &4
@@ -746,6 +746,76 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.data[2].index
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.reflectionProbes.Array.data[0]
+      value: 
+      objectReference: {fileID: 8900000, guid: 46745d3f670e0094f9eaf0de19b412e1, type: 3}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.reflectionProbes.Array.data[1]
+      value: 
+      objectReference: {fileID: 8900000, guid: be62fb606d149e54d83d7dea0d30b1e0, type: 3}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.reflectionProbes.Array.data[2]
+      value: 
+      objectReference: {fileID: 8900000, guid: 94698a113bae2b84183355e083ed0b53, type: 3}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.data[0].scaleOffset.w
+      value: 0.005859375
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.data[0].scaleOffset.x
+      value: 0.9899731
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.data[0].scaleOffset.y
+      value: 0.9899785
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.data[0].scaleOffset.z
+      value: 0.005859375
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.data[2].scaleOffset.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.parameters.Array.data[2].scaleOffset.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.bakingOutput.Array.data[0].mixedLightingMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1026202169813064502, guid: 5fc3594c79f5cc34b914d8207786072a,
+        type: 3}
+      propertyPath: m_Diffuse.bakingOutput.Array.data[0].probeOcclusionLightIndex
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 2638484995229630208, guid: 5fc3594c79f5cc34b914d8207786072a,
         type: 3}
       propertyPath: m_Name

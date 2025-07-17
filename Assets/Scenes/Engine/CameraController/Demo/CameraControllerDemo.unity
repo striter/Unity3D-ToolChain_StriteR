@@ -151,10 +151,11 @@ Transform:
   m_GameObject: {fileID: 63640629}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 786475086}
   m_Father: {fileID: 687934236}
   m_LocalEulerAnglesHint: {x: 0, y: 249.92645, z: 0}
 --- !u!136 &63640631
@@ -399,6 +400,37 @@ Transform:
   - {fileID: 63640630}
   m_Father: {fileID: 1666276433}
   m_LocalEulerAnglesHint: {x: 0, y: 16.33081, z: 0}
+--- !u!1 &786475085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 786475086}
+  m_Layer: 0
+  m_Name: Head
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &786475086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786475085}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 63640630}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &823352712
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,7 +491,7 @@ Camera:
     height: 1
   near clip plane: 0.59
   far clip plane: 1000
-  field of view: 45
+  field of view: 40
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -485,8 +517,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 823352712}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.058348086, z: -0, w: 0.9982963}
-  m_LocalPosition: {x: -0.000000007450581, y: 1.538, z: 0}
+  m_LocalRotation: {x: 0.043545075, y: 0.058292553, z: -0.0025451076, w: 0.99734616}
+  m_LocalPosition: {x: -1.0645694, y: 3.3087256, z: -9.07592}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -684,6 +716,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Input:
+    m_ControllerIndex: 0
+    m_Controllers: []
+    m_ScriptedControllerOverride: {fileID: 0}
     camera: {fileID: 0}
     anchor: {fileID: 687934236}
     anchorOffset:
@@ -700,11 +735,6 @@ MonoBehaviour:
       z: 0
     pinch: 0
     fovDelta: 0
-  m_Controllers:
-  - {fileID: 11400000, guid: 7025e21eb2c2bb74e95ad9cf155c2e2a, type: 2}
-  - {fileID: 11400000, guid: fd76805b41e1e314c870a1b3f152cc4e, type: 2}
-  - {fileID: 11400000, guid: 8966193dd80d99d4a8c00c0805ac75e4, type: 2}
-  m_ScripedControllerOverride: {fileID: 0}
   m_Interpolate: {fileID: 11400000, guid: 873f1e8e1402719438b442604a0a9eb3, type: 2}
   m_AdditionalAnimation: {fileID: 11400000, guid: 7d53f9d6e3cf85849b7395ae0ba4866a,
     type: 2}
@@ -722,7 +752,7 @@ MonoBehaviour:
         z: 0
       fov: 0
       distance: 0
-      viewPort:
+      viewport:
         x: 0
         y: 0
     m_AnchorDebugRecording: 0
@@ -738,6 +768,180 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1052094156}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1264489582
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1264489584}
+  - component: {fileID: 1264489583}
+  m_Layer: 0
+  m_Name: '!ftraceLightmaps'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1264489583
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1264489582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7fa80e7116296f4eb4f49ec1544ee22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderSettingsBounces: 5
+  renderSettingsGISamples: 16
+  renderSettingsGIBackFaceWeight: 0
+  renderSettingsTileSize: 512
+  renderSettingsPriority: 2
+  renderSettingsTexelsPerUnit: 20
+  renderSettingsForceRefresh: 1
+  renderSettingsForceRebuildGeometry: 1
+  renderSettingsPerformRendering: 1
+  renderSettingsUserRenderMode: 0
+  renderSettingsDistanceShadowmask: 1
+  renderSettingsSettingsMode: 0
+  renderSettingsFixSeams: 1
+  renderSettingsDenoise: 1
+  renderSettingsDenoise2x: 0
+  renderSettingsEncode: 1
+  renderSettingsEncodeMode: 0
+  renderSettingsOverwriteWarning: 0
+  renderSettingsAutoAtlas: 1
+  renderSettingsUnwrapUVs: 1
+  renderSettingsForceDisableUnwrapUVs: 0
+  renderSettingsMaxAutoResolution: 4096
+  renderSettingsMinAutoResolution: 16
+  renderSettingsUnloadScenes: 1
+  renderSettingsAdjustSamples: 1
+  renderSettingsGILODMode: 2
+  renderSettingsGILODModeEnabled: 0
+  renderSettingsCheckOverlaps: 0
+  renderSettingsSkipOutOfBoundsUVs: 1
+  renderSettingsHackEmissiveBoost: 1
+  renderSettingsHackIndirectBoost: 1
+  renderSettingsTempPath: 
+  renderSettingsOutPath: BakeryLightmaps
+  renderSettingsUseScenePath: 0
+  renderSettingsHackAOIntensity: 0
+  renderSettingsHackAOSamples: 16
+  renderSettingsHackAORadius: 1
+  renderSettingsShowAOSettings: 0
+  renderSettingsShowTasks: 1
+  renderSettingsShowTasks2: 0
+  renderSettingsShowPaths: 1
+  renderSettingsShowNet: 1
+  renderSettingsOcclusionProbes: 0
+  renderSettingsTexelsPerMap: 0
+  renderSettingsTexelsColor: 1
+  renderSettingsTexelsMask: 1
+  renderSettingsTexelsDir: 1
+  renderSettingsShowDirWarning: 1
+  renderSettingsRenderDirMode: 0
+  renderSettingsShowCheckerSettings: 0
+  renderSettingsSamplesWarning: 1
+  renderSettingsSuppressPopups: 0
+  renderSettingsPrefabWarning: 1
+  renderSettingsSplitByScene: 0
+  renderSettingsSplitByTag: 0
+  renderSettingsUVPaddingMax: 0
+  renderSettingsPostPacking: 1
+  renderSettingsHoleFilling: 0
+  renderSettingsBeepOnFinish: 0
+  renderSettingsExportTerrainAsHeightmap: 1
+  renderSettingsRTXMode: 0
+  renderSettingsLightProbeMode: 1
+  renderSettingsClientMode: 0
+  renderSettingsServerAddress: 127.0.0.1
+  renderSettingsUnwrapper: 0
+  renderSettingsDenoiserType: 100
+  renderSettingsExportTerrainTrees: 0
+  renderSettingsShowPerf: 1
+  renderSettingsSampleDiv: 1
+  renderSettingsAtlasPacker: 0
+  renderSettingsBatchPoints: 1
+  renderSettingsCompressVolumes: 0
+  renderSettingsSector: {fileID: 0}
+  renderSettingsRTPVExport: 1
+  renderSettingsRTPVSceneView: 0
+  renderSettingsRTPVHDR: 0
+  renderSettingsRTPVWidth: 640
+  renderSettingsRTPVHeight: 360
+  lastBakeTime: 0
+  enlightenWarningShown: 0
+  enlightenWarningShown2: 0
+  uniqueLights: []
+  lights: []
+  implicitGroups: []
+  implicitGroupedObjects: []
+  bounds: []
+  hasEmissive: 
+  uvBuffOffsets: 
+  uvBuffLengths: 
+  uvSrcBuff: []
+  uvDestBuff: []
+  lmrIndicesOffsets: 
+  lmrIndicesLengths: 
+  lmrIndicesBuff: 
+  lmGroupLODResFlags: 
+  lmGroupMinLOD: 
+  lmGroupLODMatrix: 
+  serverGetFileList: []
+  lightmapHasColor: 
+  lightmapHasMask: 
+  lightmapHasDir: 
+  lightmapHasRNM: 
+  modifiedAssetPathList: []
+  modifiedAssets: []
+  maps: []
+  masks: []
+  dirMaps: []
+  rnmMaps0: []
+  rnmMaps1: []
+  rnmMaps2: []
+  mapsMode: 
+  bakedRenderers: []
+  bakedIDs: 
+  bakedScaleOffset: []
+  bakedVertexOffset: 
+  bakedVertexColorMesh: []
+  nonBakedRenderers: []
+  bakedLights: []
+  bakedLightChannels: 
+  bakedRenderersTerrain: []
+  bakedIDsTerrain: 
+  bakedScaleOffsetTerrain: []
+  assetList: []
+  uvOverlapAssetList: 
+  idremap: 
+  usesRealtimeGI: 0
+  emptyDirectionTex: {fileID: 0}
+  anyVolumes: 0
+  compressedVolumes: 0
+  sectors: []
+--- !u!4 &1264489584
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1264489582}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -795,8 +999,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Input:
+    m_ControllerIndex: 0
+    m_Controllers:
+    - {fileID: 11400000, guid: 4fa496188d753b749b92011d28de2c4f, type: 2}
+    - {fileID: 11400000, guid: fd76805b41e1e314c870a1b3f152cc4e, type: 2}
+    - {fileID: 11400000, guid: 7025e21eb2c2bb74e95ad9cf155c2e2a, type: 2}
+    - {fileID: 11400000, guid: 8966193dd80d99d4a8c00c0805ac75e4, type: 2}
+    m_ScriptedControllerOverride: {fileID: 0}
     camera: {fileID: 823352714}
-    anchor: {fileID: 687934236}
+    anchor: {fileID: 786475086}
     anchorOffset:
       x: 0
       y: 0
@@ -809,13 +1020,8 @@ MonoBehaviour:
       x: 0
       y: 6.6899977
       z: 0
-    pinch: 0
+    pinch: 0.5
     fovDelta: 0
-  m_Controllers:
-  - {fileID: 11400000, guid: 7025e21eb2c2bb74e95ad9cf155c2e2a, type: 2}
-  - {fileID: 11400000, guid: fd76805b41e1e314c870a1b3f152cc4e, type: 2}
-  - {fileID: 11400000, guid: 8966193dd80d99d4a8c00c0805ac75e4, type: 2}
-  m_ScripedControllerOverride: {fileID: 0}
   m_Interpolate: {fileID: 11400000, guid: 873f1e8e1402719438b442604a0a9eb3, type: 2}
   m_AdditionalAnimation: {fileID: 11400000, guid: 7d53f9d6e3cf85849b7395ae0ba4866a,
     type: 2}
@@ -825,20 +1031,20 @@ MonoBehaviour:
     m_Output:
       anchor:
         x: 0
-        y: 1.538
+        y: 2.2
         z: 0
       euler:
-        x: 0
+        x: 5
         y: 6.6899977
         z: 0
-      fov: 45
-      distance: 0
-      viewPort:
+      fov: 40
+      distance: 9.2
+      viewport:
         x: 0
-        y: 0
+        y: -0.046
     m_AnchorDebugRecording: 0
     m_SerializedController: {fileID: 0}
-    m_ScriptableController: {fileID: 11400000, guid: 7025e21eb2c2bb74e95ad9cf155c2e2a,
+    m_ScriptableController: {fileID: 11400000, guid: 4fa496188d753b749b92011d28de2c4f,
       type: 2}
   m_DrawGizmos: 1
   m_DrawInputGizmos: 1
@@ -849,7 +1055,7 @@ Animation:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1666276432}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: 046829bf4f1c81e498afa7f31144ff7e, type: 2}
   m_Animations:
@@ -972,3 +1178,4 @@ SceneRoots:
   - {fileID: 1810544109}
   - {fileID: 1666276433}
   - {fileID: 1052094158}
+  - {fileID: 1264489584}

@@ -15,8 +15,8 @@ namespace CameraController.Demo
     public class FControllerInput : AControllerInput,IFOVOffset,IViewportOffset , IAnchorOffset , IControllerPlayerTouchInput
     {
         [Header("Controllers")]
-        [Foldout(nameof(m_ScriptedControllerOverride),null),Clamp(0,nameof(m_Controllers))]public int m_ControllerIndex;
-        [Foldout(nameof(m_ScriptedControllerOverride),null)] public List<ACameraController> m_Controllers;
+        [Clamp(0,nameof(m_Controllers))]public int m_ControllerIndex;
+        public List<ACameraController> m_Controllers;
         public ACameraController m_ScriptedControllerOverride;
         
         public Camera camera;

@@ -64,6 +64,7 @@ namespace UnityEditor.Extensions
             var paths = _property.propertyPath.Split('.');
             object targetObject = _property.serializedObject.targetObject;
             var targetType = targetObject.GetType();
+            
             for(var i=0;i< paths.Length - 1; i++)       //Iterate till it reaches the root
             {
                 var pathName = paths[i];
@@ -73,14 +74,15 @@ namespace UnityEditor.Extensions
                     var indexString = paths[i];
                     var start = indexString.IndexOf('[') + 1;
                     var index = int.Parse(indexString.Substring(start, indexString.Length - start - 1));
+                    targetType = targetType.IsArray ? targetType.GetElementType() : targetType.GetGenericArguments()[0];
                     targetObject = ((IList)targetObject)[index];
                 }
                 else
                 {
-                    FieldInfo targetField = targetType.GetField(pathName, _flags);
+                    var targetField = targetType.GetField(pathName, _flags);
+                    targetType = targetField.FieldType;
                     targetObject = targetField.GetValue(targetObject);
                 }
-                targetType = targetObject.GetType();
             }
 
             foreach (var subfield in targetType.GetFields(_flags))
