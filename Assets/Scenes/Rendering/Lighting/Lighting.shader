@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/Lighting"
+Shader "Hidden/Lighting"
 {
     Properties
     {
