@@ -61,6 +61,13 @@ namespace Runtime.Geometry
                 return;
             UGizmos.DrawLinesConcat(positions.Select(p=>p.to3xz()));
         }
+        
+        public void DrawGizmosXY()
+        {
+            if (positions == null || positions.Count == 0)
+                return;
+            UGizmos.DrawLinesConcat(positions.Select(p=>p.to3xy()));
+        }
     }
 
     public static class G2Polygon_Extension

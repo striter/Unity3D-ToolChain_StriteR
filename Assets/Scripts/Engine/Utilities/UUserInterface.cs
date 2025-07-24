@@ -108,8 +108,9 @@ public static class UUserInterface
         rect.localPosition = Vector3.zero;
     }
 
-    public static G2Box GetLocalBounds(this RectTransform _rectTrans,RectTransform _rootTransform)
+    public static G2Box GetLocalBounds(this RectTransform _rectTrans,RectTransform _rootTransform = null)
     {
+        _rootTransform ??= _rectTrans.root as RectTransform;
         var min = _rectTrans.anchorMin * _rootTransform.rect.size;
         min += _rectTrans.offsetMin;
         var max = _rectTrans.anchorMax * _rootTransform.rect.size;
@@ -154,6 +155,28 @@ public static class UUserInterface
         var pixel = texture.GetPixel(x,y);
             
         return pixel.a > 0;
+    }
+
+    public static bool TransformScreenToWorld(this RectTransform _rectTransform, Vector2 _screenPoint, Camera _camera, out Vector3 _positionWS)
+    {
+        _positionWS = default;
+        var ray = RectTransformUtility.ScreenPointToRay(_camera, _screenPoint);
+        var plane = new Plane(_rectTransform.rotation * Vector3.back, _rectTransform.position);
+        var enter = 0.0f;
+        if (Vector3.Dot(Vector3.Normalize(_rectTransform.position - ray.origin), plane.normal) != 0.0 && !plane.Raycast(ray, out enter))
+            return false;
+        _positionWS = ray.GetPoint(enter);
+        return true;
+    }
+
+    public static bool TransformScreenToLocal(this RectTransform _rectTransform, Vector2 _screenPoint, Camera _camera, out Vector2 _positionLS)
+    {
+        _positionLS = default;
+        Vector3 worldPoint;
+        if (!_rectTransform.TransformScreenToWorld(_screenPoint, _camera, out worldPoint))
+            return false;
+        _positionLS =  _rectTransform.worldToLocalMatrix.MultiplyPoint(worldPoint);
+        return true;
     }
 
     public static void RaycastAll(Vector2 castPos)      //Bind UIT_EventTriggerListener To Items Need To Raycast By EventSystem

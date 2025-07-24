@@ -18,8 +18,13 @@ namespace Examples.Rendering.ContourOutline
         {
             if (m_ContourTexture == null)
                 return;
-
-            m_ContourTracing = ContourTracingData.FromColor(m_ContourTexture.width, m_ContourTexture.GetPixels(),p=> m_MaxElement?p.to4().maxElement() > m_Bias : p.a > m_Bias);
+            var pixels = m_ContourTexture.width * m_ContourTexture.height;
+            if (pixels > 256 * 256)
+            {
+                Debug.Log("Too many pixels");
+                return;
+            }
+            m_ContourTracing = ContourTracingData.FromColor(m_ContourTexture.width, m_ContourTexture.ReadPixels(),p=> m_MaxElement?p.to4().maxElement() > m_Bias : p.a > m_Bias);
         }
 
         private void OnDrawGizmos()
@@ -30,7 +35,7 @@ namespace Examples.Rendering.ContourOutline
                 for (var x = 0; x < m_ContourTracing.resolution.x; x++)
                 {
                     var pixel = new int2(x, y);
-                    var color = m_ContourTracing.m_ContourTessellation[pixel.x + pixel.y * m_ContourTracing.resolution.x] ? Color.blue.SetA(.5f) : Color.red.SetA(.5f);
+                    var color = m_ContourTracing.tesssellation[pixel.x + pixel.y * m_ContourTracing.resolution.x] ? Color.blue.SetA(.5f) : Color.red.SetA(.5f);
                     var size = .75f;
                     
                     Gizmos.color = color;

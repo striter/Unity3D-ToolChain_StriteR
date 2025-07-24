@@ -66,15 +66,26 @@ Shader "Hidden/Voxelizer"
                 int iteration = 0;
                 float marchDistance = max(0, distances.x);
                 float3 color = 0;
+                float3 normal = 0;
                 while(iteration++ < 128)
                 {
                     marchDistance += marchStep;
                     float3 marchPos = ray.GetPoint(marchDistance);
-                    color += SAMPLE_TEXTURE3D(_MainTex,sampler_MainTex,cube.GetNormalizedPoint(marchPos)).x;
+                    float sample = SAMPLE_TEXTURE3D(_MainTex,sampler_MainTex,cube.GetNormalizedPoint(marchPos)).x;
+                    if(sample > 0)
+                    {
+                        color = 1;
+                        normal.x += SAMPLE_TEXTURE3D(_MainTex,sampler_MainTex,cube.GetNormalizedPoint(marchPos + float3(marchStep,0,0))).x - sample;
+                        normal.y += SAMPLE_TEXTURE3D(_MainTex,sampler_MainTex,cube.GetNormalizedPoint(marchPos + float3(0,marchStep,0))).x - sample;
+                        normal.z += SAMPLE_TEXTURE3D(_MainTex,sampler_MainTex,cube.GetNormalizedPoint(marchPos + float3(0,0,marchStep))).x - sample;
+                        break;
+                    }
                 }
                 color = saturate(color);
-                
-                return float4(saturate(color),max(color));
+                normal = normalize(normal);
+                float NDL = dot(normal,-normalize(_MainLightPosition.xyz));
+                float halfLambert = NDL * .5 + .5;
+                return float4(saturate(color) * halfLambert,max(color));
             }
             ENDHLSL
         }

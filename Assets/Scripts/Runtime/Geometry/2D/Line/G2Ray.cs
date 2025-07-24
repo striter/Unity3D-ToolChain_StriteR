@@ -20,7 +20,7 @@ namespace Runtime.Geometry
         public float2 GetPoint(float _distance) => origin + direction * _distance;
         
         public static G2Ray StartEnd(float2 _start, float2 _end) => new G2Ray(_start, math.normalize(_end - _start));
-        public float2 Origin => Origin;
+        public float2 Origin => origin;
         public float SDF(float2 _position)
         {
             var lineDirection = direction;

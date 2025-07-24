@@ -9,29 +9,30 @@ using UnityEngine;
 using static Unity.Mathematics.kint2;
 
 //https://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/index.html
+[Serializable]
 public struct ContourTracingData : IGraphFinite<int2>
 {
     public int2 resolution;
-    public bool[] m_ContourTessellation;
+    public bool[] tesssellation;
 
-    public int Count => m_ContourTessellation.Length;
+    public int Count => tesssellation.Length;
     public static ContourTracingData FromColor(int _width,Color[] _colors,Func<Color,bool> _predicate = null)
     {
-        _predicate ??= color => color.a > 0.1f;
+        _predicate ??= color => color.a > 0.01f;
         
         var length = _colors.Length;
         var height = length / _width;
-        var contourTessellation = new bool[_width * height];
+        var tessellation = new bool[_width * height];
         for (var i = 0; i < length; i++)
-            contourTessellation[i] = _predicate(_colors[i]) ;
+            tessellation[i] = _predicate(_colors[i]) ;
         return new ContourTracingData {
             resolution = new int2(_width, height),
-            m_ContourTessellation = contourTessellation,
+            tesssellation = tessellation,
         };
     }
 
     public bool OutOfBounds(int2 _pixel) => (_pixel < int2.zero).any() || (_pixel >= resolution).any();
-    public bool Sample(int2 _pixel) => !OutOfBounds(_pixel) && m_ContourTessellation[UCoordinates.Tile.ToIndex(_pixel,resolution.x)];
+    public bool Sample(int2 _pixel) => !OutOfBounds(_pixel) && tesssellation[UCoordinates.Tile.ToIndex(_pixel,resolution.x)];
 
     public IEnumerable<int2> GetAdjacentNodes(int2 _src)
     {
@@ -43,7 +44,7 @@ public struct ContourTracingData : IGraphFinite<int2>
 
     public IEnumerator<int2> GetEnumerator()
     {
-        for(var i=0;i<m_ContourTessellation.Length;i++)
+        for(var i=0;i<tesssellation.Length;i++)
             yield return UCoordinates.Tile.ToTile(i,resolution.x);
     }
 
@@ -55,12 +56,12 @@ public static class ContourTracingData_Extension   //Transform ContourTracingDat
     public static bool ContourAble(this ContourTracingData _data,int2 _initialPixel,out int2 _startPixel)
     {
         _startPixel = int2.zero;
-        if (_data.m_ContourTessellation== null || _data.m_ContourTessellation.Length == 0)
+        if (_data.tesssellation== null || _data.tesssellation.Length == 0)
             return false;
 
         var index = (_initialPixel != int2.zero).all() && _data.Sample(_initialPixel) ? 
                 _data.DFS(_initialPixel).Min(p=>UCoordinates.Tile.ToIndex(p,_data.resolution.x)) : 
-                _data.m_ContourTessellation.IndexOf(true);        
+                _data.tesssellation.IndexOf(true);        
         if (index == -1)
             return false;
         

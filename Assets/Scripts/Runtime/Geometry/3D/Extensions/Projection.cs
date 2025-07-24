@@ -66,8 +66,8 @@ namespace Runtime.Geometry.Extension
         public static float2 Projection(this GRay _ray, GLine _line)        //x line projection, y ray projection
         {
             var projections = Projection(_line, _ray);
-            projections.x = clamp(projections.x, 0, _line.length);
-            projections.y = Projection(_ray, _line.GetPoint(projections.x));
+            projections.y = clamp(projections.x, 0, _line.length);
+            projections.x = Projection(_ray, _line.GetPoint(projections.y));
             return projections;
         }
 

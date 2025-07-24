@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct G2Line : ISDF<float2>
+    public struct G2Line : ISDF<float2> , IRayIntersection2
     {
         public float2 start;
         public float2 end;
@@ -28,6 +28,9 @@ namespace Runtime.Geometry
             direction = delta / length;
         }
 
+        
+        public static implicit operator G2Ray(G2Line _ray) => new G2Ray(_ray.start,_ray.direction);
+        
         public float2 Origin => start;
         public void DrawGizmos() => Gizmos.DrawLine(start.to3xz(),end.to3xz());
 
@@ -36,6 +39,13 @@ namespace Runtime.Geometry
             var lineDirection = direction;
             var pointToStart = _position - start;
             return math.length(umath.cross(lineDirection, pointToStart));
+        }
+
+        public bool RayIntersection(G2Ray _ray, out float distance)
+        {
+            var projection = _ray.Projection(this);
+            distance = projection.x;
+            return distance > 0 && projection.y >= 0 && projection.y <= length;
         }
     }
 }

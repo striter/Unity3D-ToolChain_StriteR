@@ -36,11 +36,11 @@ namespace Examples.Algorithm.MathematicsVisualize
             Gizmos.color = Color.white;
             var lineRayProjections = m_Ray1.Projection(m_Line1);
             m_Line1.DrawGizmos();
-            m_Ray1.ToLine(lineRayProjections.y).DrawGizmos();
-            Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(m_Line1.GetPoint(lineRayProjections.x), .1f);
+            m_Ray1.ToLine(lineRayProjections.x).DrawGizmos();
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(m_Ray1.GetPoint(lineRayProjections.y), .1f);
+            Gizmos.DrawSphere(m_Ray1.GetPoint(lineRayProjections.x), .1f);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(m_Line1.GetPoint(lineRayProjections.y), .1f);
 
             Gizmos.color = Color.white;
             var rayrayProjections = m_Ray20.Projection(m_Ray21);

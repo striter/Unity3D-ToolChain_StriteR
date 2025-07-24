@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Procedural.Tile;
+using UnityEngine.UI;
 
 namespace Examples.Algorithm.WaveFunctionCollapse
 {
@@ -34,7 +35,7 @@ namespace Examples.Algorithm.WaveFunctionCollapse
         public override void OnPoolCreate()
         {
             base.OnPoolCreate();
-            m_RectTransform=transform as RectTransform;;
+            m_RectTransform=transform as RectTransform;
             m_Listener = GetComponent<UIEventTriggerListenerExtension>();
             m_Listener.onClickWorld = OnWorldClick;
         }

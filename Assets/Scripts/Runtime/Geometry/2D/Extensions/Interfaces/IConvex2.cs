@@ -15,5 +15,17 @@ namespace Runtime.Geometry.Extension
             for (var i = 0; i < kPoints.Count - 1; i++)
                 yield return new G2Line(kPoints[i], kPoints[i + 1]);
         }
+
+        public static bool Contains(this IConvex2 _convex, float2 _point)
+        {
+            var intersection = 0;
+            var ray = new G2Ray(_point, kfloat2.up);
+            foreach (var edge in _convex.GetEdges())
+            {
+                if (edge.RayIntersection(ray, out _))
+                    intersection++;
+            }
+            return intersection % 2 == 1;
+        }
     }
 }
