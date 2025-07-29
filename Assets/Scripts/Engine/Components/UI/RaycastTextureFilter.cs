@@ -46,7 +46,7 @@ namespace UnityEngine.UI
             if(!contourTracingData.ContourAble(int2.zero, out _))
                 return;
             
-            m_PolygonNS = UGeometry.GetBoundingPolygon(contourTracingData.TheoPavlidis(int2.zero),1f);
+            m_PolygonNS = G2Polygon.ConvexHull(contourTracingData.TheoPavlidis(int2.zero));
             var bounds = G2Box.Minmax(0,new float2(texture.width, texture.height));
             var center = bounds.center;
             m_PolygonNS = new G2Polygon(m_PolygonNS.positions.Select(p => bounds.GetUV((p + .5f) + m_Expand * (p - center).normalize()).saturate()));

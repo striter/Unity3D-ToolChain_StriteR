@@ -54,7 +54,7 @@ namespace Runtime.Geometry.Extension
 
             return ray.Intersect(_triangle2,out _distance);
         }
-        
+
         public static bool Intersect(GFrustumPlanes _frustumPlanes, GBox _bounding)
         {
             for (var i = 0; i < _frustumPlanes.Length; i++)

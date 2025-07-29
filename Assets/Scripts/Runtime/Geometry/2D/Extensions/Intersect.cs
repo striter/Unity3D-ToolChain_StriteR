@@ -19,6 +19,13 @@ namespace Runtime.Geometry.Extension
 
             return (closestPoint - sphereCenter).sqrmagnitude() <= sphereRadius * sphereRadius;
         }
+        
+        public static bool Intersect(this G2Line _line, G2Line _line2)
+        {
+            var proj = ((G2Ray)_line).Projection(_line2);
+            return proj.x >= 0 && proj.x <= _line.length && proj.y >= 0 && proj.y <= _line2.length;
+        }
+
         public static bool Intersect(this G2Box _box,G2Circle _sphere) => Intersect(_sphere, _box);
         public static bool Intersect(this G2Circle _circle, float2 _point) => _circle.SDF(_point) <= float.Epsilon;
     }

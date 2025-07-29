@@ -9,7 +9,7 @@ using Unity.Mathematics;
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct G2Polygon : IGeometry2, IConvex2
+    public partial struct G2Polygon : IGeometry2, IConvex2
     {
         public List<float2> positions;
         [NonSerialized] public float2 center;
@@ -43,7 +43,7 @@ namespace Runtime.Geometry
                     
         public static G2Polygon operator +(G2Polygon _polygon,float2 _offset) => new(_polygon.positions.Select(p=>p + _offset));
         public static G2Polygon operator -(G2Polygon _polygon,float2 _offset) => new(_polygon.positions.Select(p=>p - _offset));
-        public static implicit operator G2Polygon(List<float2> _positions) => new(_positions);
+        
         public float2 this[int _value] => positions[_value];
         public int Count => positions.Count;
         public IEnumerator<float2> GetEnumerator() => positions.GetEnumerator();

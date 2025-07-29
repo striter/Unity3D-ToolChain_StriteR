@@ -146,8 +146,8 @@ namespace Runtime.Optimize.Imposter
                 {    
                     var contourPixels = contourMeshHandle.OutputPixels(out var resolution);
                     var contourOutline = ContourTracingData.FromColor(resolution.x, contourPixels, p=> p.to4().maxElement() > 0.01f).RadialSweep();
-                    var contourPolygonPositions = UGeometry.GetBoundingPolygon(contourOutline);
-                    contourPolygonPositions = CartographicGeneralization.VisvalingamWhyatt(contourPolygonPositions.Remake(p=>p/resolution),math.min(contourPolygonPositions.Count ,10),true);
+                    var contourPolygonPositions = G2Polygon.ConvexHull(contourOutline);
+                    contourPolygonPositions = CartographicGeneralization.VisvalingamWhyatt(contourPolygonPositions.positions.Remake(p=>p/resolution),math.min(contourPolygonPositions.Count ,10),true);
                     contourPolygon = new G2Polygon(contourPolygonPositions);
                 }
                 

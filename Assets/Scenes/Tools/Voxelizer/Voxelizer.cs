@@ -30,6 +30,7 @@ namespace Runtime.Optimize.Voxelizer
 
         private List<float> kIntersectDistances = new List<float>();
         private List<GTriangle> m_Triangles = new List<GTriangle>();
+        
         [InspectorButton]
         void Construct()
         {

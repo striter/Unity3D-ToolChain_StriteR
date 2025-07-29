@@ -18,6 +18,7 @@ namespace Examples.Algorithm.MathematicsVisualize
         public GSphere boundingSphere2;
 
         [Header("Polygon")] public float2[] boundingPolygonPoints;
+        [Clamp(3,nameof(boundingPolygonPoints))]public int concaveHullK = 3;
         
         [InspectorButton(true)]
         private void RandomPoints()
@@ -40,8 +41,6 @@ namespace Examples.Algorithm.MathematicsVisualize
                     boundingPolygonPoints[i] = URandom.Random2DSphere();
             }
         }
-
-        public GBox box;
 
         private const float kPadding = 3f;
         private void OnDrawGizmos()
@@ -70,7 +69,7 @@ namespace Examples.Algorithm.MathematicsVisualize
             GSphere.Minmax(boundingSphere1,boundingSphere2).DrawGizmos();
             
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding);
-            ((G2Polygon)UGeometry.GetBoundingPolygon(boundingPolygonPoints)).DrawGizmos();
+            G2Polygon.ConvexConstructor.GrahamScan(boundingPolygonPoints).DrawGizmos();
             if (boundingPolygonPoints != null)
             {
                 foreach (var points in boundingPolygonPoints)
@@ -78,7 +77,15 @@ namespace Examples.Algorithm.MathematicsVisualize
             }
             
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding + Vector3.right * kPadding);
-            ((G2Polygon)UGeometry.QuickHull(boundingPolygonPoints)).DrawGizmos();
+            G2Polygon.ConvexConstructor.QuickHull(boundingPolygonPoints).DrawGizmos();
+            if (boundingPolygonPoints != null)
+            {
+                foreach (var points in boundingPolygonPoints)
+                    Gizmos.DrawSphere(points.to3xz(),.02f);
+            }
+            
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding + Vector3.right * kPadding * 2);
+            G2Polygon.ConcaveHull(boundingPolygonPoints,concaveHullK).DrawGizmos();
             if (boundingPolygonPoints != null)
             {
                 foreach (var points in boundingPolygonPoints)

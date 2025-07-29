@@ -55,13 +55,13 @@ namespace Examples.Rendering.ContourOutline
             UGizmos.DrawLines(pixels,p=>p.to3xz());
 
             Gizmos.color = KColor.kLime.SetA(.5f);
-            var polygon = UGeometry.GetBoundingPolygon(pixels,0.1f);
+            var polygon = G2Polygon.ConvexHull(pixels);
             foreach (var point in polygon)
                 Gizmos.DrawWireSphere(point.to3xz(), .5f);
             UGizmos.DrawLinesConcat(polygon,p=>p.to3xz());
 
             Gizmos.color = KColor.kOlive;
-            var simplifiedPolygon = new G2Polygon( CartographicGeneralization.VisvalingamWhyatt(polygon, (int)(polygon.Count * m_Simplification),m_MinumumSimplification));
+            var simplifiedPolygon = new G2Polygon( CartographicGeneralization.VisvalingamWhyatt(polygon.positions, (int)(polygon.Count * m_Simplification),m_MinumumSimplification));
             simplifiedPolygon.DrawGizmos();
 
             foreach (var pixel in m_ContourTracing.DFS(startPixel))

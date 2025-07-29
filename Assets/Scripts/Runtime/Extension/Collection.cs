@@ -246,6 +246,36 @@ namespace System.Linq.Extensions
                 return minIndex;
             }
 
+            public static IList<T> Sort<T>(this IList<T> _collection, Func<T, float> _getValue)
+            {
+                var indexHelper = PoolList<KeyValuePair<int,float>>.Empty(nameof(Sort));
+                var elementContainer = _collection.FillList(PoolList<T>.Empty(nameof(Sort) + "Container"));
+                foreach (var (index,element) in _collection.LoopIndex())
+                {
+                    var value = -_getValue(element);
+                    indexHelper.Add(new KeyValuePair<int, float>(index, value));
+                }
+                indexHelper.Sort((a, b) => b.Value.CompareTo(a.Value));
+                for (var i = 0; i < indexHelper.Count; i++)
+                    _collection[i] = elementContainer[indexHelper[i].Key];
+                return _collection;
+            }
+            
+            public static IList<T> SortDescending<T>(this IList<T> _collection, Func<T, float> _getValue) => _collection.Sort(p=>-_getValue(p));
+            
+            public static IEnumerable<T> MinElements<T>(this IList<T> _collection,int _count, Func<T, float> _getValue)
+            {
+                _count = math.min(_count, _collection.Count);
+                var pairs = PoolList<KeyValuePair<int,float>>.Empty(nameof(Sort));
+                foreach (var (index,element) in _collection.LoopIndex())
+                {
+                    var value = _getValue(element);
+                    pairs.Add(new KeyValuePair<int, float>(index, value));
+                }
+                pairs.Sort((a, b) => a.Value.CompareTo(b.Value));
+                return pairs.Take(_count).Select(x => _collection[x.Key]);
+            }
+
             public static float Min<T>(this IEnumerable<T> _collection, Func<T, float> _getValue, out int _minIndex)
             {
                 _minIndex = -1;
@@ -275,6 +305,7 @@ namespace System.Linq.Extensions
                 }
                 return minElement;
             }
+            
             public static T MinElement<T>(this IEnumerable<T> _collection, Func<T, float> _getValue,out int _minIndex)
             {
                 T minElement = default;
@@ -378,6 +409,7 @@ namespace System.Linq.Extensions
                 }
                 return maxIndex;
             }
+
 
             public static T Last<T>(this IEnumerable<T> _collection, Func<T, Vector3> _getPosition,Vector3 _origin,bool _minimum)
             {
@@ -714,6 +746,21 @@ namespace System.Linq.Extensions
             return false;
         }
             
+        public static int MinIndex<T>(this IList<T> _collection, Func<T, float> _getValue)
+        {
+            var minIndex = -1;
+            var minValue = float.MaxValue;
+            for(var index = 0; index<_collection.Count;index++)
+            {
+                var element = _collection[index];
+                var value = _getValue(element);
+                if(minValue<value)
+                    continue;
+                minValue = value;
+                minIndex = index;
+            }
+            return minIndex;
+        }
         #endregion
         
         #region Array
