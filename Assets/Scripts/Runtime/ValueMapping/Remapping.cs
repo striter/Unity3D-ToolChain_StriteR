@@ -5,6 +5,22 @@ using static Unity.Mathematics.math;
 using static kmath;
 public partial class umath
 {
+    public static EAxis maxAxis(this float2 _value) => _value.x > _value.y ? EAxis.X : EAxis.Y;
+
+    public static EAxis maxAxis(this float3 _value)
+    {
+        if (_value.x > _value.y && _value.x > _value.z)
+            return EAxis.X;
+        return _value.y > _value.z ? EAxis.Y : EAxis.Z;
+    }
+    
+    public static float max(this float2 _value) => math.max(_value.x, _value.y);
+    public static float max(this float3 _value) => math.max(_value.x, math.max(_value.y, _value.z));
+    public static float max(this float4 _value) => math.max(_value.x, math.max(_value.y, math.max(_value.z, _value.w)));
+    public static float min(this float2 _value) => math.min(_value.x, _value.y);
+    public static float min(this float3 _value) => math.min(_value.x, math.min(_value.y, _value.z));
+    public static float min(this float4 _value) => math.min(_value.x, math.min(_value.y, math.min(_value.z, _value.w)));
+
     public static float saturate(float _src) => clamp(_src, 0f, 1f);
     public static float bilinearLerp(float tl, float tr, float br, float bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static float2 bilinearLerp(float2 tl, float2 tr, float2 br, float2 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
@@ -216,8 +232,8 @@ public partial class umath
     
     public static float expSustainedImpulse(float x, float f, float k)
     {
-        var s = max(x-f,0.0f);
-        return min( x*x/(f*f), 1.0f+(2.0f/f)*s*exp(-k*s));
+        var s = math.max(x-f,0.0f);
+        return math.min( x*x/(f*f), 1.0f+(2.0f/f)*s*exp(-k*s));
     }
 
     public static float cubicImpulse(float _x,float _c, float _w)

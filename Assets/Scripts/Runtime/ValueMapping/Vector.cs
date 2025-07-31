@@ -11,16 +11,6 @@ public enum EAxis
 
 public static partial class umath
 {
-    public static EAxis maxAxis(this float2 _value) => _value.x > _value.y ? EAxis.X : EAxis.Y;
-
-    public static EAxis maxAxis(this float3 _value)
-    {
-        if (_value.x > _value.y && _value.x > _value.z)
-            return EAxis.X;
-        return _value.y > _value.z ? EAxis.Y : EAxis.Z;
-    }
-
-
     public static float3 GetXZLookDirection(float3 _startPoint, float3 _endPoint)
     {
         float3 lookDirection = _endPoint - _startPoint;

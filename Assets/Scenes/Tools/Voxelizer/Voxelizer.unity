@@ -479,18 +479,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558ca86bdc4a1b546947e27b6533fa80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Box:
-    center:
-      x: 0
-      y: 0
-      z: 0
-    extent:
-      x: 0.5
-      y: 0.5
-      z: 0.5
+  m_Data: {fileID: 11400000, guid: decaa8b046bb4ab4cb4113d0f6169cb8, type: 2}
   m_Resolution: 64
-  m_Path: <#activeScenePath>/Voxelizer.asset
-  m_DrawGizmos: 1
+  m_AssetPath: <#activeScenePath>/VoxelData.asset
+  m_3DTexturePath: <#activeScenePath>/Voxelizer.asset
 --- !u!1 &951123556
 GameObject:
   m_ObjectHideFlags: 0

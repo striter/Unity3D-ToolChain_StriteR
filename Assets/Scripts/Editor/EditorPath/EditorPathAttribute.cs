@@ -6,7 +6,10 @@ namespace UnityEditor.Extensions.EditorPath
 {
 
     [AttributeUsage(AttributeTargets.Field)]
-    public class EditorPathAttribute : PropertyAttribute{}
+    public class EditorPathAttribute : PropertyAttribute
+    {
+        public static string Output(string _value) => UEPath.PathRegex(_value);
+    }
 
 
     [CustomPropertyDrawer(typeof(EditorPathAttribute))]
