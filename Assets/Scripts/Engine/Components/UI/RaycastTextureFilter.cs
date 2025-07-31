@@ -15,7 +15,7 @@ namespace UnityEngine.UI
         }
 
         public EMode m_Mode = EMode.AutomaticConvex;
-        [Foldout(nameof(m_Mode),EMode.Manual),Min(0f)] public float m_Expand = 0f;
+        [Foldout(nameof(m_Mode),EMode.AutomaticConvex),Min(0f)] public float m_Expand = 0f;
         public G2Polygon m_PolygonNS = G2Polygon.kDefaultUV;
 
         private void OnValidate()
@@ -81,9 +81,8 @@ namespace UnityEngine.UI
             m_PolygonNS = G2Polygon.AlphaShape(positions,_threshold);
             
             var bounds = G2Box.Minmax(0,new float2(texture.width / downSample, texture.height  / downSample));
-            var center = bounds.center;
-            m_PolygonNS = new G2Polygon(m_PolygonNS.positions.Select(p => bounds.GetUV((p + .5f) + m_Expand * (p - center).normalize()).saturate()));
-            if(m_PolygonNS.Count > 32)
+            m_PolygonNS = new G2Polygon(m_PolygonNS.positions.Select(p => bounds.GetUV((p + .5f) ).saturate()));
+            if(m_PolygonNS.Count > _desireCount)
                 m_PolygonNS = UCartographicGeneralization.VisvalingamWhyatt(m_PolygonNS.positions, _desireCount);
         }
         
