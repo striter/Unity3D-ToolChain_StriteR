@@ -15,7 +15,7 @@ namespace UnityEngine.UI
         }
 
         public EMode m_Mode = EMode.AutomaticConvex;
-        [Min(0f)] public float m_Expand = 0f;
+        [Foldout(nameof(m_Mode),EMode.Manual),Min(0f)] public float m_Expand = 0f;
         public G2Polygon m_PolygonNS = G2Polygon.kDefaultUV;
 
         private void OnValidate()
