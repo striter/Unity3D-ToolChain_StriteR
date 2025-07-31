@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Runtime.Geometry.Extension;
+using Runtime.Geometry;
 using Unity.Mathematics;
 
 namespace UnityEngine.UI
@@ -44,7 +44,7 @@ namespace UnityEngine.UI
             
             bool colorValid = colors.Length > 0;
 
-            var modelSize = (Vector3)UGeometry.GetBoundingBox(m_Mesh.bounds.GetEdges().Select(p => (float3)(rotation * p))).size; 
+            var modelSize = (Vector3)GBox.GetBoundingBox(m_Mesh.bounds.GetEdges().Select(p => (float3)(rotation * p))).size; 
             var rectSize = rectTransform.rect.size;
             var finalSize = Vector3.one;
             

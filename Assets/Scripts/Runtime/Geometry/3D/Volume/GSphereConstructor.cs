@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using Runtime.Geometry.Extension.BoundingSphere;
 using Unity.Mathematics;
 
 namespace Runtime.Geometry
@@ -17,6 +19,18 @@ namespace Runtime.Geometry
             4 => Tetrahedron(_positions[0], _positions[1], _positions[2], _positions[3]),
             _ => throw new InvalidEnumArgumentException()
         };
+        
+        public static GSphere GetBoundingSphere(IEnumerable<float3> _positions) => EPOS._3D.Evaluate(_positions,EPOS._3D.EMode.EPOS26,Welzl<GSphere,float3>.Evaluate);
+
+        public static GSphere GetSuperSphere(params float3[] _points) => GetSuperSphere(_points.AsEnumerable());
+        public static GSphere GetSuperSphere(IEnumerable<float3> _points) => GBox.GetBoundingBox(_points).GetBoundingSphere();
+        public static GSphere GetBoundingSphere(IEnumerable<GSphere> _spheres)
+        {
+            var boundingSphere = _spheres.First();
+            foreach (var sphere in _spheres)
+                boundingSphere = GSphere.Minmax(boundingSphere, sphere);
+            return boundingSphere;
+        }
         
         public static GSphere Minmax(float3 _a, float3 _b) => new GSphere((_a + _b) / 2,math.length(_b-_a)/2);
         public static GSphere Minmax(GSphere _a, GSphere _b)

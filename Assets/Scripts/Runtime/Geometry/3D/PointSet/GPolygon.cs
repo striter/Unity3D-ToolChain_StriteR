@@ -22,8 +22,8 @@ namespace Runtime.Geometry
         }
         
         public float3 GetSupportPoint(float3 _direction)=>positions.MaxElement(_p => math.dot(_direction, _p));
-        public GBox GetBoundingBox() => UGeometry.GetBoundingBox(positions);
-        public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(positions);
+        public GBox GetBoundingBox() => GBox.GetBoundingBox(positions);
+        public GSphere GetBoundingSphere() => GSphere.GetBoundingSphere(positions);
 
         public float3 Origin => center;
 

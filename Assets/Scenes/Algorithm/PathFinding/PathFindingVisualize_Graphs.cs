@@ -63,6 +63,7 @@ namespace Examples.Algorithm.PathFinding
         }
 
         public int Count => m_Nodes.Count;
+        public IEnumerable<INode> Nodes => m_Nodes.Values;
         public float Cost(INode _a, INode _b) => math.length(_a.m_Position - _b.m_Position);
         public int2 PositionToNode(float3 _srcPosition) =>(int2)(_srcPosition.xz / kCellSize);
         public float3 NodeToPosition(INode _node) => _node.m_Position;
@@ -146,8 +147,10 @@ namespace Examples.Algorithm.PathFinding
         public IEnumerator<INode> GetEnumerator() => m_Nodes.Values.GetEnumerator();
     
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    
-        public int Count { get; set; }
+
+        public int Count => m_Nodes.Count;
+        public IEnumerable<INode> Nodes => m_Nodes.Values;
+
         public bool PositionToNode(float3 _position, out INode _node)
         {
             var hex = UHexagon.TransformPositionToHex(_position.xz / kCellSize,flat);
@@ -178,6 +181,8 @@ namespace Examples.Algorithm.PathFinding
         private readonly int seedHash = "PoissonDisk".GetHashCode();
         private Dictionary<int, Node> m_Nodes = new();
         public int Count => m_Nodes.Count;
+        public IEnumerable<INode> Nodes => m_Nodes.Values;
+
         void Ctor()
         {
             var positions = PoolList<float2>.Empty(seedHash);
@@ -188,7 +193,7 @@ namespace Examples.Algorithm.PathFinding
             m_Nodes.Clear();
             foreach (var (index,position) in positions.LoopIndex())
                 m_Nodes.Add(index,new Node(index,position.to3xz(),this));
-            UTriangulation.BowyerWatson(positions,ref triangles);
+            UTriangulation.Triangulation(positions,ref triangles);
             foreach (var triangle in triangles)
             {
                 triangle.Traversal(p =>
@@ -323,6 +328,7 @@ namespace Examples.Algorithm.PathFinding
         }
 
         public int Count => m_Nodes.Count;
+        public IEnumerable<INode> Nodes => m_Nodes.Values;
         public bool PositionToNode(float3 _position, out INode _node)
         {
             _position = _position.normalize();

@@ -17,6 +17,12 @@ namespace Runtime.Geometry.Extension
             return new float2((a01 * b1 - b0) / det, (a01 * b0 - b1) / det);
         }
 
+        public static float2 Projection(this G2Line _line, G2Line _line2)
+        {
+            var proj = ((G2Ray)_line).Projection(_line2);
+            return new float2(math.clamp(proj.x, 0, _line.length), math.clamp(proj.y, 0, _line2.length));
+        }
+
         public static float2 Projection(this G2Box _box, float2 _direction)
         {
             var ray = new G2Ray(_box.center, _direction.normalize());

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using Runtime.Geometry.Extension.BoundingSphere;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -40,5 +41,7 @@ namespace Runtime.Geometry
                 default: throw new InvalidEnumArgumentException();
             }
         }
+        
+        public static G2Circle GetBoundingCircle(IList<float2> _positions) => EPOS._2D.Evaluate(_positions, EPOS._2D.EMode.EPOS8,Welzl<G2Circle, float2>.Evaluate);
     }
 }

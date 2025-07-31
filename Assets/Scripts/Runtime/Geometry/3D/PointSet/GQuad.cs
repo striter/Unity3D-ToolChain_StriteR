@@ -37,8 +37,8 @@ namespace Runtime.Geometry
         public static GQuad operator -(GQuad _src, float3 _dst)=> new GQuad(_src.B - _dst, _src.L - _dst, _src.F - _dst,_src.R-_dst);
         public float3 GetPoint(float2 _uv)=>umath.bilinearLerp(B, L, F, R, _uv);
         public float3 GetSupportPoint(float3 _direction) => quad.MaxElement(p => math.dot(p, _direction));
-        public GBox GetBoundingBox() => UGeometry.GetBoundingBox(this);
-        public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(this);
+        public GBox GetBoundingBox() => GBox.GetBoundingBox(this);
+        public GSphere GetBoundingSphere() => GSphere.GetBoundingSphere(this);
         public float3 Origin => quad.Average();
 
         public IEnumerator<float3> GetEnumerator()

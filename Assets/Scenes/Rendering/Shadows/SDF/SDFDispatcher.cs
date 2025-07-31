@@ -28,7 +28,7 @@ namespace Examples.Rendering.Shadows
             );
         }
 
-        public GSphere CalculateBoundary(IList<GCapsule> _elements) => UGeometry.GetBoundingSphere(_elements.Select(p=>p.GetBoundingSphere()));
+        public GSphere CalculateBoundary(IList<GCapsule> _elements) => GSphere.GetBoundingSphere(_elements.Select(p=>p.GetBoundingSphere()));
     }
     
     [ExecuteInEditMode]

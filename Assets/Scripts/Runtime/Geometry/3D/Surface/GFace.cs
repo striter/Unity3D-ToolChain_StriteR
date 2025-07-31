@@ -48,8 +48,8 @@ namespace Runtime.Geometry
         public float3 Origin => coordinates.Origin;
         public float3 Normal => coordinates.Normal;
         public float3 GetSupportPoint(float3 _direction) => this.GetPoints().MaxElement(p=> math.dot(p, _direction));
-        public GBox GetBoundingBox() => UGeometry.GetBoundingBox(this.GetPoints());
-        public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(this.GetPoints());
+        public GBox GetBoundingBox() => GBox.GetBoundingBox(this.GetPoints());
+        public GSphere GetBoundingSphere() => GSphere.GetBoundingSphere(this.GetPoints());
         public void OnBeforeSerialize() { }
 
         public void OnAfterDeserialize() => Ctor();

@@ -46,8 +46,8 @@ namespace Runtime.Geometry
         public void DrawGizmos() => points.DrawGizmos();
         public float3 Origin => origin;
         public float3 GetSupportPoint(float3 _direction) => points.MinElement(p => math.dot(p, _direction));
-        public GBox GetBoundingBox() => UGeometry.GetBoundingBox(points);
-        public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(points);
+        public GBox GetBoundingBox() => GBox.GetBoundingBox(points);
+        public GSphere GetBoundingSphere() => GSphere.GetBoundingSphere(points);
         public void OnBeforeSerialize(){}
         public void OnAfterDeserialize() => Ctor();
     }

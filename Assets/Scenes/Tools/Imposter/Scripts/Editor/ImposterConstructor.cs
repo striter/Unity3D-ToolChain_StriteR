@@ -86,7 +86,7 @@ namespace Runtime.Optimize.Imposter
             var material = new Material(m_Shader){name = _initialName,enableInstancing = m_Instanced};
             var mesh = new Mesh(){name = _initialName};
             var block = new MaterialPropertyBlock();
-            var boundingSphere = UGeometry.GetBoundingSphere(vertices);
+            var boundingSphere = GSphere.GetBoundingSphere(vertices);
             m_SharedMaterialShaderRef.Clear();
             m_RendererLayerRef.Clear();
             try
@@ -146,9 +146,7 @@ namespace Runtime.Optimize.Imposter
                 {    
                     var contourPixels = contourMeshHandle.OutputPixels(out var resolution);
                     var contourOutline = ContourTracingData.FromColor(resolution.x, contourPixels, p=> p.to4().maxElement() > 0.01f).RadialSweep();
-                    var contourPolygonPositions = G2Polygon.ConvexHull(contourOutline);
-                    contourPolygonPositions = CartographicGeneralization.VisvalingamWhyatt(contourPolygonPositions.positions.Remake(p=>p/resolution),math.min(contourPolygonPositions.Count ,10),true);
-                    contourPolygon = new G2Polygon(contourPolygonPositions);
+                    contourPolygon = G2Polygon.ConvexHull(contourOutline);
                 }
                 
                 boundingSphere.radius -= boundingSphereExtrude;

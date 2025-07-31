@@ -372,18 +372,22 @@ namespace System.Linq.Extensions
                 }
             }
 
-            public static T MaxElement<T>(this IEnumerable<T> _collection, Func<T, float> _getValue)
+            public static T MaxElement<T>(this IEnumerable<T> _collection, Func<T, float> _getValue) => _collection.MaxElement(_getValue, out _);
+            public static T MaxElement<T>(this IEnumerable<T> _collection, Func<T, float> _getValue,out int _maxIndex)
             {
                 T maxElement = default;
-                float maxValue = float.MinValue;
-                foreach (var (_,element) in _collection.LoopIndex())
+                var maxValue = float.MinValue;
+                _maxIndex = -1;
+                foreach (var (index,element) in _collection.LoopIndex())
                 {
                     var value = _getValue(element);
                     if(maxValue>value)
                         continue;
+                    _maxIndex = index;
                     maxValue = value;
                     maxElement = element;
                 }
+                
                 return maxElement;
             }
             
@@ -408,6 +412,21 @@ namespace System.Linq.Extensions
                     maxIndex = index;
                 }
                 return maxIndex;
+            }
+
+            public static int MinIndex<T>(this IEnumerable<T> _collection, Func<T, float> _getValue)
+            {
+                var minIndex = -1;
+                var minValue = float.MaxValue;
+                foreach (var (index,element) in _collection.LoopIndex())
+                {
+                    var value = _getValue(element);
+                    if(minValue<value)
+                        continue;
+                    minValue = value;
+                    minIndex = index;
+                }
+                return minIndex;
             }
 
 

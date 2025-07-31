@@ -331,7 +331,7 @@ namespace UnityEditor.Extensions
         }
         void RecalculateBounds()
         {
-            m_ModifingMesh.bounds = UGeometry.GetBoundingBox(m_Verticies.Select(p=>(float3)p));
+            m_ModifingMesh.bounds = GBox.GetBoundingBox(m_Verticies.Select(p=>(float3)p));
         }
         void SelectVectorData(EVertexAttributeFlags _data)
         {

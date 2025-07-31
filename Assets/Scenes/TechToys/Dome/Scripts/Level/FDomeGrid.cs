@@ -31,6 +31,7 @@ namespace Dome
         }
 
         public int Count => m_Vertices.Count;
+        public IEnumerable<FDomeCell> Nodes => m_Vertices;
         public float Heuristic(FDomeCell _src, FDomeCell _dst) => 1;
         public float Cost(FDomeCell _src, FDomeCell _dst)=> math.lengthsq(_src.positions.Origin - _dst.positions.Origin);
         public IEnumerable<FDomeCell> GetAdjacentNodes(FDomeCell _src)

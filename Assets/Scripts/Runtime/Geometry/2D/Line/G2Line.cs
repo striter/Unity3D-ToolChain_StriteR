@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct G2Line : ISDF<float2> , IRayIntersection2
+    public struct G2Line : ISDF<float2> , IRayIntersection2 , ISerializationCallbackReceiver
     {
         public float2 start;
         public float2 end;
@@ -47,5 +47,8 @@ namespace Runtime.Geometry
             distance = projection.x;
             return distance > 0 && projection.y >= 0 && projection.y <= length;
         }
+
+        public void OnBeforeSerialize(){}
+        public void OnAfterDeserialize() => Ctor();
     }
 }

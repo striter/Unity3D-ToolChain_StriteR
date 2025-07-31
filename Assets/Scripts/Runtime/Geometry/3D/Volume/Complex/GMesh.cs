@@ -28,8 +28,8 @@ namespace Runtime.Geometry
         
         public float3 Origin { get; set; }
         public float3 GetSupportPoint(float3 _direction)=> vertices.MaxElement(_p => math.dot(_direction, _p));
-        public GBox GetBoundingBox() => UGeometry.GetBoundingBox(vertices);
-        public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(vertices);
+        public GBox GetBoundingBox() => GBox.GetBoundingBox(vertices);
+        public GSphere GetBoundingSphere() => GSphere.GetBoundingSphere(vertices);
         public void DrawGizmos() => DrawGizmos(EDrawMeshFlag.Vertices);
         public void DrawGizmos(EDrawMeshFlag _flag)
         {

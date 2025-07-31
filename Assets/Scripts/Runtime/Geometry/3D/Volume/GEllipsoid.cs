@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
@@ -60,6 +62,14 @@ namespace Runtime.Geometry
             Gizmos.matrix = preMatrix * Matrix4x4.TRS(center,Quaternion.identity, radius);
             Gizmos.DrawWireSphere(Vector3.zero,1f);
             Gizmos.matrix = preMatrix;
+        }
+        
+        public static GEllipsoid FromPoints(IEnumerable<float3> _positions)
+        {
+            var box = GBox.GetBoundingBox(_positions);
+            var m = math.mul(float3x3.identity,box.size);
+            var sphere = GSphere.GetBoundingSphere(_positions.Select(p=>m * p));
+            return new GEllipsoid(sphere.center,sphere.radius*2*box.size);
         }
     }
 }

@@ -47,9 +47,9 @@ namespace Examples.Algorithm.MathematicsVisualize
             finalPolygon.DrawGizmos();
 
             Gizmos.color = KColor.kChocolate;
-            GJK2.Sum(finalPolygon,finalCircle).DrawGizmos();
+            GJK.Sum(finalPolygon,finalCircle).DrawGizmos();
             Gizmos.color = KColor.kHotPink;
-            GJK2.Difference(finalPolygon,finalCircle).DrawGizmos();
+            GJK.Difference(finalPolygon,finalCircle).DrawGizmos();
 
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back * 6f);
             Gizmos.color = Color.red;
@@ -57,7 +57,7 @@ namespace Examples.Algorithm.MathematicsVisualize
             var finalSphere3D = sphere3D + kfloat3.right * math.sin(UTime.time);
             var finalTriangle = Matrix4x4.Rotate(quaternion.Euler(kfloat3.right * math.sin(UTime.time)  * kmath.kPI2)) * triangle3d;
             
-            Gizmos.color = GJK.Intersect(finalTriangle, finalSphere3D) ? Color.green : Color.white;
+            Gizmos.color = finalTriangle.Intersect(finalSphere3D) ? Color.green : Color.white;
             finalTriangle.DrawGizmos();
             finalSphere3D.DrawGizmos();
             Gizmos.color = KColor.kHotPink;

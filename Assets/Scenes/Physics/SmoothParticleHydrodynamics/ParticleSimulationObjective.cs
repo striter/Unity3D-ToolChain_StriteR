@@ -29,7 +29,7 @@ namespace Examples.PhysicsScenes.SmoothParticleHydrodynamics
                 }
             }
 
-            public GBox CalculateBoundary(IList<ParticleData> _elements) => UGeometry.GetBoundingBox(_elements,p=>p.position);
+            public GBox CalculateBoundary(IList<ParticleData> _elements) => GBox.GetBoundingBox(_elements,p=>p.position);
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq.Extensions;
+using Runtime.Geometry.Extension;
 using Runtime.Pool;
 using Unity.Mathematics;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace UnityEditor.Extensions
             _end = _end.clamp(-.1f,1.1f);
             var start = (int2)(_start * size);
             var end = (int2)(_end * size);
-            CartographicGeneralization.Bresenham.Line(start,end,(pos,opacity) => Pixel(pos.x,pos.y, _color.SetA(opacity)));
+            UCartographicGeneralization.Bresenham.Line(start,end,(pos,opacity) => Pixel(pos.x,pos.y, _color.SetA(opacity)));
         }
 
         public void LineWidth(float2 _start, float2 _end, float wd, Color _color)
@@ -36,7 +37,7 @@ namespace UnityEditor.Extensions
                 return;
             var start = (int2)(_start * size);
             var end = (int2)(_end * size);
-            CartographicGeneralization.Bresenham.LineWidth(start,end,wd,(pos,opacity) => Pixel(pos.x,pos.y, _color.SetA(_color.a * opacity)));
+            UCartographicGeneralization.Bresenham.LineWidth(start,end,wd,(pos,opacity) => Pixel(pos.x,pos.y, _color.SetA(_color.a * opacity)));
         }
 
         public void Pixel(float2 _uv,Color _color)
@@ -69,7 +70,7 @@ namespace UnityEditor.Extensions
                 return;
             
             var pos = (int2)(_centreUV * size);
-            CartographicGeneralization.Bresenham.Circle(pos,_radius,(pos,opacity) => Pixel(pos.x,pos.y, _color.SetA(opacity)));
+            UCartographicGeneralization.Bresenham.Circle(pos,_radius,(pos,opacity) => Pixel(pos.x,pos.y, _color.SetA(opacity)));
         }
 
         static readonly float2 kDigitCellSize = new(4,5);

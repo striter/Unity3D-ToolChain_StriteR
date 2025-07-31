@@ -79,5 +79,36 @@ namespace Runtime.Geometry
         
         //0.5 * |x1(y2 - y3) + x2(y3 - y1) + x3(y1 - y2)|
         public float GetArea() => 0.5f * math.abs(V0.x * (V1.y - V2.y) + V1.x * (V2.y - V0.y) + V2.x * (V0.y - V1.y));
+
+        public float GetCircumradius()
+        {
+            var ab = (V1 - V0).magnitude();
+            var bc = (V2 - V1).magnitude();
+            var ca = (V0 - V2).magnitude();
+            var area = GetArea();
+            if (area < float.Epsilon) return 0f;
+            return (ab * bc * ca) / (4 * area);
+        }
+        
+        
+        public static G2Triangle GetSuperTriangle(params float2[] _positions)     //always includes,but not minimum
+        {
+            UGeometry.Minmax(_positions,out var min,out var max);
+            var delta = (max - min);
+            return new G2Triangle(
+                new float2(min.x - delta.x,min.y - delta.y * 3f),
+                new float2(min.x - delta.x,max.y + delta.y),
+                new float2(max.x + delta.x*3f,max.y + delta.y)
+            );
+        }
+
+        public static G2Triangle GetCircumscribedTriangle(G2Circle _circle)
+        {
+            var r = _circle.radius;
+            return new G2Triangle(
+                _circle.center + new float2(0f,r/kmath.kSin30d) ,
+                _circle.center + new float2(r * kmath.kTan60d,-r),
+                _circle.center + new float2(-r * kmath.kTan60d,-r));
+        }
     }
 }

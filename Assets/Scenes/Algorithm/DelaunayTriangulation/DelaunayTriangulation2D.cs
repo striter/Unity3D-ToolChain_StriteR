@@ -57,7 +57,7 @@ namespace Examples.Algorithm.DelaunayTriangulation
         private void OnValidate()
         {
             triangles.Clear();
-            UTriangulation.BowyerWatson(m_Vertices,ref triangles);
+            UTriangulation.Triangulation(m_Vertices,ref triangles);
         }
 
         private void OnDrawGizmos()

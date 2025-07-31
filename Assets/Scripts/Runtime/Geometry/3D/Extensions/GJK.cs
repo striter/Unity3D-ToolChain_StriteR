@@ -1,26 +1,27 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Runtime.Geometry.Extension;
+using Runtime.Pool;
 using Unity.Mathematics;
 
 namespace Runtime.Geometry.Extension
 {
     //https://cse442-17f.github.io/Gilbert-Johnson-Keerthi-Distance-Algorithm/
-    public static class GJK
+    public static partial class GJK
     {
-        private static readonly List<float3> kSimplex = new List<float3>();
-        public static bool Intersect(this IVolume _a,IVolume _b) 
+        public static bool Intersect(this IVolume _a,IVolume _b)
         {
-            kSimplex.Clear();
+            var simplexHelper = PoolList<float3>.Empty(nameof(Intersect));
             var d = (_a.Origin - _b.Origin).normalize();
-            kSimplex.Add(Support(_a, _b, d));
-            d = -kSimplex[^1].normalize();
+            simplexHelper.Add(Support(_a, _b, d));
+            d = -simplexHelper[^1].normalize();
             while (true)
             {
-                kSimplex.Add(Support(_a, _b, d));
-                if (math.dot(kSimplex[^1], d) < 0)
+                simplexHelper.Add(Support(_a, _b, d));
+                if (math.dot(simplexHelper[^1], d) < 0)
                     return false;
                 
-                if (HandleSimplex(kSimplex,ref d))
+                if (HandleSimplex(simplexHelper,ref d))
                     return true;
             }
         }
@@ -72,16 +73,16 @@ namespace Runtime.Geometry.Extension
         static float3 Support(IVolume _a, IVolume _b, float3 _direction) => _a.GetSupportPoint(_direction) - _b.GetSupportPoint(-_direction);
         public static GPointSets Difference(IVolume _a, IVolume _b, int _sampleCount = 64)
         {
-            kSimplex.Clear();
+            var simplexHelper = PoolList<float3>.Empty(nameof(Intersect));
             for(var i=0;i<_sampleCount;i++)
             {
                 var direction = USphereMapping.LowDiscrepancySequences.Hammersley((uint)i,(uint)_sampleCount);
                 var supportPoint = Support(_a, _b, direction);
-                if(kSimplex.Contains(supportPoint))
+                if(simplexHelper.Contains(supportPoint))
                     continue;
-                kSimplex.Add(supportPoint);
+                simplexHelper.Add(supportPoint);
             }
-            return new GPointSets(kSimplex);
+            return new GPointSets(simplexHelper.ToList());
         }
     }
         

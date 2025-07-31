@@ -3,7 +3,7 @@ using Unity.Mathematics;
 
 namespace Runtime.Geometry
 {
-    public static class SAT     //Separating axis testing
+    public static partial class SAT     //Separating axis testing
     {   
         public static bool Intersect(this IConvex _convex, IConvex _comparer)
         {

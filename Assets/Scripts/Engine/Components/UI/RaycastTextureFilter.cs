@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Extensions;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
@@ -9,18 +8,26 @@ namespace UnityEngine.UI
 {
     public class RaycastTextureFilter : MonoBehaviour , ICanvasRaycastFilter , IMaterialModifier
     {
-        [Range(0f, 1f)] public float m_AlphaClip = 0.1f;
+        public enum EMode
+        {
+            AutomaticConvex,
+            Manual,
+        }
+
+        public EMode m_Mode = EMode.AutomaticConvex;
         [Min(0f)] public float m_Expand = 0f;
-        private G2Polygon m_PolygonNS = G2Polygon.kDefaultUV;
-        
+        public G2Polygon m_PolygonNS = G2Polygon.kDefaultUV;
+
         private void OnValidate()
         {
-            Construct();
+            if(m_Mode == EMode.AutomaticConvex)
+                ConstructConvex();
         }
 
         public Material GetModifiedMaterial(Material baseMaterial)
         {
-            Construct();
+            if(m_Mode == EMode.AutomaticConvex)
+                ConstructConvex();
             return baseMaterial;
         }
 
@@ -35,21 +42,49 @@ namespace UnityEngine.UI
             }
             return texture as Texture2D;
         }
-        
-        void Construct()
+
+
+        private const float m_AlphaClip = .5f;
+        [InspectorButtonFoldout(nameof(m_Mode),EMode.Manual)]
+        void ConstructConvex()
         {
             var texture = CollectTexture();
             if (texture == null)
                 return;
-            
-            var contourTracingData = ContourTracingData.FromColor(texture.width, texture.ReadPixels(),p => p.a > m_AlphaClip);
-            if(!contourTracingData.ContourAble(int2.zero, out _))
+
+            const int downSample = 4;
+            var contourTracingData = ContourTracingData.FromColor(texture.width / downSample, texture.ReadPixels(downSample),p => p.a > m_AlphaClip);
+            if(!contourTracingData.ContourAble(int2.zero, out var startPixel))
                 return;
+
+            var positions = contourTracingData.TheoPavlidis(startPixel);
+            m_PolygonNS = G2Polygon.ConvexHull(positions);
             
-            m_PolygonNS = G2Polygon.ConvexHull(contourTracingData.TheoPavlidis(int2.zero));
-            var bounds = G2Box.Minmax(0,new float2(texture.width, texture.height));
+            var bounds = G2Box.Minmax(0,new float2(texture.width / downSample, texture.height  / downSample));
             var center = bounds.center;
             m_PolygonNS = new G2Polygon(m_PolygonNS.positions.Select(p => bounds.GetUV((p + .5f) + m_Expand * (p - center).normalize()).saturate()));
+        }
+
+        [InspectorButtonFoldout(nameof(m_Mode),EMode.Manual)]
+        void ConstructConcave(float _threshold = .5f,int _desireCount = 32)
+        {
+            var texture = CollectTexture();
+            if (texture == null)
+                return;
+
+            const int downSample = 4;
+            var contourTracingData = ContourTracingData.FromColor(texture.width / downSample, texture.ReadPixels(downSample),p => p.a > m_AlphaClip);
+            if(!contourTracingData.ContourAble(int2.zero, out var startPixel))
+                return;
+
+            var positions = contourTracingData.TheoPavlidis(startPixel);
+            m_PolygonNS = G2Polygon.AlphaShape(positions,_threshold);
+            
+            var bounds = G2Box.Minmax(0,new float2(texture.width / downSample, texture.height  / downSample));
+            var center = bounds.center;
+            m_PolygonNS = new G2Polygon(m_PolygonNS.positions.Select(p => bounds.GetUV((p + .5f) + m_Expand * (p - center).normalize()).saturate()));
+            if(m_PolygonNS.Count > 32)
+                m_PolygonNS = UCartographicGeneralization.VisvalingamWhyatt(m_PolygonNS.positions, _desireCount);
         }
         
         private void OnDrawGizmos()

@@ -56,7 +56,7 @@ namespace Runtime.Geometry
                 yield return disk.GetSupportPoint(-randomPerpendicular);
             }
 
-            return UGeometry.GetBoundingSphere(GetBoundingPoints());
+            return GSphere.GetBoundingSphere(GetBoundingPoints());
         }
 
         public float SDF(float3 _position)

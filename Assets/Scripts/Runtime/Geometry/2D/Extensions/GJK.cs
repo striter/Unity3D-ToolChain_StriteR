@@ -1,24 +1,25 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Runtime.Pool;
 using Unity.Mathematics;
 
 namespace Runtime.Geometry.Extension
 {
-    public static class GJK2
+    public static partial class GJK
     {
-        private static readonly List<float2> kSimplex = new List<float2>();
-        public static bool Intersect(this IGeometry2 _a,IGeometry2 _b) 
+        public static bool Intersect(this IGeometry2 _a,IGeometry2 _b)
         {
-            kSimplex.Clear();
+            var simplexHelper = PoolList<float2>.Empty(nameof(GJK));
             var d = (_a.Origin - _b.Origin).normalize();
-            kSimplex.Add(Support(_a, _b, d));
-            d = -kSimplex[^1].normalize();
+            simplexHelper.Add(Support(_a, _b, d));
+            d = -simplexHelper[^1].normalize();
             while (true)
             {
-                kSimplex.Add(Support(_a, _b, d));
-                if (math.dot(kSimplex[^1], d) < 0)
+                simplexHelper.Add(Support(_a, _b, d));
+                if (math.dot(simplexHelper[^1], d) < 0)
                     return false;
                 
-                if (HandleSimplex(kSimplex,ref d))
+                if (HandleSimplex(simplexHelper,ref d))
                     return true;
             }
         }
@@ -70,32 +71,32 @@ namespace Runtime.Geometry.Extension
 
         public static G2Polygon Sum(IGeometry2 _a, IGeometry2 _b,int _sampleCount=64)  //Minkowski sum
         {
-            kSimplex.Clear();
+            var simplexHelper = PoolList<float2>.Empty(nameof(GJK));
             for(int i=0;i<_sampleCount;i++)
             {
                 var rad = i * kmath.kPI2 / _sampleCount;
                 var direction = umath.Rotate2D(rad).mul(kfloat2.up);
                 var supportPoint = _a.GetSupportPoint(direction) + _b.GetSupportPoint(direction);
-                if(kSimplex.Contains(supportPoint))
+                if(simplexHelper.Contains(supportPoint))
                     continue;
-                kSimplex.Add(supportPoint);
+                simplexHelper.Add(supportPoint);
             }
-            return new G2Polygon(kSimplex);
+            return new G2Polygon(simplexHelper.ToList());
         }
 
         public static G2Polygon Difference(IGeometry2 _a, IGeometry2 _b, int _sampleCount = 64)
         {
-            kSimplex.Clear();
+            var simplexHelper = PoolList<float2>.Empty(nameof(GJK));
             for(int i=0;i<_sampleCount;i++)
             {
                 var rad = i * kmath.kPI2 / _sampleCount;
                 var direction = umath.Rotate2D(rad).mul(kfloat2.up);
                 var supportPoint = Support(_a, _b, direction);
-                if(kSimplex.Contains(supportPoint))
+                if(simplexHelper.Contains(supportPoint))
                     continue;
-                kSimplex.Add(supportPoint);
+                simplexHelper.Add(supportPoint);
             }
-            return new G2Polygon(kSimplex);
+            return new G2Polygon(simplexHelper.ToList());
         }
     }
 }

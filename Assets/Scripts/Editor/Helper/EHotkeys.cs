@@ -80,7 +80,7 @@ namespace UnityEditor.Extensions
             for (int i = 0; i < childCount; i++)
             {
                 var child = selectObject.transform.GetChild(i);
-                var bounds = UGeometry.GetBoundingBox(child.GetComponentsInChildren<MeshFilter>().Select(p=>(GBox)p.sharedMesh.bounds));
+                var bounds = GBox.GetBoundingBox(child.GetComponentsInChildren<MeshFilter>().Select(p=>(GBox)p.sharedMesh.bounds));
                 child.transform.localPosition = position;
                 position += (bounds.size.x + 1f) * Vector3.right;
             }

@@ -2,7 +2,6 @@
 
 namespace Runtime.Geometry.Extension
 {
-
     //https://iquilezles.org/articles/intersectors/
     public interface IRayIntersection
     {

@@ -76,8 +76,8 @@ namespace Runtime.Geometry
         
 
         public float3 GetSupportPoint(float3 _direction) => this.MaxElement(_p => math.dot(_p, _direction));
-        public GBox GetBoundingBox() => UGeometry.GetBoundingBox(this);
-        public GSphere GetBoundingSphere() => UGeometry.GetBoundingSphere(this);
+        public GBox GetBoundingBox() => GBox.GetBoundingBox(this);
+        public GSphere GetBoundingSphere() => GSphere.GetBoundingSphere(this);
 
         public IEnumerable<float3> GetAxis()
         {

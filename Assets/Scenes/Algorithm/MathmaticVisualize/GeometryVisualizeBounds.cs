@@ -1,5 +1,8 @@
+using System.Linq;
+using System.Linq.Extensions;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
+using Runtime.Pool;
 using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
@@ -18,7 +21,7 @@ namespace Examples.Algorithm.MathematicsVisualize
         public GSphere boundingSphere2;
 
         [Header("Polygon")] public float2[] boundingPolygonPoints;
-        [Clamp(3,nameof(boundingPolygonPoints))]public int concaveHullK = 3;
+        [Range(0f,1f)] public float alphaShapeThreshold = .5f;
         
         [InspectorButton(true)]
         private void RandomPoints()
@@ -47,13 +50,13 @@ namespace Examples.Algorithm.MathematicsVisualize
         {
             Gizmos.color = Color.white;
             Gizmos.matrix = transform.localToWorldMatrix;
-            UGeometry.GetBoundingBox(boundingBoxRandomPoints).DrawGizmos();
+            GBox.GetBoundingBox(boundingBoxRandomPoints).DrawGizmos();
             if(boundingBoxRandomPoints!=null)
                 foreach (var points in boundingBoxRandomPoints)
                     Gizmos.DrawWireSphere(points,.02f);
 
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * kPadding);
-            UGeometry.GetBoundingSphere(boundingSpherePoints).DrawGizmos();
+            GSphere.GetBoundingSphere(boundingSpherePoints).DrawGizmos();
             if (boundingSpherePoints != null)
             {
                 foreach (var points in boundingSpherePoints)
@@ -67,30 +70,44 @@ namespace Examples.Algorithm.MathematicsVisualize
             boundingSphere2.DrawGizmos();
             Gizmos.color = Color.white;
             GSphere.Minmax(boundingSphere1,boundingSphere2).DrawGizmos();
+
+            if (boundingPolygonPoints == null)
+                return;
             
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding);
-            G2Polygon.ConvexConstructor.GrahamScan(boundingPolygonPoints).DrawGizmos();
-            if (boundingPolygonPoints != null)
-            {
-                foreach (var points in boundingPolygonPoints)
-                    Gizmos.DrawSphere(points.to3xz(),.02f);
-            }
+            G2Polygon.ConvexHull(boundingPolygonPoints).DrawGizmos();
+            foreach (var points in boundingPolygonPoints)
+                Gizmos.DrawSphere(points.to3xz(),.02f);
+            UGizmos.DrawString("Convex Hull");
             
-            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding + Vector3.right * kPadding);
-            G2Polygon.ConvexConstructor.QuickHull(boundingPolygonPoints).DrawGizmos();
-            if (boundingPolygonPoints != null)
-            {
-                foreach (var points in boundingPolygonPoints)
-                    Gizmos.DrawSphere(points.to3xz(),.02f);
-            }
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding + Vector3.right * kPadding * 1);
+            G2Polygon.GrahamScan(boundingPolygonPoints).DrawGizmos();
+            foreach (var points in boundingPolygonPoints)
+                Gizmos.DrawSphere(points.to3xz(),.02f);
+            UGizmos.DrawString("Graham Scan");
             
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding + Vector3.right * kPadding * 2);
-            G2Polygon.ConcaveHull(boundingPolygonPoints,concaveHullK).DrawGizmos();
-            if (boundingPolygonPoints != null)
-            {
-                foreach (var points in boundingPolygonPoints)
-                    Gizmos.DrawSphere(points.to3xz(),.02f);
-            }
+            G2Polygon.QuickHull(boundingPolygonPoints).DrawGizmos();
+            foreach (var points in boundingPolygonPoints)
+                Gizmos.DrawSphere(points.to3xz(),.02f);
+            UGizmos.DrawString("Quick Hull");
+            
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding * 2);
+            G2Polygon.ConcaveHull(boundingPolygonPoints).DrawGizmos();
+            foreach (var points in boundingPolygonPoints)
+                Gizmos.DrawSphere(points.to3xz(),.02f);
+            UGizmos.DrawString("Convex Hull");
+            
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding * 2 + Vector3.right * kPadding * 1);
+            var triangles = PoolList<PTriangle>.Empty(nameof(GeometryVisualizeBounds));
+            Gizmos.color = Color.blue.SetA(.2f);
+            UTriangulation.Triangulation(boundingPolygonPoints,ref triangles);
+            triangles.Select(p=>new G2Triangle(boundingPolygonPoints,p)).Traversal(p=>p.DrawGizmos());
+            var graph = G2Graph.FromTriangles(boundingPolygonPoints,triangles);
+            graph.DrawGizmos();
+            Gizmos.color = Color.white;
+            G2Polygon.AlphaShape(boundingPolygonPoints,alphaShapeThreshold).DrawGizmos();
+            UGizmos.DrawString("Alpha Shape");
         }
     }
 }

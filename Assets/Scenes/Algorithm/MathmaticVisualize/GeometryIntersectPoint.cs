@@ -22,6 +22,9 @@ namespace Examples.Algorithm.MathematicsVisualize
         public float3 m_AxisPoint;
         public GRay m_AxisRay = new GRay(float3.zero, kfloat3.down);
 
+        [Header("2D")]
+        public G2Line m_Line2D1 = new G2Line(kfloat2.left, kfloat2.right);
+        public G2Line m_Line2D2 = new G2Line(kfloat2.down, kfloat2.up);
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
@@ -63,7 +66,21 @@ namespace Examples.Algorithm.MathematicsVisualize
             
             m_AxisRay.DrawGizmos();
             Gizmos.DrawWireSphere(m_AxisRay.GetPoint(m_Axis.IntersectDistance(m_AxisRay)),.025f);
+            
+            
 
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(kfloat3.right * 9f);
+            Gizmos.color = Color.white;
+            var projection = m_Line2D1.Projection(m_Line2D2);
+            
+            var intersect = m_Line2D1.Intersect(m_Line2D2);
+            Gizmos.color = intersect ? Color.green : Color.white;
+            m_Line2D1.DrawGizmos();
+            m_Line2D2.DrawGizmos();
+            Gizmos.color = Color.red.SetA(.5f);
+            Gizmos.DrawWireSphere(((G2Ray)m_Line2D1).GetPoint(projection.x).to3xz(),.05f);
+            Gizmos.color = Color.green.SetA(.5f);
+            Gizmos.DrawWireSphere(((G2Ray)m_Line2D2).GetPoint(projection.y).to3xz(),.05f);
         }
 #endif
     }

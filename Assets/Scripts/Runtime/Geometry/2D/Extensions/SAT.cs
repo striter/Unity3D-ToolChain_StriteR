@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 namespace Runtime.Geometry.Extension
 {
-    public static class SAT2
+    public static partial class SAT
     {
         public static bool Intersect(this IConvex2 _convex, IConvex2 _comparer) => _2D.Intersect(_convex,_comparer);
         
