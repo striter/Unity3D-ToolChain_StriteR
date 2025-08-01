@@ -1,15 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq.Extensions;
 using Unity.Mathematics;
 using UnityEngine;
-using Runtime.Geometry.Extension;
 
 namespace Runtime.Geometry
 {
     [Serializable]
-    public struct GFrustum : IVolume , ISerializationCallbackReceiver
+    public struct GFrustum : IComplex , ISerializationCallbackReceiver
     {
         public float3 origin;
         public quaternion rotation;

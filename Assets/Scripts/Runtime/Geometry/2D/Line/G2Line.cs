@@ -47,6 +47,8 @@ namespace Runtime.Geometry
             distance = projection.x;
             return distance > 0 && projection.y >= 0 && projection.y <= length;
         }
+        
+        public float2 GetPoint(float _distance) => start + direction * _distance;
 
         public void OnBeforeSerialize(){}
         public void OnAfterDeserialize() => Ctor();

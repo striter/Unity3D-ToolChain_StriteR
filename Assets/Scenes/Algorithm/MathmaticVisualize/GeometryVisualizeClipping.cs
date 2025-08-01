@@ -27,7 +27,7 @@ namespace Examples.Algorithm.MathematicsVisualize
             var movedPlane = new G2Plane(plane.normal,plane.distance * math.sin(UTime.time)*2);
             movedPlane.DrawGizmos(G2Circle.GetBoundingCircle(door.positions).radius);
 
-            if (door.DoorClip(movedPlane, out var clippedPolygon))
+            if (door.Clip(movedPlane, out var clippedPolygon))
             {
                 Gizmos.color = Color.yellow;
                 clippedPolygon.DrawGizmos();

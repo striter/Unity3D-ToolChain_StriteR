@@ -55,6 +55,8 @@ namespace Runtime.Geometry
             Gizmos.DrawLine((position + direction * _radius).to3xz(),( position - direction*_radius).to3xz() );
             UGizmos.DrawArrow(position.to3xz(),normal.to3xz(),1f,.1f);
         }
+        
+        public G2Ray ToRay() => new G2Ray(position, normal.cross());
     }
 
     public static class G2Plane_Extension

@@ -35,6 +35,11 @@ namespace Runtime.Geometry
     }
 
 
+    public interface IComplex : IVolume
+    {
+        
+    }
+
     public static class IConvex_Extension
     {
         private static readonly List<float3> kPoints = new List<float3>();

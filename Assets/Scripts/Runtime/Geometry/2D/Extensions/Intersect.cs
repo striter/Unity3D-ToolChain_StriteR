@@ -26,6 +26,15 @@ namespace Runtime.Geometry.Extension
             return proj.x >= 0 && proj.x <= _line.length && proj.y >= 0 && proj.y <= _line2.length;
         }
 
+        
+        public static bool Intersect(this G2Line _line, G2Plane _plane,out float _lineProjection)
+        {
+            var planeRay = _plane.ToRay();
+            var projection = planeRay.Projection(_line);
+            _lineProjection = projection.y;
+            return _lineProjection > 0 && _lineProjection <= _line.length;
+        }
+
         public static bool Intersect(this G2Box _box,G2Circle _sphere) => Intersect(_sphere, _box);
         public static bool Intersect(this G2Circle _circle, float2 _point) => _circle.SDF(_point) <= float.Epsilon;
     }

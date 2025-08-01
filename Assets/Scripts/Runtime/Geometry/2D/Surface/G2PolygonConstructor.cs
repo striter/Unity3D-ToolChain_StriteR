@@ -45,12 +45,12 @@ namespace Runtime.Geometry
         }
 
         //https://www.dinocajic.com/grahams-scan-visually-explained/
-        public static G2Polygon GrahamScan(IEnumerable<float2> _positions,float _bias = float.Epsilon)
+        public static G2Polygon GrahamScan(IEnumerable<float2> _positions)
         {
             var sortedPoints = PoolList<float2>.Empty(nameof(GrahamScan));
             sortedPoints.AddRange(_positions);
             if(sortedPoints.Count<=3)
-                return G2Polygon.kZero;
+                return new G2Polygon(sortedPoints);
             var initialPoint = _positions.MinElement(p => p.y);
 
             sortedPoints.SortDescending(p=>umath.getRadClockwise(kfloat2.down,p-initialPoint));

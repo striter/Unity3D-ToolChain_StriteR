@@ -170,6 +170,11 @@ public partial class umath
     public static float3 pow2(float3 _src) => _src * _src; 
     public static float4 pow2(float4 _src) => _src * _src;
     
+    public static float dot2(float _src) => _src * _src;    
+    public static float dot2(float2 _src) => _src.x * _src.x + _src.y * _src.y;
+    public static float dot2(float3 _src) => _src.x * _src.x + _src.y * _src.y + _src.z * _src.z;
+    public static float dot2(float4 _src) => _src.x * _src.x + _src.y * _src.y + _src.z * _src.z + _src.w * _src.w;
+
     public static float pow3(float _src) => _src * _src* _src;
     public static float2 pow3(float2 _src) => _src * _src* _src; 
     public static float3 pow3(float3 _src) => _src * _src* _src;

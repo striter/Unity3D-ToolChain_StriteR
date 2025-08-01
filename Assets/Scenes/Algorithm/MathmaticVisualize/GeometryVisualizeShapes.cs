@@ -15,7 +15,7 @@ public class GeometryVisualizeShapes : MonoBehaviour
     public bool m_ManualCast = false;
     [Foldout(nameof(m_ManualCast),false)][PostNormalize] public float3 m_CastDirection = kfloat3.forward;
     [Foldout(nameof(m_ManualCast),true)] public GRay m_ManualCastRay = GRay.kDefault;
-    private IGeometry[] drawingShapes = {GTriangle.kDefault,GDisk.kDefault,GQuad.kDefault, GPolygon.kBunny,   GBox.kDefault, GCapsule.kDefault, GCylinder.kDefault, GSphere.kOne, GEllipsoid.kDefault, GConeCapped.kDefault,GTorus.kDefault };
+    private IGeometry[] drawingShapes = {GTriangle.kDefault,GDisk.kDefault,GQuad.kDefault, GPolygon.kBunny,   GBox.kDefault, GCapsule.kDefault, GCylinder.kDefault, GSphere.kOne, GEllipsoid.kDefault, GConeCapped.kDefault,GTorus.kDefault,GTetrahedron.kDefault,  };
     private void OnDrawGizmos()
     {
         foreach (var (index, value) in drawingShapes.LoopIndex())

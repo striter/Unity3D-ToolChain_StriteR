@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Runtime.Geometry
 {
-    public struct GMesh : IVolume
+    public struct GMesh : IComplex
     {
         public float3[] vertices;
         public int[] triangles;

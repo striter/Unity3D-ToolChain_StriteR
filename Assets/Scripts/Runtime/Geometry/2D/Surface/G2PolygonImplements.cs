@@ -61,35 +61,6 @@ namespace Runtime.Geometry
     
     public static class G2Polygon_Extension
     {
-        public static bool DoorClip(this G2Polygon _polygon,G2Plane _plane,out G2Polygon _clippedPolygon)    //Convex and Counter Clockwise is needed
-        {
-            var cliped = false;
-            var positions = PoolList<float2>.Empty(nameof(DoorClip));
-            for (int i = _polygon.Count - 1; i >=0; i--)
-            {
-                var curPoint = _polygon[i];
-                var nextPoint = _polygon[(i + 1) % _polygon.Count];
-                var curDot = _plane.dot(curPoint);
-                var nextDot = _plane.dot(nextPoint);
-                var curForward = curDot > 0;
-                var nextForward = nextDot > 0;
-
-                if (curForward && !nextForward)
-                {
-                    var t = curDot / math.dot(_plane.normal,(curPoint-nextPoint));
-                    var insertPoint = math.lerp(curPoint, nextPoint, t);
-                    positions.Insert(i + 1, insertPoint);
-                    cliped = true;
-                }
-                else if (!curForward && !nextForward)
-                {
-                    positions.RemoveAt(i);
-                    cliped = true;
-                }
-            }
-            _clippedPolygon = new G2Polygon(positions);
-            return cliped;
-        }
 
         public static IEnumerable<int> GetIndexes(this G2Polygon _polygon)
         {

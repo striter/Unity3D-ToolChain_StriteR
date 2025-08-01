@@ -96,7 +96,7 @@ namespace Examples.Algorithm.MathematicsVisualize
             G2Polygon.ConcaveHull(boundingPolygonPoints).DrawGizmos();
             foreach (var points in boundingPolygonPoints)
                 Gizmos.DrawSphere(points.to3xz(),.02f);
-            UGizmos.DrawString("Convex Hull");
+            UGizmos.DrawString("Concave Hull");
             
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding * 2 + Vector3.right * kPadding * 1);
             var triangles = PoolList<PTriangle>.Empty(nameof(GeometryVisualizeBounds));

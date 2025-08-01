@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace Runtime.Geometry
 {
+    using static math;
+    using static umath;
+    using quaternion = quaternion;
     public partial struct GTriangle
     {
         public Triangle<float3> triangle;
@@ -15,7 +18,7 @@ namespace Runtime.Geometry
         [NonSerialized] public GCoordinates axis;
         [NonSerialized] public float3 normal;
         [NonSerialized] public float3 uOffset;
-        [NonSerialized] public float3 vOffset ;
+        [NonSerialized] public float3 vOffset;
         public GTriangle(float3 _vertex0, float3 _vertex1, float3 _vertex2)
         {
             this = default;
@@ -34,7 +37,7 @@ namespace Runtime.Geometry
     }
 
     [Serializable]
-    public partial struct GTriangle :IVolume, IConvex , ISurface , IRayIntersection , ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver
+    public partial struct GTriangle :IVolume, IConvex , ISurface , IRayIntersection , ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver ,ISDF
     {
         public float3 V0 => triangle.v0;
         public float3 V1 => triangle.v1;
@@ -108,12 +111,12 @@ namespace Runtime.Geometry
             var v2v0 = V2 - v0;
             var rov0 = ro-v0;
  
-            var n = math.cross( v1v0, v2v0 );
-            var q = math.cross( rov0, rd );
-            var d = 1.0f/math.dot(  n, rd );
-            var u =   d*math.dot( -q, v2v0 );
-            var v =   d*math.dot(  q, v1v0 );
-            var t =   d*math.dot( -n, rov0 );
+            var n = cross( v1v0, v2v0 );
+            var q = cross( rov0, rd );
+            var d = 1.0f/dot(  n, rd );
+            var u =   d*dot( -q, v2v0 );
+            var v =   d*dot(  q, v1v0 );
+            var t =   d*dot( -n, rov0 );
             distance = -1;
             if( u<0.0f || v<0.0f || (u+v)>1.0f ) 
                 return false;
@@ -121,6 +124,28 @@ namespace Runtime.Geometry
             distance = t;
             return true;
         }
+            
+        public float SDF(float3 _position)
+        {
+            var a = V0; var b = V1; var c = V2; var p = _position;
+            var ba = b - a; var pa = p - a;
+            var cb = c - b; var pb = p - b;
+            var ac = a - c; var pc = p - c;
+            var nor = cross( ba, ac );
+
+            return length(
+                (sign(dot(cross(ba,nor),pa)) +
+                    sign(dot(cross(cb,nor),pb)) +
+                    sign(dot(cross(ac,nor),pc))<2.0f)
+                    ?
+                    min( min(
+                            sqr(ba*clamp(dot(ba,pa)/dot2(ba),0.0f,1.0f)-pa),
+                            dot2(cb*clamp(dot(cb,pb)/dot2(cb),0.0f,1.0f)-pb) ),
+                        dot2(ac*clamp(dot(ac,pc)/dot2(ac),0.0f,1.0f)-pc) )
+                    :
+                    dot(nor,pa)*dot(nor,pa)/dot2(nor) );
+        }
+
         public void DrawGizmos() => UGizmos.DrawLinesConcat(triangle);
     }
 

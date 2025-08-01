@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Runtime.Pool;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -7,6 +8,31 @@ namespace Runtime.Geometry.Extension
 {
     public static partial class UGeometry
     {
+        public static bool Clip(this G2Polygon _polygon,G2Plane _plane,out G2Polygon _clippedPolygon)
+        {
+            var cliped = false;
+            var positions = PoolList<float2>.Empty(nameof(Clip));
+            for (var i = 0; i < _polygon.Count; i++)
+            {
+                var curPoint = _polygon[i];
+                var curDot = _plane.dot(curPoint);
+                var curForward =  curDot > 0;
+
+                if(curForward)
+                    positions.Add(curPoint);
+                
+                var line = new G2Line(_polygon[i],_polygon[(i + 1) % _polygon.Count]);
+                if (line.Intersect(_plane, out var projection))
+                {
+                    positions.Add(line.GetPoint(projection));
+                    cliped = true;
+                }
+            }
+
+            _clippedPolygon = new G2Polygon(positions);
+            return cliped;
+        }
+        
         public static bool Clip(this GTriangle _triangle,GPlane _plane, out IVolume _outputShape,bool _directed = true)
         {
             _outputShape = null;
