@@ -48,20 +48,18 @@ namespace Examples.Algorithm.MathematicsVisualize
         private const float kPadding = 3f;
         private void OnDrawGizmos()
         {
+            if (boundingBoxRandomPoints == null && boundingSpherePoints == null && boundingPolygonPoints == null)
+                return;
             Gizmos.color = Color.white;
             Gizmos.matrix = transform.localToWorldMatrix;
             GBox.GetBoundingBox(boundingBoxRandomPoints).DrawGizmos();
-            if(boundingBoxRandomPoints!=null)
                 foreach (var points in boundingBoxRandomPoints)
                     Gizmos.DrawWireSphere(points,.02f);
 
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * kPadding);
             GSphere.GetBoundingSphere(boundingSpherePoints).DrawGizmos();
-            if (boundingSpherePoints != null)
-            {
                 foreach (var points in boundingSpherePoints)
                     Gizmos.DrawWireSphere(points,.02f);
-            }
             
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * kPadding * 2);
             Gizmos.color = Color.red;
@@ -70,6 +68,13 @@ namespace Examples.Algorithm.MathematicsVisualize
             boundingSphere2.DrawGizmos();
             Gizmos.color = Color.white;
             GSphere.Minmax(boundingSphere1,boundingSphere2).DrawGizmos();
+            
+            
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * kPadding * 3);
+            Gizmos.color = Color.white;
+            GTetrahedron.GetSuperTetrahedron(boundingBoxRandomPoints).DrawGizmos();
+            foreach (var points in boundingBoxRandomPoints)
+                    Gizmos.DrawWireSphere(points,.02f);
 
             if (boundingPolygonPoints == null)
                 return;

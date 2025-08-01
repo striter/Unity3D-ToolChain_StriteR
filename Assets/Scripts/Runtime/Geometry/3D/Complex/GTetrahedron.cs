@@ -37,7 +37,6 @@ namespace Runtime.Geometry
 
     public partial struct GTetrahedron : IComplex , IEnumerable<float3> , ISerializationCallbackReceiver , ISDF
     {
-        public static readonly GTetrahedron kZero= new GTetrahedron(0,0,0,0);
         public static readonly GTetrahedron kDefault = new GTetrahedron(new float3(0.33f,-.25f,0.33f),new float3(-0.33f,-.25f,0.33f),new float3(0,-.25f,-0.33f),new float3(0,0.5f,0));
         public float3 Origin => center;
         public float3 this[int _index] => _index switch {
@@ -74,6 +73,19 @@ namespace Runtime.Geometry
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        public GTetrahedron Expand(float _distance)
+        {
+            var v0 = this.v0;
+            var v1 = this.v1;
+            var v2 = this.v2;
+            var v3 = this.v3;
+            var center = this.center;
+            v0 += (v0 - center).normalize() * _distance;
+            v1 += (v1 - center).normalize() * _distance;
+            v2 += (v2 - center).normalize() * _distance;
+            v3 += (v3 - center).normalize() * _distance;
+            return new GTetrahedron(v0, v1, v2, v3).Ctor();
+        }
         public float SDF(float3 _position)
         {
             var sdfs = new float4(t0.GetPlane().SDF(_position), t1.GetPlane().SDF(_position), t2.GetPlane().SDF(_position), t3.GetPlane().SDF(_position));
@@ -98,17 +110,16 @@ namespace Runtime.Geometry
             }
         }
 
-        public GTetrahedron GetSuperTetrahedron(IEnumerable<float3> _points)
+        public static GTetrahedron GetSuperTetrahedron(IEnumerable<float3> _points,float _extension = .1f)
         {
             UGeometry.Minmax(_points, out var min, out var max);
-            var mid = (min + max) / 2f;
-            
-            var deltaMax = mid.max();
-            var p1 = new float3(mid.x - 3f * deltaMax, mid.y - 3f * deltaMax, mid.z - 3f * deltaMax);
-            var p2 = new float3(mid.x, mid.y + 20 * deltaMax, mid.z - 3f * deltaMax);
-            var p3 = new float3(mid.x + 3f * deltaMax, mid.y - 3f * deltaMax, mid.z - 3f * deltaMax);
-            var p4 = new float3(mid.x, mid.y, mid.z + 3f * deltaMax);
-            return new GTetrahedron(p1, p2, p3, p4);
+            var delta = max - min;
+            var v0 = min;
+            delta *= 3f;
+            var v1 = new float3(min.x, min.x + delta.y, min.z);
+            var v2 = new float3(min.x + delta.x, min.y, min.z);
+            var v3 = new float3(min.x, min.y, min.x + delta.z);
+            return new GTetrahedron(v0, v1, v2, v3).Expand(_extension);
         }
     }
     
