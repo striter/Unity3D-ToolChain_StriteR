@@ -21,13 +21,13 @@ namespace UnityEngine.UI
         private void OnValidate()
         {
             if(m_Mode == EMode.AutomaticConvex)
-                ConstructConvex();
+                ConstructConvex(m_Expand);
         }
 
         public Material GetModifiedMaterial(Material baseMaterial)
         {
             if(m_Mode == EMode.AutomaticConvex)
-                ConstructConvex();
+                ConstructConvex(m_Expand);
             return baseMaterial;
         }
 
@@ -45,8 +45,9 @@ namespace UnityEngine.UI
 
 
         private const float m_AlphaClip = .5f;
-        [InspectorButtonFoldout(nameof(m_Mode),EMode.Manual)]
-        void ConstructConvex()
+
+        [InspectorButtonFoldout(nameof(m_Mode), EMode.Manual)]
+        void ConstructConvex(float _expand = 0f)
         {
             var texture = CollectTexture();
             if (texture == null)
@@ -62,7 +63,7 @@ namespace UnityEngine.UI
             
             var bounds = G2Box.Minmax(0,new float2(texture.width / downSample, texture.height  / downSample));
             var center = bounds.center;
-            m_PolygonNS = new G2Polygon(m_PolygonNS.positions.Select(p => bounds.GetUV((p + .5f) + m_Expand * (p - center).normalize()).saturate()));
+            m_PolygonNS = new G2Polygon(m_PolygonNS.positions.Select(p => bounds.GetUV((p + .5f) + _expand * (p - center).normalize()).saturate()));
         }
 
         [InspectorButtonFoldout(nameof(m_Mode),EMode.Manual)]
