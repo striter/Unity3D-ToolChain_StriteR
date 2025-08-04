@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
 
-namespace Examples.Algorithm.MathematicsVisualize
+namespace Examples.Algorithm.GeometryVisualize
 {
     
     public class GeometryVisualizeClipping : MonoBehaviour

@@ -153,6 +153,19 @@ namespace System.Linq.Extensions
                 }
             }
 
+            public static void Fill<T>(this IEnumerable<T> _src, IList<T> _dst) 
+            {
+                int index = 0;
+                foreach (var element in _src)
+                {
+                    if (index >= _dst.Count)
+                    {
+                        Debug.LogError($"{kPrefix}{nameof(Fill)}: Count Mismatch");
+                        return;
+                    }
+                    _dst[index++] = element;
+                }
+            }        
             public static IEnumerable<T> CollectIndex<T>(this IEnumerable<T> _collection, IEnumerable<int> _indexes)
             {
                 var index = 0;
@@ -244,36 +257,6 @@ namespace System.Linq.Extensions
                     index++;
                 }
                 return minIndex;
-            }
-
-            public static IList<T> Sort<T>(this IList<T> _collection, Func<T, float> _getValue)
-            {
-                var indexHelper = PoolList<KeyValuePair<int,float>>.Empty(nameof(Sort));
-                var elementContainer = _collection.FillList(PoolList<T>.Empty(nameof(Sort) + "Container"));
-                foreach (var (index,element) in _collection.LoopIndex())
-                {
-                    var value = -_getValue(element);
-                    indexHelper.Add(new KeyValuePair<int, float>(index, value));
-                }
-                indexHelper.Sort((a, b) => b.Value.CompareTo(a.Value));
-                for (var i = 0; i < indexHelper.Count; i++)
-                    _collection[i] = elementContainer[indexHelper[i].Key];
-                return _collection;
-            }
-            
-            public static IList<T> SortDescending<T>(this IList<T> _collection, Func<T, float> _getValue) => _collection.Sort(p=>-_getValue(p));
-            
-            public static IEnumerable<T> MinElements<T>(this IList<T> _collection,int _count, Func<T, float> _getValue)
-            {
-                _count = math.min(_count, _collection.Count);
-                var pairs = PoolList<KeyValuePair<int,float>>.Empty(nameof(Sort));
-                foreach (var (index,element) in _collection.LoopIndex())
-                {
-                    var value = _getValue(element);
-                    pairs.Add(new KeyValuePair<int, float>(index, value));
-                }
-                pairs.Sort((a, b) => a.Value.CompareTo(b.Value));
-                return pairs.Take(_count).Select(x => _collection[x.Key]);
             }
 
             public static float Min<T>(this IEnumerable<T> _collection, Func<T, float> _getValue, out int _minIndex)
@@ -474,7 +457,7 @@ namespace System.Linq.Extensions
                         return element;
                 return default;
             }
-
+            
             public static bool TryFind<T>(this IEnumerable<T> _collection,Predicate<T> _OnEachElement, out T _element)
             {
                 _element = default;
@@ -692,21 +675,6 @@ namespace System.Linq.Extensions
                 _src[i] = _dst;
         }
         
-        
-        public static void Fill<T>(this IEnumerable<T> _src, IList<T> _dst) 
-        {
-            int index = 0;
-            foreach (var element in _src)
-            {
-                if (index >= _dst.Count)
-                {
-                    Debug.LogError($"{kPrefix}{nameof(Fill)}: Count Mismatch");
-                    return;
-                }
-                _dst[index++] = element;
-            }
-        }        
-
         public static void Fill<T>(this IList<T> _src, IList<T> _dst)
         {
             if (_dst.Count != _src.Count)
@@ -779,6 +747,36 @@ namespace System.Linq.Extensions
                 minIndex = index;
             }
             return minIndex;
+        }
+        
+        public static IList<T> Sort<T>(this IList<T> _collection, Func<T, float> _getValue)
+        {
+            var indexHelper = PoolList<KeyValuePair<int,float>>.Empty(nameof(Sort));
+            var elementContainer = _collection.FillList(PoolList<T>.Empty(nameof(Sort) + "Container"));
+            foreach (var (index,element) in _collection.LoopIndex())
+            {
+                var value = -_getValue(element);
+                indexHelper.Add(new KeyValuePair<int, float>(index, value));
+            }
+            indexHelper.Sort((a, b) => b.Value.CompareTo(a.Value));
+            for (var i = 0; i < indexHelper.Count; i++)
+                _collection[i] = elementContainer[indexHelper[i].Key];
+            return _collection;
+        }
+        
+        public static void SortDescending<T>(this IList<T> _collection, Func<T, float> _getValue) => _collection.Sort(p=>-_getValue(p));
+            
+        public static IEnumerable<T> MinElements<T>(this IList<T> _collection,int _count, Func<T, float> _getValue)
+        {
+            _count = math.min(_count, _collection.Count);
+            var pairs = PoolList<KeyValuePair<int,float>>.Empty(nameof(Sort));
+            foreach (var (index,element) in _collection.LoopIndex())
+            {
+                var value = _getValue(element);
+                pairs.Add(new KeyValuePair<int, float>(index, value));
+            }
+            pairs.Sort((a, b) => a.Value.CompareTo(b.Value));
+            return pairs.Take(_count).Select(x => _collection[x.Key]);
         }
         #endregion
         

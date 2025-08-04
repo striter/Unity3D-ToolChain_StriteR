@@ -7,11 +7,11 @@ using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
 
-namespace Examples.Algorithm.DelaunayTriangulation
+namespace Examples.Algorithm.GeometryVisualize
 {
-    using static DelaunayTriangulation2D.Constants;
+    using static DelaunayTriangulation.Constants;
     [ExecuteInEditMode]
-    public class DelaunayTriangulation2D : MonoBehaviour
+    public class DelaunayTriangulation : MonoBehaviour
     {
         public static class Constants
         {

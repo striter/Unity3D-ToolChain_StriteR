@@ -362,7 +362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f81ad50870ccde4598f2ceb29b3be81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FourierType: 2
+  m_FourierType: 1
   m_TimeResolution: 128
   m_FrequencyResolution: 64
   m_InverseResolution: 64

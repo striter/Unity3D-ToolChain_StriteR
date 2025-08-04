@@ -4,6 +4,9 @@ using static kmath;
 using static Unity.Mathematics.math;
 public static partial class ULowDiscrepancySequences
 {
+    public static float3 Hammersley3D(uint _index, uint _size)=>new float3(Hammersley(_index,0,_size),Hammersley(_index,1,_size),Hammersley(_index,2,_size));
+    public static float3 Halton3D(uint _index) => new float3( Halton(_index,0),Halton(_index,kPrimes128[1]),Halton(_index,kPrimes128[2]));
+    
     private static List<float3> kPositionHelper3D = new();
     public static float3[] BCCLattice3D(float3 _spacing,float _bias = float.Epsilon) // normalized spacing
     {

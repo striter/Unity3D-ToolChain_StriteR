@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 
-namespace Examples.Algorithm.MathematicsVisualize
+namespace Examples.Algorithm.GeometryVisualize
 {
     #if UNITY_EDITOR
     public class GeometryVisualizeAngle : MonoBehaviour

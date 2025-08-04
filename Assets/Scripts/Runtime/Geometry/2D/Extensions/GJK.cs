@@ -72,7 +72,7 @@ namespace Runtime.Geometry.Extension
         public static G2Polygon Sum(IGeometry2 _a, IGeometry2 _b,int _sampleCount=64)  //Minkowski sum
         {
             var simplexHelper = PoolList<float2>.Empty(nameof(GJK));
-            for(int i=0;i<_sampleCount;i++)
+            for(var i=0;i<_sampleCount;i++)
             {
                 var rad = i * kmath.kPI2 / _sampleCount;
                 var direction = umath.Rotate2D(rad).mul(kfloat2.up);
@@ -81,13 +81,13 @@ namespace Runtime.Geometry.Extension
                     continue;
                 simplexHelper.Add(supportPoint);
             }
-            return new G2Polygon(simplexHelper.ToList());
+            return new G2Polygon(simplexHelper);
         }
 
         public static G2Polygon Difference(IGeometry2 _a, IGeometry2 _b, int _sampleCount = 64)
         {
             var simplexHelper = PoolList<float2>.Empty(nameof(GJK));
-            for(int i=0;i<_sampleCount;i++)
+            for(var i=0;i<_sampleCount;i++)
             {
                 var rad = i * kmath.kPI2 / _sampleCount;
                 var direction = umath.Rotate2D(rad).mul(kfloat2.up);
@@ -96,7 +96,7 @@ namespace Runtime.Geometry.Extension
                     continue;
                 simplexHelper.Add(supportPoint);
             }
-            return new G2Polygon(simplexHelper.ToList());
+            return new G2Polygon(simplexHelper);
         }
     }
 }

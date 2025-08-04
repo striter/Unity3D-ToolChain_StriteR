@@ -1,10 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.InverseKinematics

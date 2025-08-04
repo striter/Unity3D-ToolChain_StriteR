@@ -5,7 +5,7 @@ using System.Linq.Extensions;
 using Unity.Mathematics;
 using Gizmos = UnityEngine.Gizmos;
 
-namespace Examples.Algorithm.MathematicsVisualize
+namespace Examples.Algorithm.GeometryVisualize
 {
     public class GeometryVisualizeCoordinates : MonoBehaviour
     {

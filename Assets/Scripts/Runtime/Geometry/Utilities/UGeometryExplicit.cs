@@ -120,7 +120,7 @@ namespace Runtime.Geometry.Extension
             return GetPolygons(_indices);
         }
 
-        public static IEnumerable<PLine> GetDistinctEdges(this IEnumerable<PTriangle> _polygons) => _polygons.SelectMany(p => p.GetLines()).Select(p=> p.Distinct()).Distinct();
+        public static IEnumerable<PLine> GetDistinctEdges(this IEnumerable<PTriangle> _polygons) => _polygons.SelectMany(p => p.GetEdges()).Select(p=> p.Distinct()).Distinct();
         public static IEnumerable<GTriangle> GetPolygonVertices(this UnityEngine.Mesh _srcMesh, out int[] _indices,out Vector3[] _vertices)
         {
             var vertices = _srcMesh.vertices;

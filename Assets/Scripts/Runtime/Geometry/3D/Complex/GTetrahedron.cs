@@ -38,11 +38,19 @@ namespace Runtime.Geometry
     public partial struct GTetrahedron : IComplex , IEnumerable<float3> , ISerializationCallbackReceiver , ISDF
     {
         public static readonly GTetrahedron kDefault = new GTetrahedron(new float3(0.33f,-.25f,0.33f),new float3(-0.33f,-.25f,0.33f),new float3(0,-.25f,-0.33f),new float3(0,0.5f,0));
+
+        public GTetrahedron(IList<float3> _vertices, PTetrahedron _tetrahedron):this(_vertices[_tetrahedron.v0],_vertices[_tetrahedron.v1],_vertices[_tetrahedron.v2],_vertices[_tetrahedron.v3]){}
+        
         public float3 Origin => center;
         public float3 this[int _index] => _index switch {
                 0 => v0, 1 => v1, 2 => v2, 3 => v3,
                 _ => throw new IndexOutOfRangeException()
             };
+
+        public GTriangle GetTriangle(int _index) => _index switch {
+            0 => t0, 1 => t1, 2 => t2, 3 => t3,
+            _ => throw new IndexOutOfRangeException()
+        };
 
         public float3 GetSupportPoint(float3 _direction) => this.MaxElement(_p => math.dot(_p, _direction));
 
@@ -100,13 +108,16 @@ namespace Runtime.Geometry
             return max;
         }
 
-        public void DrawGizmos()
+        public void DrawGizmos() => DrawGizmos(false);
+
+        public void DrawGizmos(bool _arrow)
         {
             Gizmos.color = Color.white.SetA(.5f);
             foreach (var triangle in GetTriangles())
             {
                 triangle.DrawGizmos();
-                UGizmos.DrawArrow(triangle.baryCentre,triangle.normal,.3f,.05f);
+                if (_arrow)
+                    UGizmos.DrawArrow(triangle.baryCentre,triangle.normal,.3f,.05f);
             }
         }
 

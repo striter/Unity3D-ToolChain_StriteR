@@ -23,21 +23,18 @@ namespace Runtime.Geometry
         public int Length => 3;
         public T this[int _index]
         {
-            get
-            {
-                switch (_index)
+            get => _index switch
                 {
-                    default: Debug.LogError("Invalid Index:" + _index); return v0;
-                    case 0: return v0;
-                    case 1: return v1;
-                    case 2: return v2;
-                }
-            }
+                    0 => v0,
+                    1 => v1,
+                    2 => v2,
+                    _ => throw new Exception("Invalid Index:" + _index)
+                };
             set
             {
                 switch (_index)
                 {
-                    default: Debug.LogError("Invalid Index:" + _index); v0 = value; break;
+                    default:  throw new Exception("Invalid Index:" + _index);
                     case 0: v0 = value; break;
                     case 1: v1 = value; break;
                     case 2: v2 = value; break;
@@ -93,5 +90,8 @@ namespace Runtime.Geometry
                 return hashCode;
             }
         }
+        
+        public static bool operator ==(Triangle<T> left, Triangle<T> right) => left.v0.Equals( right.v0) && left.v1.Equals(right.v1) && left.v2.Equals(right.v2);
+        public static bool operator !=(Triangle<T> left, Triangle<T> right) => !(left == right);
     }
 }

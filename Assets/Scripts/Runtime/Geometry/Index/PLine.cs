@@ -18,11 +18,7 @@ namespace Runtime.Geometry
 
         public PLine Distinct() => start > end ? new PLine(end, start) : this;
         
-        #region Implements
         public bool Equals(PLine other) => start == other.start && end == other.end;
-        public bool EqualsNonVector(PLine other) => (start == other.start && end == other.end) 
-                                                    || (end == other.start && start == other.end);
-
         public IEnumerator<int> GetEnumerator()
         {
             yield return start;
@@ -36,6 +32,5 @@ namespace Runtime.Geometry
             return GetEnumerator();
         }
 
-        #endregion
     }
 }

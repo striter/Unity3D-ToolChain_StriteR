@@ -58,15 +58,15 @@ namespace Runtime.Geometry
         public void OnBeforeSerialize(){}
         public void OnAfterDeserialize() => Ctor();
 
-        public static G2Graph FromTriangles(IList<float2> _vertices, IList<PTriangle> _triangle)
+        public static G2Graph FromTriangles(IList<float2> _vertices, IList<PTriangle> _triangles)
         {
             var graph = new G2Graph {
-                nodes = new List<Node>(_triangle.Count)
+                nodes = new List<Node>(_triangles.Count)
             };
             
             foreach (var vertex in _vertices)
                 graph.nodes.Add(new () { position = vertex ,connections = new () });
-            foreach (var edge in _triangle.GetDistinctEdges())
+            foreach (var edge in _triangles.Select(p=>p.Distinct()).SelectMany(p=>p.GetEdges()))
             {
                 var nodeStart = graph.nodes[edge.start];
                 var nodeEnd = graph.nodes[edge.end];

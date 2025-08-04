@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
 
-namespace Examples.Algorithm.DelaunayTriangulation
+namespace Examples.Algorithm.GeometryVisualize
 {
     using static DelaunayTriangulationSphere.Constants;
     [ExecuteInEditMode]

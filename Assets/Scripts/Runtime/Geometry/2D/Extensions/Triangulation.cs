@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Extensions;
 using Unity.Mathematics;
 
 namespace Runtime.Geometry.Extension
 {
     public static partial class UTriangulation
     {
-        public static class DelaunayTriangulation2D
+        public static class DelaunayTriangulation
         {
             private struct DComplex : IEquatable<DComplex>
             {
                 public PTriangle complex;
-                public G2Triangle positions;
                 public G2Circle circumscribedCircle;
 
                 public bool Equals(DComplex other)
@@ -31,90 +31,62 @@ namespace Runtime.Geometry.Extension
                 }
             }
 
-            private struct DEdge : IEquatable<DEdge>
-            {
-                public PLine polygon;
-                public G2Line positions;
-
-                public DEdge(PLine _polygon,G2Line _positions)
-                {
-                    polygon = _polygon;
-                    positions = _positions;
-                }
-
-                public bool Equals(DEdge other)
-                {
-                    return polygon.EqualsNonVector(other.polygon);
-                }
-
-                public override bool Equals(object obj)
-                {
-                    return obj is DEdge other && Equals(other);
-                }
-
-                public override int GetHashCode()
-                {
-                    return polygon.GetHashCode();
-                }
-            }
-            
-            private static List<DComplex> kComplexes = new List<DComplex>();
-            private static List<DEdge> kEdges = new List<DEdge>();
-            private static PTriangle kSuperComplex = new PTriangle(-1, -2, -3);
+            private static List<float2> kVertices = new();
+            private static List<DComplex> kComplexes = new();
+            private static List<PLine> kPolygon = new();
             public static void BowyerWatson(IList<float2> _vertices, ref List<PTriangle> _triangles)
             {
                 _triangles.Clear();
+                kVertices.Clear();
                 kComplexes.Clear();
-                kEdges.Clear();
+                kPolygon.Clear();
+                var vertexCount = _vertices.Count;
+                kVertices.AddRange(_vertices);
                 var boundsCircle = G2Circle.GetBoundingCircle(_vertices);
                 var superTriangle = G2Triangle.GetCircumscribedTriangle(boundsCircle);
+                kVertices.AddRange(superTriangle);
                 kComplexes.Add(new DComplex()
                 {
-                    complex = kSuperComplex,
-                    positions = superTriangle,
+                    complex = new PTriangle(0,1,2) + vertexCount,
                     circumscribedCircle = G2Circle.TriangleCircumscribed(superTriangle.V0,superTriangle.V1,superTriangle.V2)
                 });
+
                 
-                var vertexIndex = 0;
-                foreach (var vertex in _vertices)
+                for(var vertexIndex=0;vertexIndex<vertexCount;vertexIndex++)
                 {
-                    kEdges.Clear();
+                    var vertex = _vertices[vertexIndex];
+                    kPolygon.Clear();
                     
                     for(var i=0;i<kComplexes.Count;i++)
                     {
                         var triangle = kComplexes[i];
                         if (!triangle.circumscribedCircle.Contains(vertex))
                             continue;
-                        var polygon = triangle.complex;
-                        var positions = triangle.positions;
-                        kEdges.Add(new DEdge(new PLine(polygon.V0,polygon.V1), new G2Line(positions.V0,positions.V1)));
-                        kEdges.Add(new DEdge(new PLine(polygon.V1,polygon.V2), new G2Line(positions.V1,positions.V2)));
-                        kEdges.Add(new DEdge(new PLine(polygon.V2,polygon.V0), new G2Line(positions.V2,positions.V0)));
+                        foreach (var edge in triangle.complex.GetEdges())
+                            kPolygon.Add(edge.Distinct());
                         kComplexes.RemoveAt(i);
                         i--;
                     }
                     
-                    foreach (var edge in kEdges)
+                    foreach (var edge in kPolygon)
                     {
-                        if (kEdges.Count(p => p.Equals(edge)) > 1)
+                        if (kPolygon.Count(p => p.Equals(edge)) > 1)
                             continue;
                         
-                        var polygon = new PTriangle(edge.polygon.start,edge.polygon.end,vertexIndex);
-                        var positions = new G2Triangle(edge.positions.start,edge.positions.end,vertex);
-                        kComplexes.Insert(0,new DComplex(){complex = polygon,positions = positions,circumscribedCircle = G2Circle.TriangleCircumscribed(positions)});
+                        var polygon = new PTriangle(edge.start,edge.end,vertexIndex);
+                        var positions = new G2Triangle(kVertices,polygon);
+                        kComplexes.Insert(0,new DComplex(){complex = polygon,circumscribedCircle = G2Circle.TriangleCircumscribed(positions)});
                     }
-
-                    vertexIndex++;
                 }
                 
                 //Remove triangles shared edge with super triangle
                 _triangles.Clear();
                 for(var i= kComplexes.Count-1;i>=0;i--)
-                    if(!kComplexes[i].complex.Any(p=>p<0))  //Is from super triangle
+                    if(!kComplexes[i].complex.Any(p=>p>=vertexCount))  //Is from super triangle
                         _triangles.Add(kComplexes[i].complex);
             }
         }
         
-        public static void Triangulation(IList<float2> _vertices,ref List<PTriangle> _triangles) => DelaunayTriangulation2D.BowyerWatson(_vertices,ref _triangles);
+        public static void Triangulation(IList<float2> _vertices,ref List<PTriangle> _triangles) => DelaunayTriangulation.BowyerWatson(_vertices,ref _triangles);
     }
 }

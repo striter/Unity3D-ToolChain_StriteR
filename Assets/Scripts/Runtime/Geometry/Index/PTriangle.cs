@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Extensions;
+using Unity.Mathematics;
 
 namespace Runtime.Geometry
 {
@@ -17,9 +20,9 @@ namespace Runtime.Geometry
     [Serializable]
     public partial struct PTriangle:ITriangle<int>,IEnumerable<int>,IIterate<int>,IEquatable<PTriangle>
     {
-        public Triangle<T> Convert<T>(IList<T> _vertices) where T:struct => new Triangle<T>(_vertices[V0], _vertices[V1],_vertices[V2]);
+        public Triangle<T> Convert<T>(IList<T> _vertices) where T:struct => new(_vertices[V0], _vertices[V1],_vertices[V2]);
         
-        public static explicit operator PTriangle(Triangle<int> _src) => new PTriangle(_src);
+        public static explicit operator PTriangle(Triangle<int> _src) => new(_src);
         public IEnumerable<T> GetEnumerator<T>(IList<T> _vertices)
         {
             yield return _vertices[V0];
@@ -30,11 +33,19 @@ namespace Runtime.Geometry
         public IEnumerator<int> GetEnumerator() => triangle.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator()=>GetEnumerator();
 
-        public IEnumerable<PLine> GetLines()
+        public IEnumerable<PLine> GetEdges()
         {
             yield return new PLine(V0, V1);
             yield return new PLine(V1, V2);
             yield return new PLine(V2, V0);
+        }
+
+        public PTriangle Distinct()
+        {
+            var newTriangle = new PTriangle(triangle.v0, triangle.v1, triangle.v2);
+            foreach (var (index,value) in this.OrderBy(p=>p).LoopIndex())
+                newTriangle[index] = value;
+            return newTriangle;
         }
         
         public int Length => 3;
@@ -53,6 +64,10 @@ namespace Runtime.Geometry
 
         public override bool Equals(object obj)=>obj is PTriangle other && Equals(other);
 
+        public static PTriangle operator +(PTriangle _triangle,int _index) => new(_triangle.V0 + _index, _triangle.V1 + _index, _triangle.V2 + _index);
+        public static PTriangle operator -(PTriangle _triangle,int _index) => new(_triangle.V0 - _index, _triangle.V1 - _index, _triangle.V2 - _index);
+        public static bool operator ==(PTriangle lhs, PTriangle rhs) => lhs.triangle == rhs.triangle;
+        public static bool operator !=(PTriangle lhs, PTriangle rhs) => lhs.triangle != rhs.triangle;
         public override int GetHashCode()=> triangle.GetHashCode();
     }
 
