@@ -51,7 +51,8 @@ namespace Rendering.Pipeline
             }
             
             foreach (var pass in m_Passes.Values)
-                _renderer.EnqueuePass(pass);
+                if(pass.Available)
+                    _renderer.EnqueuePass(pass);
         }
     }
 
@@ -73,6 +74,8 @@ namespace Rendering.Pipeline
             m_Renderers.Clear();
         }
 
+        public bool Available => m_Renderers.Count > 0;
+        
         public void Dispatch(Material _material,Renderer _renderer)
         {
             m_Materials.Add(_material);
