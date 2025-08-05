@@ -25,6 +25,8 @@ namespace Runtime.Geometry
             var delta = end - start;
             sqrLength = delta.sqrmagnitude();
             length = math.sqrt(sqrLength);
+            if(length ==0) 
+                return;
             direction = delta / length;
         }
 
@@ -52,5 +54,11 @@ namespace Runtime.Geometry
 
         public void OnBeforeSerialize(){}
         public void OnAfterDeserialize() => Ctor();
+        
+        public static G2Line kDefault => new G2Line(float2.zero,kfloat2.right);
+        public static G2Line kZero => new G2Line(float2.zero,float2.zero);
+        
+        public static G2Line operator -(G2Line _line,float2 _position) => new G2Line(_line.start - _position,_line.end - _position);
+        public static G2Line operator +(G2Line _line,float2 _position) => new G2Line(_line.start + _position,_line.end + _position);
     }
 }

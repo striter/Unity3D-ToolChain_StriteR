@@ -96,6 +96,49 @@ namespace Runtime.Geometry
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         public void DrawGizmos() => Gizmos.DrawWireCube(center.to3xz(),size.to3xz());
         public void DrawGizmosXY() => Gizmos.DrawWireCube(center.to3xy(), size.to3xy());
+        
+        
+        //https://www.skytopia.com/project/articles/compsci/clipping.html
+        public bool Clip(G2Line _line,out G2Line _clippedLine)
+        {
+            _clippedLine = G2Line.kZero;
+            var x0src = _line.start.x; var y0src = _line.start.y; var x1src = _line.end.x; var y1src = _line.end.y;
+            var edgeLeft = min.x; var edgeRight = max.x; var edgeBottom = min.y; var edgeTop = max.y;
+            var t0 = 0f;    var t1 = 1f;
+            var xdelta = x1src-x0src;
+            var ydelta = y1src-y0src;
+            float p,q,r;
+
+            for(int edge=0; edge<4; edge++) {   // Traverse through left, right, bottom, top edges.
+                switch(edge) {
+                    default:
+                    case 0: p = -xdelta;    q = -(edgeLeft-x0src);  break;
+                    case 1: p = xdelta;     q =  (edgeRight-x0src); break;
+                    case 2: p = -ydelta;    q = -(edgeBottom-y0src);break;
+                    case 3: p = ydelta;     q =  (edgeTop-y0src);   break;
+                }
+                r = q/p;
+                
+                if(p==0 && q<0) 
+                    return false;   // Don't draw line at all. (parallel line outside)
+
+                if(p<0) {
+                    if(r>t1) return false;         // Don't draw line at all.
+                    else if(r>t0) t0=r;            // Line is clipped!
+                } else if(p>0) {
+                    if(r<t0) return false;      // Don't draw line at all.
+                    else if(r<t1) t1=r;         // Line is clipped!
+                }
+            }
+
+            var x0clip = x0src + t0*xdelta;
+            var y0clip = y0src + t0*ydelta;
+            var x1clip = x0src + t1*xdelta;
+            var y1clip = y0src + t1*ydelta;
+
+            _clippedLine = new G2Line(new float2(x0clip,y0clip),new float2(x1clip,y1clip));
+            return true;        // (clipped) line is drawn
+        }
     }
 
 }

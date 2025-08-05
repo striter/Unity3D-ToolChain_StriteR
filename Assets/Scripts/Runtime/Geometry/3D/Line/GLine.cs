@@ -33,8 +33,8 @@ namespace Runtime.Geometry
         void Ctor()
         {
             var offset = end - start;
-            direction = offset.normalize();
             length = offset.magnitude();
+            direction = offset.safeNormalize();
         }
         
         public static implicit operator GRay(GLine _line)=>new GRay(_line.start,_line.direction);
@@ -47,6 +47,7 @@ namespace Runtime.Geometry
         public GRay ToRay()=>new GRay(start,direction);
         
         public static readonly GLine kDefault = new GLine(float3.zero, kfloat3.forward);
+        public static readonly GLine kZero = new GLine(float3.zero, float3.zero);
         public void DrawGizmos() => Gizmos.DrawLine(start, end);
         public float3 Origin => start + end / 2;
         public float SDF(float3 _position)

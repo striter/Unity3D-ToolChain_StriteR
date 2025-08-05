@@ -17,6 +17,10 @@ namespace Examples.Algorithm.GeometryVisualize
         public G2Polygon door = G2Polygon.kDefault;
         public G2Plane plane = G2Plane.kDefault;
         public G2Triangle triangle = G2Triangle.kDefault;
+
+        [Header("2D Box Clip")]
+        public G2Line line = G2Line.kDefault;
+        public G2Box box = G2Box.kDefault;
         
         private void OnDrawGizmos()
         {
@@ -55,6 +59,18 @@ namespace Examples.Algorithm.GeometryVisualize
                 clippedGShape.DrawGizmos();
             }
             
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back*10f);
+            Gizmos.color = Color.white.SetA(.5f);
+            var newLine = line + kfloat2.up * math.sin(UTime.time) * 1f;
+            box.DrawGizmos();
+            newLine.DrawGizmos();
+            var success = box.Clip(newLine,out var clippedLine);
+            if (success)
+            {
+                Gizmos.color = Color.yellow;
+                clippedLine.DrawGizmos();
+            }
+
         }
     }
 }

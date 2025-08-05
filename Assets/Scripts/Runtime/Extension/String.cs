@@ -42,4 +42,14 @@ public static class UString
             return string.Format($"+{_number}");
         return _number.ToString(CultureInfo.InvariantCulture);
     }
+
+    public static string Reverse(this string _src)
+    {
+        if (string.IsNullOrEmpty(_src))
+            return _src;
+
+        var subProblem = _src[1..];
+        var subSolution = Reverse(subProblem);
+        return subSolution + _src[0];
+    }
 }
