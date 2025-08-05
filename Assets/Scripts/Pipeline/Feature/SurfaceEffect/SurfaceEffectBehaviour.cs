@@ -4,11 +4,11 @@ using UnityEngine;
 namespace Rendering.Pipeline.Component
 {
     [ExecuteInEditMode]
-    public class SurfaceEffectProvider : MonoBehaviour , ISurfaceEffect
+    public class SurfaceEffectBehaviour : MonoBehaviour , ISurfaceEffect
     {
         public CullingMask m_Mask = CullingMask.kAll;
         public SurfaceEffectCollection m_Collection;
-        [SerializeField,Readonly] private List<SurfaceEffectAnimation> m_Playing = new List<SurfaceEffectAnimation>();
+        [SerializeField,Readonly] private List<SurfaceEffectAnimation> m_Playing = new();
         private Renderer[] m_Renderers;
         private void OnEnable()
         {
@@ -42,15 +42,18 @@ namespace Rendering.Pipeline.Component
         {
             if (m_Collection == null)
                 return;
-            
-            var clipIndex = m_Collection.m_AnimationClips.FindIndex(x => x.name == _anim);
-            if (clipIndex == -1)
-            {
-                Debug.LogError("No such animation: " + _anim);                
-                return;
-            }
 
-            this.Play(m_Collection.m_AnimationClips[clipIndex]);
+            var successful = false;
+            foreach (var clip in m_Collection.m_AnimationClips)
+            {
+                if(clip.name != _anim)
+                    continue; 
+                this.Play(clip);
+                successful = true;
+            }
+            
+            if(!successful)
+                Debug.LogError($"[{nameof(SurfaceEffectBehaviour)} No animation found: {_anim} in {m_Collection.name}");           
         }
 
         [InspectorButtonFold(nameof(m_Collection), null)]

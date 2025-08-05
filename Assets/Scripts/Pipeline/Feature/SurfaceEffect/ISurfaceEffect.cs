@@ -66,7 +66,7 @@ namespace Rendering.Pipeline.Component
 
         public static void Play(this ISurfaceEffect _effect, SurfaceEffectClip _clip)
         {
-            if (_effect.Playing.TryFind(p => p.clip.name == _clip.name, out var element))
+            if (_effect.Playing.TryFind(p => p.clip == _clip, out var element))
             {
                 element.Refresh();
                 return;

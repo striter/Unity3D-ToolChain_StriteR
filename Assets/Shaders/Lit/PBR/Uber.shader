@@ -42,6 +42,13 @@
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
         [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
         [Foldout(_ALPHACLIP)]_AlphaCutoff("Range",Range(0.01,1))=0.01
+		
+		[Header(Stencil)]
+        _Stencil ("Stencil ID", Float) = 0
+		[Enum(UnityEngine.Rendering.CompareFunction)]_StencilComp("Stencil Comparison", Float) = 0
+		[Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
 	}
 	
 	SubShader
@@ -52,6 +59,15 @@
 		ZWrite [_ZWrite]
 		ZTest [_ZTest]
 		
+        Stencil
+        {
+            Ref [_Stencil]
+            Comp [_StencilComp]
+            Pass [_StencilOp]
+            ReadMask [_StencilReadMask]
+            WriteMask [_StencilWriteMask]
+        }
+        
 		HLSLINCLUDE
 			#include "Assets/Shaders/Library/Common.hlsl"
 			

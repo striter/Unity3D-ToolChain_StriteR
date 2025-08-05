@@ -9,8 +9,13 @@ namespace Rendering.Pipeline.Component
     {
         [Readonly] public List<SurfaceEffectClip> m_AnimationClips;
 
-    #if UNITY_EDITOR
-        [InspectorButton]
+        public IEnumerable<SurfaceEffectClip> GetClips()
+        {
+            return m_AnimationClips;
+        }
+
+#if UNITY_EDITOR
+        [InspectorButton(true)]
         public void InsertAnimation(string _name,AnimationClip _clip,Material _material)
         {
             if (_clip == null)
@@ -46,7 +51,8 @@ namespace Rendering.Pipeline.Component
         public float length;
         public WrapMode warpMode;
         public SurfaceEffectCurve[] curves;
-
+        public static bool operator == (SurfaceEffectClip _a, SurfaceEffectClip _b) => _a.name == _b.name && _a.material == _b.material;
+        public static bool operator != (SurfaceEffectClip _a, SurfaceEffectClip _b) => _a.name != _b.name || _a.material != _b.material;
     }
 }
 

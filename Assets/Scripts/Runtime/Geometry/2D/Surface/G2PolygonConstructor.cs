@@ -223,7 +223,7 @@ namespace Runtime.Geometry
             return allInside ? hull : ConcaveHull(_positions,k+1);;
         }
     
-        public  static G2Polygon AlphaShape(IList<float2> _positions,float _threshold)
+        public static G2Polygon AlphaShape(IList<float2> _positions,float _threshold)
         {
             var triangles = PoolList<PTriangle>.Empty(nameof(AlphaShape));
             UTriangulation.Triangulation(_positions,ref triangles);

@@ -2,7 +2,8 @@
 {
     Properties
     {
-        [NoScaleOffset]_MainTex("Main Texture",2D)="white"{}
+        _MainTex("Main Texture",2D)="white"{}
+        _Color("_Tint",Color)=(1,1,1,1)
         [Toggle(_HSL)]_HSL("HSL",int)=0
         [Foldout(_HSL)]_HueShift("Hue Shift",Range(-180,180))=0
         [Foldout(_HSL)]_Saturation("Saturation",Range(-100,100))=0
@@ -24,6 +25,10 @@
             #include "Assets/Shaders/Library/Common.hlsl"
             #include "Assets/Shaders/Library/Additional/Algorithms/HSL.hlsl"
             TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
+            INSTANCING_BUFFER_START
+                INSTANCING_PROP(float4,_MainTex_ST)
+                INSTANCING_PROP(float4,_Color)
+            INSTANCING_BUFFER_END
             struct a2v
             {
                 half3 positionOS : POSITION;
@@ -40,7 +45,7 @@
             {
                 v2f o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                o.uv = v.uv;
+                o.uv = TRANSFORM_TEX_INSTANCE(v.uv,_MainTex);
                 return o;
             }
 
@@ -50,6 +55,7 @@
                 #if _HSL
                     col.rgb=HSL(col.rgb);
                 #endif
+                col *= INSTANCE(_Color);
                 return col;
             }
             ENDHLSL
