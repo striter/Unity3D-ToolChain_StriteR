@@ -15,6 +15,8 @@ namespace Examples.Algorithm.DataStructures
         public int Pop() => m_Stack.Pop();
         [InspectorButton(true)]
         public void Clear() => m_Stack.Clear();
+        [InspectorButton(true)]
+        public void TrimExcess() => m_Stack.TrimExcess();
         private void OnDrawGizmos()
         {
             if (m_Stack.Count == 0)

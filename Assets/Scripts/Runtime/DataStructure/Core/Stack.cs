@@ -43,6 +43,14 @@ namespace Runtime.DataStructure.Core
             if (RuntimeHelpers.IsReferenceOrContainsReferences<Element>())
                 Array.Clear(m_Elements, 0, m_Elements.Length);
         }
+        
+        public void TrimExcess()
+        {
+            if (m_Size >= m_Elements.Length * 0.9f)
+                return;
+            Array.Resize(ref m_Elements, m_Size);
+        }
+
         public Element Peek() => m_Elements[m_Size - 1];
         public IEnumerator<Element> GetEnumerator()
         {
