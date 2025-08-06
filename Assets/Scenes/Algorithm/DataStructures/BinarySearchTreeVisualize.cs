@@ -44,6 +44,8 @@ namespace Examples.Algorithm.DataStructures
                 Gizmos.DrawWireSphere(position.to3xz(),.1f);
                 UGizmos.DrawString(node.element.ToString(), position.to3xz());
             }
+            
+            UGizmos.DrawString(m_Tree.IsBalanced().ToString() ,Vector3.up);
         }
     }
 }
