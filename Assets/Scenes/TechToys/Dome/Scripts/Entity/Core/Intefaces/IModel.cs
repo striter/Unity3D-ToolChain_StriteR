@@ -59,7 +59,7 @@ namespace Dome.Model
         {
             if (!_this.isModelAvailable()) return;
             if (_this.restoreMaterials == null) return;
-            foreach (var (index,renderer) in _this.meshRenderers.LoopIndex())
+            foreach (var (index,renderer) in _this.meshRenderers.WithIndex())
                 renderer.material = _this.restoreMaterials[index];
             _this.restoreMaterials = null;
         }

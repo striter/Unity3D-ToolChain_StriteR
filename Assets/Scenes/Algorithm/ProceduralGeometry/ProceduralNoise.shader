@@ -31,11 +31,11 @@ Shader "Hidden/ProceduralNoise"
 #endif
             }
 
-            float3 OverrideAlbedo()
+            float4 OverrideAlbedo()
             {
 #if defined(UNITY_PROCEDURAL_INSTANCING_ENABLED)
                 uint hash = _Hashes[unity_InstanceID];
-                return (1.0/255.0)*float3(hash&255,(hash>>8)&255,(hash>>16)&255);
+                return float4((1.0/255.0)*float3(hash&255,(hash>>8)&255,(hash>>16)&255),1);
 #endif
             	return 1;
             }

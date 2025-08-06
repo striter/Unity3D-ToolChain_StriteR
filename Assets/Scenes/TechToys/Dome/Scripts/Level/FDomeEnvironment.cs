@@ -139,7 +139,7 @@ namespace Dome
 
         void PopulateMesh()
         {
-            foreach (var (index,vertex) in Refer<FDomeGrid>().m_Vertices.LoopIndex())
+            foreach (var (index,vertex) in Refer<FDomeGrid>().m_Vertices.WithIndex())
                 if(vertex.available)
                     m_Cells.Spawn(index).Initialize(this,vertex);
         }

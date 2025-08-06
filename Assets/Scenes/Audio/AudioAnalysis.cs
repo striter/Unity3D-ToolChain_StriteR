@@ -258,7 +258,7 @@ public class AudioAnalysis : MonoBehaviour
         public void Tick(float _deltaTime,GameObjectPool<Transform> _elements, IEnumerable<float2> _values)
         {
             var size = _elements.Count;
-            foreach (var (i,value) in _values.LoopIndex())
+            foreach (var (i,value) in _values.WithIndex())
             {
                 var output = value.x;
                 if(m_Dampers[i].value.x < output)
@@ -297,7 +297,7 @@ public class AudioAnalysis : MonoBehaviour
         {
             var size = _elements.Count;
             var highest = float.MinValue;
-            foreach (var (i,value) in _values.LoopIndex())
+            foreach (var (i,value) in _values.WithIndex())
             {
                 var output = value.x;
                 highest = math.max(highest, output);

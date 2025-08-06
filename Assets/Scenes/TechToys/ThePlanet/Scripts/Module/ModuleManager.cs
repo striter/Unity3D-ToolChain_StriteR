@@ -66,7 +66,7 @@ namespace TechToys.ThePlanet.Module
             DModule.EmissionColors = m_EmissionColors;
             
             m_ModuleIndexer.Clear();
-            foreach (var (type,data) in DModule.Collection.m_ModuleLibrary.LoopIndex())
+            foreach (var (type,data) in DModule.Collection.m_ModuleLibrary.WithIndex())
                 m_ModuleIndexer.Add(data.name, type);
 
             m_Controls.Traversal(_p=>

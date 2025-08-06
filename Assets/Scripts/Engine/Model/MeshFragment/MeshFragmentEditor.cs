@@ -82,7 +82,7 @@ namespace MeshFragment
                     throw new Exception("Sub Mesh Count Not Match Material Count!");
                 }
             
-                foreach (var (subMeshIndex,material) in  materials.LoopIndex())
+                foreach (var (subMeshIndex,material) in  materials.WithIndex())
                 {
                     var materialIndex = _materialLibrary.FindIndex(p => p == material);
                     if (materialIndex == -1)

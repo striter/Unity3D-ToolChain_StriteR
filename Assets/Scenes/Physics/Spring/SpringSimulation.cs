@@ -97,7 +97,7 @@ namespace Examples.PhysicsScenes.SpringSimulation
                 return;
             
             _drawer.PixelContinuousStart((int2)_joints[0].position);
-            foreach (var (index,joint) in _joints.LoopIndex())
+            foreach (var (index,joint) in _joints.WithIndex())
             {
                 var color = m_ColorPalette.Evaluate((float)index / _joints.Count);
                 _drawer.Circle((int2)joint.position, 5, color);

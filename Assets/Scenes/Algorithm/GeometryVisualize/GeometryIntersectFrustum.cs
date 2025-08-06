@@ -27,7 +27,7 @@ namespace Examples.Algorithm.GeometryVisualize
             
             if (m_DrawPlanes)
             {
-                foreach (var tuple in frustumPlanes.LoopIndex())
+                foreach (var tuple in frustumPlanes.WithIndex())
                 {
                     var frustumPlane = tuple.value;
                     Gizmos.color = UColor.IndexToColor(tuple.index);
@@ -42,7 +42,7 @@ namespace Examples.Algorithm.GeometryVisualize
             Gizmos.matrix = transform.localToWorldMatrix;
             if (m_DrawRays)
             {
-                foreach (var tuple in frustumRays.LoopIndex())
+                foreach (var tuple in frustumRays.WithIndex())
                 {
                     Gizmos.color = UColor.IndexToColor(tuple.index);
                     UGizmos.DrawArrow(tuple.value.origin,tuple.value.direction,1f,.05f);

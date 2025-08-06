@@ -43,7 +43,7 @@ namespace UnityEditor
         {
             float3 tempPoint = default;
             float3 startPoint = default;
-            foreach (var (index,point) in _points.LoopIndex())
+            foreach (var (index,point) in _points.WithIndex())
             {
                 if (index == 0)
                 {

@@ -129,7 +129,7 @@ namespace EndlessOcean
         public override void DrawGizmos(Transform _viewTransform)
         {
             Gizmos.matrix = transform.localToWorldMatrix;
-            foreach (var (index, parent) in m_Chunk.GetLeafs().LoopIndex())
+            foreach (var (index, parent) in m_Chunk.GetLeafs().WithIndex())
             {
                 Gizmos.color = UColor.IndexToColor(index);
                 parent.boundary.Resize(.98f).DrawGizmos();

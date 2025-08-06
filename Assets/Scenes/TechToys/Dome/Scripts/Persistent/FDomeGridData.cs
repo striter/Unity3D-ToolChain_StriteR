@@ -50,7 +50,7 @@ namespace Dome
                 
                 Gizmos.color = Color.white;
                 UGizmos.DrawLinesConcat(quad.positions);
-                    foreach (var (index,quadIndex) in quad.connections.LoopIndex())
+                    foreach (var (index,quadIndex) in quad.connections.WithIndex())
                     {
                         Gizmos.color = UColor.IndexToColor(index);
                         if (quadIndex < 0) continue;
@@ -58,7 +58,7 @@ namespace Dome
                     }
             }
 
-            foreach (var (index,tr) in o.initialTechPoints.LoopIndex())
+            foreach (var (index,tr) in o.initialTechPoints.WithIndex())
             {
                 Gizmos.color = UColor.IndexToColor(index);
                 Gizmos.DrawSphere(tr.position,1f);

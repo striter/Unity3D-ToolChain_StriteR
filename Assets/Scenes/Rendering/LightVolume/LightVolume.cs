@@ -40,7 +40,7 @@ namespace Examples.Rendering.LightVolume
             MaterialPropertyBlock block = new MaterialPropertyBlock();
             renderers = GetComponentsInChildren<MeshRenderer>();
             transforms = new VolumeTransforming[renderers.Length];
-            foreach (var (index,renderer) in renderers.LoopIndex())
+            foreach (var (index,renderer) in renderers.WithIndex())
             {
                 block.SetColor(KShaderProperties.kColor,URandom.RandomColor()*1.5f);
                 renderer.SetPropertyBlock(block);

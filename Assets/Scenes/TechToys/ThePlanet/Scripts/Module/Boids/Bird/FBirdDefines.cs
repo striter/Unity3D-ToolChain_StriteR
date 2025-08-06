@@ -74,7 +74,7 @@ namespace TechToys.ThePlanet.Module.BOIDS.Bird
 #if UNITY_EDITOR
         public void DrawGizmos()
         {
-            foreach (var (index, bird) in m_AssignedBirds.LoopIndex())
+            foreach (var (index, bird) in m_AssignedBirds.WithIndex())
             {
                 Gizmos.color = bird == -1 ? Color.red : Color.green;
                 Gizmos.DrawWireSphere(m_Root.m_BirdLandings[index].position, .1f);

@@ -140,7 +140,7 @@ namespace Examples.Algorithm.WaveFunctionCollapse
                 m_Finalized = false;
                 _TileID = _tileID;
                 OnTileSelect = _OnTileSelect;
-                foreach (var tuple in _allPossibilities.LoopIndex())
+                foreach (var tuple in _allPossibilities.WithIndex())
                 {
                     var index = tuple.index;
                     var possibility = tuple.value;

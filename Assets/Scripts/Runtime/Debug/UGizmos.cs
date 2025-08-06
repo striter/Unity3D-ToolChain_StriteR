@@ -26,7 +26,7 @@ public static class UGizmos
     public static void DrawLines(IEnumerable<float3> _points)
     {
         Vector3 tempPoint=default;
-        foreach (var (index,point) in _points.LoopIndex())
+        foreach (var (index,point) in _points.WithIndex())
         {
             if (index == 0)
             {
@@ -42,7 +42,7 @@ public static class UGizmos
     public static void DrawLines(IEnumerable<Vector3> _points)
     {
         Vector3 tempPoint=default;
-        foreach (var (index,point) in _points.LoopIndex())
+        foreach (var (index,point) in _points.WithIndex())
         {
             if (index == 0)
             {
@@ -58,7 +58,7 @@ public static class UGizmos
     public static void DrawLines<T>(IEnumerable<T> _points,Func<T,Vector3> _convert)
     {
         Vector3 tempPoint=default;
-        foreach (var (index,value) in _points.LoopIndex())
+        foreach (var (index,value) in _points.WithIndex())
         {
             var point = _convert(value);
             if (index == 0)
@@ -77,7 +77,7 @@ public static class UGizmos
     {
         float3 tempPoint = default;
         float3 startPoint = default;
-        foreach (var (index,point) in _points.LoopIndex())
+        foreach (var (index,point) in _points.WithIndex())
         {
             if (index == 0)
             {
@@ -102,7 +102,7 @@ public static class UGizmos
     {
         float3 tempPoint=default;
         float3 firstPoint = default;
-        foreach (var (index,value) in _points.LoopIndex())
+        foreach (var (index,value) in _points.WithIndex())
         {
             var point = _convert(value);
             if (index == 0)

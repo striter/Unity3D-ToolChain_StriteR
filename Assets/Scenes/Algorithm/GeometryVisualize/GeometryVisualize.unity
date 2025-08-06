@@ -223,6 +223,20 @@ MonoBehaviour:
       v2:
         x: 1
         y: -1
+  line:
+    start:
+      x: 0
+      y: -0.8
+    end:
+      x: 1
+      y: 0
+  box:
+    center:
+      x: 0
+      y: 0
+    extent:
+      x: 0.75
+      y: 0.5
 --- !u!1 &184308550
 GameObject:
   m_ObjectHideFlags: 0

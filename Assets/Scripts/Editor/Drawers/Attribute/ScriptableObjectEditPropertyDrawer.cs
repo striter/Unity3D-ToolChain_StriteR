@@ -81,7 +81,7 @@ namespace UnityEditor.Extensions
             rect = rect.Move(20f, 0f);
             EditorGUI.BeginChangeCheck();
             
-            foreach (var (index,child) in m_ChildProperties.LoopIndex())
+            foreach (var (index,child) in m_ChildProperties.WithIndex())
             {
                 float height = m_Heights[index];
                 var childRect = rect.ResizeY(height);

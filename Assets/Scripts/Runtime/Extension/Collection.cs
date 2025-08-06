@@ -51,7 +51,7 @@ namespace System.Linq.Extensions
                 }
             }
             
-            public static IEnumerable<(int index,T value)> LoopIndex<T>(this IEnumerable<T> _collection)
+            public static IEnumerable<(int index,T value)> WithIndex<T>(this IEnumerable<T> _collection)
             {
                 int index = 0;
                 foreach (T element in _collection)
@@ -129,7 +129,7 @@ namespace System.Linq.Extensions
             
             public static IEnumerable<T> Collect<T>(this IEnumerable<T> _collections, Func<int,T,bool> _Predicate)
             {
-                foreach (var (index,value) in _collections.LoopIndex())
+                foreach (var (index,value) in _collections.WithIndex())
                 {
                     if(!_Predicate(index,value))
                         continue;
@@ -178,7 +178,7 @@ namespace System.Linq.Extensions
             }
             public static IEnumerable<int> CollectAsIndex<T>(this IEnumerable<T> _collection, Predicate<T> _Predicate)
             {
-                foreach (var (index,value) in _collection.LoopIndex())
+                foreach (var (index,value) in _collection.WithIndex())
                 {
                     if (!_Predicate(value))
                         continue;  
@@ -188,7 +188,7 @@ namespace System.Linq.Extensions
             
             public static IEnumerable<int> CollectAsIndex<T>(this IEnumerable<T> _collection, Func<int,T,bool> _Predicate)
             {
-                foreach (var (index,value) in _collection.LoopIndex())
+                foreach (var (index,value) in _collection.WithIndex())
                 {
                     if (!_Predicate(index,value))
                         continue;  
@@ -263,7 +263,7 @@ namespace System.Linq.Extensions
             {
                 _minIndex = -1;
                 float minValue = float.MaxValue;
-                foreach (var (index,element) in _collection.LoopIndex())
+                foreach (var (index,element) in _collection.WithIndex())
                 {
                     var value = _getValue(element);
                     if(minValue<value)
@@ -278,7 +278,7 @@ namespace System.Linq.Extensions
             {
                 T minElement = default;
                 float minValue = float.MaxValue;
-                foreach (var (_,element) in _collection.LoopIndex())
+                foreach (var (_,element) in _collection.WithIndex())
                 {
                     var value = _getValue(element);
                     if(minValue<=value)
@@ -294,7 +294,7 @@ namespace System.Linq.Extensions
                 T minElement = default;
                 _minIndex = default;
                 float minValue = float.MaxValue;
-                foreach (var (index,element) in _collection.LoopIndex())
+                foreach (var (index,element) in _collection.WithIndex())
                 {
                     var value = _getValue(element);
                     if(minValue<value)
@@ -361,7 +361,7 @@ namespace System.Linq.Extensions
                 T maxElement = default;
                 var maxValue = float.MinValue;
                 _maxIndex = -1;
-                foreach (var (index,element) in _collection.LoopIndex())
+                foreach (var (index,element) in _collection.WithIndex())
                 {
                     var value = _getValue(element);
                     if(maxValue>value)
@@ -386,7 +386,7 @@ namespace System.Linq.Extensions
             {
                 var maxIndex = -1;
                 var maxValue = float.MinValue;
-                foreach (var (index,element) in _collection.LoopIndex())
+                foreach (var (index,element) in _collection.WithIndex())
                 {
                     var value = _getValue(element);
                     if(maxValue>value)
@@ -401,7 +401,7 @@ namespace System.Linq.Extensions
             {
                 var minIndex = -1;
                 var minValue = float.MaxValue;
-                foreach (var (index,element) in _collection.LoopIndex())
+                foreach (var (index,element) in _collection.WithIndex())
                 {
                     var value = _getValue(element);
                     if(minValue<value)
@@ -753,7 +753,7 @@ namespace System.Linq.Extensions
         {
             var indexHelper = PoolList<KeyValuePair<int,float>>.Empty(nameof(Sort));
             var elementContainer = _collection.FillList(PoolList<T>.Empty(nameof(Sort) + "Container"));
-            foreach (var (index,element) in _collection.LoopIndex())
+            foreach (var (index,element) in _collection.WithIndex())
             {
                 var value = -_getValue(element);
                 indexHelper.Add(new KeyValuePair<int, float>(index, value));
@@ -770,7 +770,7 @@ namespace System.Linq.Extensions
         {
             _count = math.min(_count, _collection.Count);
             var pairs = PoolList<KeyValuePair<int,float>>.Empty(nameof(Sort));
-            foreach (var (index,element) in _collection.LoopIndex())
+            foreach (var (index,element) in _collection.WithIndex())
             {
                 var value = _getValue(element);
                 pairs.Add(new KeyValuePair<int, float>(index, value));

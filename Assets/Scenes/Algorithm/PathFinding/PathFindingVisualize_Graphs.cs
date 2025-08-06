@@ -191,7 +191,7 @@ namespace Examples.Algorithm.PathFinding
             ULowDiscrepancySequences.PoissonDisk2D(resolution,30,random).Select(p=>(p-.5f)*kRadius).FillList(positions);
             
             m_Nodes.Clear();
-            foreach (var (index,position) in positions.LoopIndex())
+            foreach (var (index,position) in positions.WithIndex())
                 m_Nodes.Add(index,new Node(index,position.to3xz(),this));
             UTriangulation.Triangulation(positions,ref triangles);
             foreach (var triangle in triangles)

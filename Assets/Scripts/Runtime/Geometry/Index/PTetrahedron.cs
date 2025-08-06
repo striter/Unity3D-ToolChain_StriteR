@@ -49,7 +49,7 @@ namespace Runtime.Geometry
         public PTetrahedron Distinct()
         {
             var newTetrahedron = new PTetrahedron(v0, v1, v2, v3);
-            foreach (var (index, value) in this.OrderBy(p => p).LoopIndex())
+            foreach (var (index, value) in this.OrderBy(p => p).WithIndex())
                 newTetrahedron[index] = value;
             return newTetrahedron;
         }

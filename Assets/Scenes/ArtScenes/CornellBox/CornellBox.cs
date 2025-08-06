@@ -58,7 +58,7 @@ namespace Examples.ArtScenes.CornellBox
                 return;
             }
             
-            foreach (var (index,quad) in m_Bounding.GetQuads().LoopIndex())
+            foreach (var (index,quad) in m_Bounding.GetQuads().WithIndex())
             {
                 Gizmos.color = UColor.IndexToColor(index);
                 new GQuad(quad.Shrink(.99f)).DrawGizmos();

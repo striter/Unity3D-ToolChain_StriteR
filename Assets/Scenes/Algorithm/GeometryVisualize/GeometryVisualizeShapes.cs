@@ -18,7 +18,7 @@ public class GeometryVisualizeShapes : MonoBehaviour
     private IGeometry[] drawingShapes = {GTriangle.kDefault,GDisk.kDefault,GQuad.kDefault, GPolygon.kBunny,   GBox.kDefault, GCapsule.kDefault, GCylinder.kDefault, GSphere.kOne, GEllipsoid.kDefault, GConeCapped.kDefault,GTorus.kDefault,GTetrahedron.kDefault,  };
     private void OnDrawGizmos()
     {
-        foreach (var (index, value) in drawingShapes.LoopIndex())
+        foreach (var (index, value) in drawingShapes.WithIndex())
         {
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.right * 3f * index);
             Gizmos.color = Color.white;

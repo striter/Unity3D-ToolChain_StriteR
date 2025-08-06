@@ -295,7 +295,7 @@ namespace Examples.Algorithm.HexagonGrid
                     break;
                 case EGridAxialTest.Nearby:
                 {
-                    foreach (var nearbyAxial in hitAxial.GetCoordsNearby().LoopIndex())
+                    foreach (var nearbyAxial in hitAxial.GetCoordsNearby().WithIndex())
                     {
                         Gizmos.color = Color.Lerp(Color.blue, Color.red, nearbyAxial.index / 6f);
                         nearbyAxial.value.DrawHexagon();

@@ -116,7 +116,7 @@ namespace UnityEditor.Extensions
             
             CreateOrReplaceSubAsset(_assetPath, subAssets);
             var storedAssets = AssetDatabase.LoadAllAssetsAtPath(mainAssetPath).Exclude(mainAsset);
-            foreach (var (index,fieldInfo) in subAssetFields.LoopIndex())
+            foreach (var (index,fieldInfo) in subAssetFields.WithIndex())
             {
                 var assetName = assetNames[index];
                 var storedAsset = storedAssets.Find(p => p.name == assetName && p.GetType() == fieldInfo.FieldType);

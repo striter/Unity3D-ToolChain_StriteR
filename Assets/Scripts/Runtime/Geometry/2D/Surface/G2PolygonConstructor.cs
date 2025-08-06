@@ -120,7 +120,7 @@ namespace Runtime.Geometry
             var linePC = G2Ray.StartEnd(_P, C);
             var lineCQ = G2Ray.StartEnd(C, _Q);
 
-            foreach (var (index,point) in _positions.LoopIndex())
+            foreach (var (index,point) in _positions.WithIndex())
             {
                 if(index == maxIndex)
                     continue;

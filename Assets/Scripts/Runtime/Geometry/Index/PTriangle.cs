@@ -43,7 +43,7 @@ namespace Runtime.Geometry
         public PTriangle Distinct()
         {
             var newTriangle = new PTriangle(triangle.v0, triangle.v1, triangle.v2);
-            foreach (var (index,value) in this.OrderBy(p=>p).LoopIndex())
+            foreach (var (index,value) in this.OrderBy(p=>p).WithIndex())
                 newTriangle[index] = value;
             return newTriangle;
         }

@@ -101,7 +101,7 @@ namespace UnityEditor.Extensions.EditorExecutable
             
             m_Dirty = false;
             UEAsset.ClearSubAssets(m_Target);
-            foreach (var (index, so) in m_Target.m_Objects.LoopIndex())
+            foreach (var (index, so) in m_Target.m_Objects.WithIndex())
             {
                 var name = so.m_Title;
                 if (string.IsNullOrEmpty(name))

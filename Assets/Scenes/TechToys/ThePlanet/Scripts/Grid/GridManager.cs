@@ -141,7 +141,7 @@ namespace TechToys.ThePlanet
 
                     if (m_VertexAdjacentRelation)
                     {
-                        foreach (var (index, adjacentVertex) in vertex.IterateNearbyVertices().LoopIndex())
+                        foreach (var (index, adjacentVertex) in vertex.IterateNearbyVertices().WithIndex())
                         {
                             Gizmos.color = UColor.IndexToColor(index);
                             UGizmos.DrawLine(vertex.m_Position, adjacentVertex.m_Position, .4f);
@@ -149,7 +149,7 @@ namespace TechToys.ThePlanet
                     }
                     else if (m_VertexIntervalRelation)
                     {
-                        foreach (var (index, intervalVertex) in vertex.IterateIntervalVertices().LoopIndex())
+                        foreach (var (index, intervalVertex) in vertex.IterateIntervalVertices().WithIndex())
                         {
                             Gizmos.color = UColor.IndexToColor(index);
                             UGizmos.DrawLine(vertex.m_Position, intervalVertex.m_Position, .4f);

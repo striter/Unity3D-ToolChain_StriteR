@@ -21,7 +21,7 @@ namespace Runtime.DataStructure
     
     public abstract class ABoundaryTree<Boundary,Element> where Boundary : struct
     {
-        public struct Node
+        public struct Node 
         {
             public Boundary boundary;
             public int iteration;

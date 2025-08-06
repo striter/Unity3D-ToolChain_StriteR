@@ -407,7 +407,7 @@ namespace TechToys.ThePlanet.Module
             var center = m_Grid.m_Vertices[_corner.location].GetCornerPosition(_corner.height);
             
             var vertex = m_Grid.m_Vertices[_corner.location];
-            foreach (var (index, quad) in vertex.m_NearbyQuads.LoopIndex())
+            foreach (var (index, quad) in vertex.m_NearbyQuads.WithIndex())
                 cornerQuads.Add(quad.m_ShapeWS.ConstructGeometry(vertex.GetQuadVertsArrayCW(index), EQuadGeometry.Half));
 
             vertices.Clear();
@@ -554,7 +554,7 @@ namespace TechToys.ThePlanet.Module
             if (m_PropagandaGizmos)
             {
                 
-                foreach (var (index,chain) in m_PropagandaChains.LoopIndex())
+                foreach (var (index,chain) in m_PropagandaChains.WithIndex())
                 {
                     Gizmos.color = UColor.IndexToColor(index).SetA(.5f);
                     if (m_PropagandaVoxels)

@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Examples.Algorithm.DataStructures
 {
-    using static DataStructures.Constants;
+    using static HierarchialDataStructureVisualize.Constants;
     using static BoundaryTreeHelper;
-    public class DataStructures : MonoBehaviour
+    public class HierarchialDataStructureVisualize : MonoBehaviour
     {
         public static class Constants
         {
