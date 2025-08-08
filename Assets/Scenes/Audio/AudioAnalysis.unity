@@ -644,10 +644,19 @@ MonoBehaviour:
     m_Offset: 0.75
     m_ValueMultiplier: 0.52
     m_ColorPalette:
-      a: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-      b: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-      c: {r: 1, g: 1, b: 1, a: 1}
-      d: {r: 0, g: 0.33, b: 0.67, a: 1}
+      baseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+      amplitude:
+        x: 0.5
+        y: 0.5
+        z: 0.5
+      frequency:
+        x: 1
+        y: 1
+        z: 1
+      phaseShift:
+        x: 0
+        y: 0.33
+        z: 0.67
     m_Damper:
       mode: 3
       constant: 0

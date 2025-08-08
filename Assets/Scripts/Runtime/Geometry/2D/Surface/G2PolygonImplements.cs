@@ -63,6 +63,12 @@ namespace Runtime.Geometry
                 return;
             UGizmos.DrawLinesConcat(positions.Select(p=>p.to3xy()));
         }
+
+        public void DrawGizmosSolidTriangle()
+        {
+            for (var i = 1; i < positions.Count - 1; i++)
+                UGizmos.DrawSolidTriangle(positions[0].to3xz(), positions[i].to3xz(), positions[i+1].to3xz());
+        }
     }
     
     public static class G2Polygon_Extension

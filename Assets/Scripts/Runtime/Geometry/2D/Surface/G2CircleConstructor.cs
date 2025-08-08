@@ -26,7 +26,7 @@ namespace Runtime.Geometry
             var x = ((ax*ax + ay*ay) * (by - cy) + (bx*bx + by*by) * (cy - ay) + (cx*cx + cy*cy) * (ay - by)) / d;
             var y = ((ax*ax + ay*ay) * (cx - bx) + (bx*bx + by*by) * (ax - cx) + (cx*cx + cy*cy) * (bx - ax)) / d;
             var p = new float2(ox + x, oy + y);
-            var sqR = Mathf.Max(math.distancesq(p, _a), math.distancesq(p, _b), math.distancesq(p, _c));
+            var sqR = umath.max(math.distancesq(p, _a), math.distancesq(p, _b), math.distancesq(p, _c));
             return new G2Circle(p, math.sqrt(sqR));
         }
 

@@ -90,6 +90,16 @@ namespace Runtime.Geometry
             return (ab * bc * ca) / (4 * area);
         }
         
+        public G2Triangle Resize( float _scaleNormalized)
+        {
+            var center = GetBaryCentre();
+            return new G2Triangle(
+                center + (V0 - center)*_scaleNormalized,
+                center + (V1 - center)*_scaleNormalized,
+                center + (V2 - center)*_scaleNormalized
+            );
+        }
+
         
         public static G2Triangle GetSuperTriangle(params float2[] _positions)     //always includes,but not minimum
         {
@@ -110,5 +120,4 @@ namespace Runtime.Geometry
                 _circle.center + new float2(r * kmath.kTan60d,-r),
                 _circle.center + new float2(-r * kmath.kTan60d,-r));
         }
-    }
 }

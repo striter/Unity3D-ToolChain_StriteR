@@ -49,9 +49,9 @@ namespace Runtime.Geometry
             var vertices = kTriangles.Select(pTriangle => new G2Triangle(sites, pTriangle)).Select(triangle => G2Circle.TriangleCircumscribed(triangle.V0, triangle.V1, triangle.V2).center).ToList();
             
             kEdgeMap.Clear();
-            foreach (var (triangleIndex,triangle) in kTriangles.WithIndex())
+            foreach (var (triangleIndex,pTriangle) in kTriangles.WithIndex())
             {
-                foreach (var edge in triangle.GetEdges().Select(p=>p.Distinct()))
+                foreach (var edge in pTriangle.GetEdges().Select(p=>p.Distinct()))
                 {
                     if (!kEdgeMap.ContainsKey(edge))
                         kEdgeMap.Add(edge, new List<int>());

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
+using Runtime.Pool;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -46,24 +47,47 @@ namespace Scenes.Algorithm.GeometryVisualize
             var size = (int)math.sqrt(m_RandomCount);
             ULowDiscrepancySequences.PoissonDisk2D(size).Select(p=>(p - .5f) * 2f*kRandomRadius).FillList(m_Vertices);
         }
-
+        public bool m_Solid;
+        [Foldout(nameof(m_Solid),true)] public ColorPalette m_VisualizationColor = ColorPalette.kDefault;
+        public bool m_Dynamic = true;
+        private float2 m_MousePosition;
+        
         private void OnDrawGizmos()
         {
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one);
-            Gizmos.color = Color.white.SetA(.1f);
-            foreach (var point in m_Vertices)
-                Gizmos.DrawWireSphere(point.to3xz(),.1f);
-            
-            var diagram = G2VoronoiDiagram.FromPositions(m_Vertices);
-            diagram.DrawGizmos();
+            var vertices =  PoolList<float2>.Empty(nameof(VoronoiDiagramVisualize));
+            vertices.Add(m_MousePosition);
+            if (m_Dynamic)
+                vertices.AddRange(m_Vertices.Select((p,index)=> p + math.sin(UTime.time * ULowDiscrepancySequences.Hammersley2D((uint)index,(uint)m_Vertices.Count))));
+            else
+                vertices.AddRange(m_Vertices);
 
-            Gizmos.color = Color.white;
+            
+            var diagram = G2VoronoiDiagram.FromPositions(vertices);
+            var initialSite = diagram.sites.nodes[0].position;
             foreach (var (index,cell) in diagram.ToCells().WithIndex())
             {
-                Gizmos.color = UColor.IndexToColor(index);
-                Gizmos.DrawWireSphere(cell.site.to3xz(),.1f);
-                cell.cellEdges.Collapse(.99f).DrawGizmos();
+                if (m_Solid)
+                {
+                    Gizmos.color = m_VisualizationColor.Evaluate(1f - umath.repeat(math.distance(initialSite,cell.site) / kRandomRadius,1f));
+                    cell.cellEdges.DrawGizmosSolidTriangle();
+                }
+                else
+                {
+                    Gizmos.color = UColor.IndexToColor(index);
+                    Gizmos.DrawWireSphere(cell.site.to3xz(),.1f);
+                    cell.cellEdges.Collapse(.99f).DrawGizmos();
+                }
             }
+
+            if (m_Solid)
+                return;
+
+            Gizmos.color = Color.white.SetA(.1f);
+            diagram.DrawGizmos();
+            foreach (var point in vertices)
+                Gizmos.DrawWireSphere(point.to3xz(),.1f);
+
         }
         
 #if UNITY_EDITOR
@@ -75,7 +99,7 @@ namespace Scenes.Algorithm.GeometryVisualize
             GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
             ray.IntersectPoint(plane,out var hitPoint);
-            m_Vertices[0] = ((float3)transform.worldToLocalMatrix.MultiplyPoint(hitPoint)).xz.clamp(-kRandomRadius, kRandomRadius);
+            m_MousePosition = ((float3)transform.worldToLocalMatrix.MultiplyPoint(hitPoint)).xz.clamp(-kRandomRadius, kRandomRadius);
         }
 #endif
     }

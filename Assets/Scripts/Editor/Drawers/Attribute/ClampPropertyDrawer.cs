@@ -30,7 +30,7 @@ namespace UnityEditor.Extensions
         
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (!OnGUIAttributePropertyCheck(position, property, SerializedPropertyType.Float, SerializedPropertyType.Integer))
+            if (!OnGUIAttributePropertyCheck(position, property, SerializedPropertyType.Float, SerializedPropertyType.Integer, SerializedPropertyType.Vector2,SerializedPropertyType.Vector3))
                 return;
 
             var min = attribute.m_Min;
@@ -46,6 +46,12 @@ namespace UnityEditor.Extensions
                     break;
                 case SerializedPropertyType.Float:
                     property.floatValue = Mathf.Clamp(property.floatValue,min,max);
+                    break;
+                case SerializedPropertyType.Vector2:
+                    property.vector2Value = Vector2.ClampMagnitude(property.vector2Value,(float)max);
+                    break;
+                case SerializedPropertyType.Vector3:
+                    property.vector3Value = Vector3.ClampMagnitude(property.vector3Value,(float)max);
                     break;
             }
         }

@@ -74,6 +74,7 @@ namespace Examples.Algorithm.SamplePatternVisualize
             Gizmos.matrix = transform.localToWorldMatrix;
             var size = patterns.Length;
 
+            
             switch (m_Mode)
             {
                 case EVisualMode.Flat:

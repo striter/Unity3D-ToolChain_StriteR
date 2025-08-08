@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Runtime.Geometry.Extension
 {
@@ -10,25 +11,10 @@ namespace Runtime.Geometry.Extension
     {
         public static class DelaunayTriangulation
         {
-            private struct DComplex : IEquatable<DComplex>
+            private struct DComplex
             {
                 public PTriangle complex;
                 public G2Circle circumscribedCircle;
-
-                public bool Equals(DComplex other)
-                {
-                    return complex.Equals(other.complex);
-                }
-
-                public override bool Equals(object obj)
-                {
-                    return obj is DComplex other && Equals(other);
-                }
-
-                public override int GetHashCode()
-                {
-                    return complex.GetHashCode();
-                }
             }
 
             private static List<float2> kVertices = new();
@@ -43,7 +29,7 @@ namespace Runtime.Geometry.Extension
                 var vertexCount = _vertices.Count;
                 kVertices.AddRange(_vertices);
                 var boundsCircle = G2Circle.GetBoundingCircle(_vertices);
-                var superTriangle = G2Triangle.GetCircumscribedTriangle(boundsCircle);
+                var superTriangle = G2Triangle.GetCircumscribedTriangle(boundsCircle).Resize(1.2f);
                 kVertices.AddRange(superTriangle);
                 kComplexes.Add(new DComplex()
                 {
@@ -56,7 +42,6 @@ namespace Runtime.Geometry.Extension
                 {
                     var vertex = _vertices[vertexIndex];
                     kPolygon.Clear();
-                    
                     for(var i=0;i<kComplexes.Count;i++)
                     {
                         var triangle = kComplexes[i];
@@ -78,7 +63,7 @@ namespace Runtime.Geometry.Extension
                         kComplexes.Insert(0,new DComplex(){complex = polygon,circumscribedCircle = G2Circle.TriangleCircumscribed(positions)});
                     }
                 }
-                
+
                 //Remove triangles shared edge with super triangle
                 _triangles.Clear();
                 for(var i= kComplexes.Count-1;i>=0;i--)

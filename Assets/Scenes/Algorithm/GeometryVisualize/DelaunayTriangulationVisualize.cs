@@ -3,6 +3,7 @@ using System.Linq;
 using System.Linq.Extensions;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
+using Runtime.Pool;
 using Unity.Mathematics;
 using UnityEngine;
 using Gizmos = UnityEngine.Gizmos;
@@ -53,16 +54,20 @@ namespace Examples.Algorithm.GeometryVisualize
             ULowDiscrepancySequences.PoissonDisk2D(size).Select(p=>(p - .5f) * 2f*kRandomRadius).FillList(m_Vertices);
         }
 
+        private float2 m_MousePosition = float2.zero;
         private void OnDrawGizmos()
         {
-            UGeometry.Triangulation(m_Vertices,ref triangles);
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Scale(Vector3.one);
             Gizmos.color = Color.white;
-            foreach (var point in m_Vertices)
+            var vertices = PoolList<float2>.Empty(nameof(DelaunayTriangulationVisualize));
+            vertices.Add(m_MousePosition);
+            vertices.AddRange(m_Vertices);
+            UGeometry.Triangulation(vertices,ref triangles);
+            foreach (var point in vertices)
                 Gizmos.DrawWireSphere(point.to3xz(),.1f);
             Gizmos.color = Color.white.SetA(.1f);
             foreach (var triangle in triangles)
-                UGizmos.DrawLinesConcat(triangle,_p=>m_Vertices[_p].to3xz());
+                UGizmos.DrawLinesConcat(triangle,_p=>vertices[_p].to3xz());
         }
 
 #if UNITY_EDITOR
@@ -74,7 +79,7 @@ namespace Examples.Algorithm.GeometryVisualize
             GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
             GPlane plane = new GPlane(Vector3.up, transform.position);
             ray.IntersectPoint(plane,out var hitPoint);
-            m_Vertices[0] = ((float3)transform.worldToLocalMatrix.MultiplyPoint(hitPoint)).xz.clamp(-kRandomRadius, kRandomRadius);
+            m_MousePosition = ((float3)transform.worldToLocalMatrix.MultiplyPoint(hitPoint)).xz.clamp(-kRandomRadius, kRandomRadius);
         }
 #endif
     }

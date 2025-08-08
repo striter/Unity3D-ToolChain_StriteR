@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Extensions;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEditor;
 using Gizmos = UnityEngine.Gizmos;
 
 public static class UGizmos
@@ -121,9 +122,9 @@ public static class UGizmos
     public static void DrawString(string _text, Vector3 _position = default, float _offset = 0.1f)
     {
 #if UNITY_EDITOR
-        UnityEditor.Handles.color = Gizmos.color;
-        UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.UHandles.DrawString(_text,_position,_offset);
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        UHandles.DrawString(_text,_position,_offset);
 #endif
     }
     public static void DrawString(Vector3 _position,string _text, float _offset = 0.1f) => DrawString(_text,_position,_offset);
@@ -131,56 +132,65 @@ public static class UGizmos
     public static void DrawArrow(Vector3 _pos, Quaternion _rot, float _length, float _radius)
     {
 #if UNITY_EDITOR
-        UnityEditor.Handles.color = Gizmos.color;
-        UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.UHandles.DrawArrow(_pos, _rot, _length, _radius);
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        UHandles.DrawArrow(_pos, _rot, _length, _radius);
 #endif
     }
     public static void DrawCylinder(Vector3 _pos, Vector3 _up, float _radius, float _height)
     {
 #if UNITY_EDITOR
-        UnityEditor.Handles.color = Gizmos.color;
-        UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.UHandles.DrawCylinder(_pos, _up, _radius, _height);
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        UHandles.DrawCylinder(_pos, _up, _radius, _height);
 #endif
     }
 
     public static void DrawTrapezium(Vector3 _pos, Quaternion _rot, Vector4 _trapeziumInfo)
     {
 #if UNITY_EDITOR
-        UnityEditor.Handles.color = Gizmos.color;
-        UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.UHandles.DrawTrapezium(_pos, _rot, _trapeziumInfo);
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        UHandles.DrawTrapezium(_pos, _rot, _trapeziumInfo);
 #endif
     }
 
     public static void DrawWireDisk(Vector3 _pos, Vector3 _normal, float _radius)
     {
 #if UNITY_EDITOR
-        UnityEditor.Handles.color = Gizmos.color;
-        UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.Handles.DrawWireDisc(_pos, _normal, _radius);
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles.DrawWireDisc(_pos, _normal, _radius);
 #endif
     }
 
     public static void DrawCone(Vector3 _origin,Vector3 _normal,float _radius,float _height)
     {
 #if UNITY_EDITOR
-        UnityEditor.Handles.color = Gizmos.color;
-        UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.UHandles.DrawCone(_origin, _normal, _radius, _height);
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        UHandles.DrawCone(_origin, _normal, _radius, _height);
 #endif
     }
     
     public static void DrawWireCapsule(Vector3 _origin,Vector3 _normal,float _radius,float _height)
     {
 #if UNITY_EDITOR
-        UnityEditor.Handles.color = Gizmos.color;
-        UnityEditor.Handles.matrix = Gizmos.matrix;
-        UnityEditor.UHandles.DrawWireCapsule(_origin,_normal, _radius, _height);
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        UHandles.DrawWireCapsule(_origin,_normal, _radius, _height);
 #endif
     }
 
+    public static void DrawSolidTriangle(Vector3 _pos1, Vector3 _pos2, Vector3 _pos3)
+    {
+#if UNITY_EDITOR
+        Handles.color = Gizmos.color;
+        Handles.matrix = Gizmos.matrix;
+        Handles.DrawAAConvexPolygon(_pos1, _pos2, _pos3);
+#endif
+    }
+    
     public static void DrawEllipsoid(Vector3 center, float3 radius)
     {
         var preMatrix = Gizmos.matrix;
