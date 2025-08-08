@@ -2,7 +2,7 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-public static class umath_swizzlling       //Swizzling
+public static partial class umath       //Swizzling
 {    
     public static float3 to3xy(this float2 _value, float _z = 0) => new float3(_value, _z);
     public static float3 to3xz(this float2 _value, float _y = 0) => new float3(_value.x, _y,_value.y);

@@ -11,7 +11,7 @@ namespace Runtime.Geometry.Extension
         public static bool Clip(this G2Polygon _polygon,G2Plane _plane,out G2Polygon _clippedPolygon)
         {
             var cliped = false;
-            var positions = PoolList<float2>.Empty(nameof(Clip));
+            var positions = new List<float2>();
             for (var i = 0; i < _polygon.Count; i++)
             {
                 var curPoint = _polygon[i];
@@ -31,6 +31,13 @@ namespace Runtime.Geometry.Extension
 
             _clippedPolygon = new G2Polygon(positions);
             return cliped;
+        }
+
+        public static G2Polygon Clip(this G2Polygon _polygon, G2Plane _plane)
+        {
+            if (_polygon.Clip(_plane, out var clippedPolygon))
+                return clippedPolygon;
+            return _polygon;
         }
         
         public static bool Clip(this GTriangle _triangle,GPlane _plane, out IVolume _outputShape,bool _directed = true)

@@ -226,7 +226,7 @@ namespace Runtime.Geometry
         public static G2Polygon AlphaShape(IList<float2> _positions,float _threshold)
         {
             var triangles = PoolList<PTriangle>.Empty(nameof(AlphaShape));
-            UTriangulation.Triangulation(_positions,ref triangles);
+            UGeometry.Triangulation(_positions,ref triangles);
             
             var alphaValues = PoolList<float>.Empty(nameof(AlphaShape));
             alphaValues.AddRange(triangles.Select(p=>new G2Triangle(_positions,p).GetCircumradius()));

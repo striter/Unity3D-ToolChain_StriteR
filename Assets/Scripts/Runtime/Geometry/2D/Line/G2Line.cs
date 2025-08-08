@@ -30,6 +30,14 @@ namespace Runtime.Geometry
             direction = delta / length;
         }
 
+        public G2Line(float2 _start, float2 _direction, float _length)
+        {
+            start = _start;
+            end = _start + _direction * _length;
+            direction = _direction;
+            sqrLength = _length * _length;
+            length = _length;
+        }
         
         public static implicit operator G2Ray(G2Line _ray) => new G2Ray(_ray.start,_ray.direction);
         
@@ -51,6 +59,7 @@ namespace Runtime.Geometry
         }
         
         public float2 GetPoint(float _distance) => start + direction * _distance;
+        public float2 GetPointNormalized(float _normalizedDistance) => start + direction * _normalizedDistance * length;
 
         public void OnBeforeSerialize(){}
         public void OnAfterDeserialize() => Ctor();

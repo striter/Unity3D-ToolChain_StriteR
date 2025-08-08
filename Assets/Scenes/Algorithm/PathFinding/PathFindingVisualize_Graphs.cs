@@ -193,7 +193,7 @@ namespace Examples.Algorithm.PathFinding
             m_Nodes.Clear();
             foreach (var (index,position) in positions.WithIndex())
                 m_Nodes.Add(index,new Node(index,position.to3xz(),this));
-            UTriangulation.Triangulation(positions,ref triangles);
+            UGeometry.Triangulation(positions,ref triangles);
             foreach (var triangle in triangles)
             {
                 triangle.Traversal(p =>

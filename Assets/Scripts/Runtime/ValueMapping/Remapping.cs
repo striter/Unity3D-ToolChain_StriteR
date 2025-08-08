@@ -25,8 +25,6 @@ public partial class umath
     public static float min(this float2 _value) => math.min(_value.x, _value.y);
     public static float min(this float3 _value) => math.min(_value.x, math.min(_value.y, _value.z));
     public static float min(this float4 _value) => math.min(_value.x, math.min(_value.y, math.min(_value.z, _value.w)));
-
-    public static float saturate(float _src) => clamp(_src, 0f, 1f);
     public static float bilinearLerp(float tl, float tr, float br, float bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static float2 bilinearLerp(float2 tl, float2 tr, float2 br, float2 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
     public static float3 bilinearLerp(float3 tl, float3 tr, float3 br, float3 bl,float u,float v)=> tl + (tr - tl) * u + (bl - tl) * v + (tl - tr + br - bl) * (u * v);
@@ -94,7 +92,7 @@ public partial class umath
         return _src || _dst;
     }
 
-    public static int repeat(int _t,int _length) => clamp(_t - _t / _length * _length, 0, _length);
+    public static int repeat(int _t,int _length) => math.clamp(_t - _t / _length * _length, 0, _length);
     public static float repeat(float _t,float _length) => clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
     public static float2 repeat(float2 _t,float2 _length) => clamp(_t - floor(_t / _length) * _length, 0.0f, _length);
     public static float3 repeat(float3 _t,float3 _length) => clamp(_t - floor(_t / _length) * _length, 0.0f, _length);

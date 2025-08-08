@@ -65,6 +65,14 @@ public static partial class umath
         var direction = slerp(startDirection, endDirection, _t, _up);
         return mid + direction * length;
     }
+
+    public static float2 cross(float2 _posA, float2 _posB, float2 _posC)
+    {
+        var dx = _posB.x - _posA.x;
+        var dy = _posB.y - _posA.y;
+        var cross = dx * (_posC.y - _posA.y) - dy * (_posC.x - _posA.x);
+        return cross > 0 ? new float2(dy,-dx) : new float2(-dy, dx);
+    }
     
     public static float2 tripleProduct(float2 _a, float2 _b, float2 _c) => _b *math.dot(_a, _c)  - _a * math.dot(_c, _b);
     public static float3 tripleProduct(float3 _a, float3 _b, float3 _c) => _b *math.dot(_a, _c)  - _a * math.dot(_c, _b);

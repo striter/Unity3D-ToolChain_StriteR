@@ -7,9 +7,9 @@ using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.GeometryVisualize
 {
-    using static DelaunayTriangulationSphere.Constants;
+    using static DelaunayTriangulationSphereVisualize.Constants;
     [ExecuteInEditMode]
-    public class DelaunayTriangulationSphere : MonoBehaviour
+    public class DelaunayTriangulationSphereVisualize : MonoBehaviour
     {        
         public static class Constants
         {
@@ -40,11 +40,11 @@ namespace Examples.Algorithm.GeometryVisualize
             Gizmos.matrix = transform.localToWorldMatrix;
             foreach (var point in m_Vertices)
                 Gizmos.DrawSphere(point,.1f);
-            UTriangulation.BowyerWatson_Spherical(m_Vertices,out var triangles);
+            UGeometry.BowyerWatson_Spherical(m_Vertices,out var triangles);
             foreach (var triangle in triangles)
                 UGizmos.DrawLinesConcat(triangle,_p=>m_Vertices[_p]);
             Gizmos.color = KColor.kOrange.SetA(.3f);
-            foreach (var point in UTriangulation.kProjectedVertices)
+            foreach (var point in UGeometry.kProjectedVertices)
                 Gizmos.DrawWireSphere(point.to3xz(-kSphereRadius),.3f);
         }
     }

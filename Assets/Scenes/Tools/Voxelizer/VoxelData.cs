@@ -9,6 +9,14 @@ using UnityEngine;
 
 namespace Runtime.Optimize.Voxelizer
 {
+    public enum EResolution
+    {
+        _16 = 16,
+        _32 = 32,
+        _64 = 64,
+        _128 = 128,
+        _256 = 256,
+    }
     public class VoxelData : ScriptableObject
     {
         public GBox m_Bounds;

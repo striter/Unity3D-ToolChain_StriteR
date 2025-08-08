@@ -106,7 +106,7 @@ namespace Examples.Algorithm.GeometryVisualize
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.forward * kPadding * 2 + Vector3.right * kPadding * 1);
             var triangles = PoolList<PTriangle>.Empty(nameof(GeometryVisualizeBounds));
             Gizmos.color = Color.blue.SetA(.2f);
-            UTriangulation.Triangulation(boundingPolygonPoints,ref triangles);
+            UGeometry.Triangulation(boundingPolygonPoints,ref triangles);
             triangles.Select(p=>new G2Triangle(boundingPolygonPoints,p)).Traversal(p=>p.DrawGizmos());
             var graph = G2Graph.FromTriangles(boundingPolygonPoints,triangles);
             graph.DrawGizmos();

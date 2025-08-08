@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Runtime.Geometry.Extension
 {
-    public static partial class UTriangulation
+    public static partial class UGeometry
     {
         private static List<PTriangle> kSphericalTriangles = new List<PTriangle>();
         private static List<PTriangle> kTempTriangles = new List<PTriangle>();

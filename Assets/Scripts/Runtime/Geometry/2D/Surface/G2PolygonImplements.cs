@@ -32,7 +32,13 @@ namespace Runtime.Geometry
         public float2 Origin => center;
         public static G2Polygon operator +(G2Polygon _polygon,float2 _offset) => new(_polygon.positions.Select(p=>p + _offset));
         public static G2Polygon operator -(G2Polygon _polygon,float2 _offset) => new(_polygon.positions.Select(p=>p - _offset));
-        
+
+        public G2Polygon Collapse(float _normalizedSize)
+        {
+            var center = this.center;
+            positions.Remake(p=>math.lerp(center,p,_normalizedSize));
+            return this;
+        }
         public float2 this[int _value] => positions[_value];
         public int Count => positions.Count;
         public IEnumerator<float2> GetEnumerator() => positions.GetEnumerator();

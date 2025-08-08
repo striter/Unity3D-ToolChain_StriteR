@@ -6,7 +6,7 @@ using Unity.Mathematics;
 
 namespace Runtime.Geometry.Extension
 {
-    public static partial class UTriangulation
+    public static partial class UGeometry
     {
         public static class DelaunayTriangulation
         {

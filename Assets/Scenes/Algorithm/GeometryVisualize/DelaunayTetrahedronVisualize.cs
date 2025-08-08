@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Examples.Algorithm.GeometryVisualize
 {
     
-    public class DelaunayTetrahedron : MonoBehaviour
+    public class DelaunayTetrahedronVisualize : MonoBehaviour
     {
         public List<float3> m_Vertices = new List<float3>();
         private List<PTriangle> tetrahedrons = new List<PTriangle>();
@@ -39,7 +39,7 @@ namespace Examples.Algorithm.GeometryVisualize
             Gizmos.color = Color.white;
             foreach (var vertex in m_Vertices)
                 Gizmos.DrawWireSphere(vertex, .1f);
-            UTriangulation.Triangulation(m_Vertices,ref tetrahedrons);
+            UGeometry.Triangulation(m_Vertices,ref tetrahedrons);
             foreach (var tetrahedron in tetrahedrons)
                 new GTriangle(m_Vertices,tetrahedron).DrawGizmos();
         }

@@ -84,7 +84,7 @@ namespace EndlessOcean
             }
             
             var triangles = PoolList<PTriangle>.Empty(kListQuery);
-            UTriangulation.Triangulation(vertices,ref triangles);
+            UGeometry.Triangulation(vertices,ref triangles);
             indexes.AddRange(triangles.Resolve<PTriangle,int>());
             
             _mesh.SetVertices(vertices.Select(p=>(Vector3)p.to3xz()).ToList());

@@ -28,6 +28,7 @@ namespace Runtime.Geometry.Extension
             var ray = new G2Ray(_box.center, _direction.normalize());
             return ray.GetPoint(ray.Distance(_box).sum());
         }
+        
 
     }
 }

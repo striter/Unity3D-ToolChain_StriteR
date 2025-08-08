@@ -34,24 +34,6 @@ namespace Runtime.Geometry
 
         public float2 GetSupportPoint(float2 _direction) => this.MaxElement(_p => math.dot(_direction, _p));
         public float GetArea() => extent.x * extent.y;
-        public bool RayIntersection(G2Ray _ray, out float2 distances)
-        {
-            distances = -1;
-            var invRayDir = 1f/(_ray.direction);
-            var t0 = (min - _ray.origin)*(invRayDir);
-            var t1 = (max - _ray.origin)*(invRayDir);
-            var tmin = math.min(t0, t1);
-            var tmax = math.max(t0, t1);
-            if (tmin.maxElement() > tmax.minElement())
-                return false;
-            
-            var dstA = math.max(tmin.x, tmin.y);
-            var dstB = math.min(tmax.x, tmax.y);
-            var dstToBox = math.max(0, dstA);
-            var dstInsideBox = math.max(0, dstB - dstToBox);
-            distances = new float2(dstToBox, dstInsideBox);
-            return true;
-        }
 
         public float2 Origin => center;
 
@@ -66,6 +48,14 @@ namespace Runtime.Geometry
             yield return GetPoint(new float2(0, 1));
         }
 
+        public IEnumerable<G2Plane> GetClipPlanes()
+        {
+            yield return new G2Plane(kfloat2.left,GetPoint(1f,.5f));
+            yield return new G2Plane(kfloat2.up,GetPoint(.5f,0f));
+            yield return new G2Plane(kfloat2.right,GetPoint(0f,.5f));
+            yield return new G2Plane(kfloat2.down,GetPoint(.5f,1f));
+        }
+        
         public IEnumerable<G2Line> GetEdges()
         {
             yield return new G2Line(GetPoint(new float2(0, 0)), GetPoint(new float2(1, 0)));
@@ -97,6 +87,24 @@ namespace Runtime.Geometry
         public void DrawGizmos() => Gizmos.DrawWireCube(center.to3xz(),size.to3xz());
         public void DrawGizmosXY() => Gizmos.DrawWireCube(center.to3xy(), size.to3xy());
         
+        public bool RayIntersection(G2Ray _ray, out float2 distances)
+        {
+            distances = -1;
+            var invRayDir = 1f/(_ray.direction);
+            var t0 = (min - _ray.origin)*(invRayDir);
+            var t1 = (max - _ray.origin)*(invRayDir);
+            var tmin = math.min(t0, t1);
+            var tmax = math.max(t0, t1);
+            if (tmin.maxElement() > tmax.minElement())
+                return false;
+            
+            var dstA = math.max(tmin.x, tmin.y);
+            var dstB = math.min(tmax.x, tmax.y);
+            var dstToBox = math.max(0, dstA);
+            var dstInsideBox = math.max(0, dstB - dstToBox);
+            distances = new float2(dstToBox, dstInsideBox);
+            return true;
+        }
         
         //https://www.skytopia.com/project/articles/compsci/clipping.html
         public bool Clip(G2Line _line,out G2Line _clippedLine)
