@@ -34,6 +34,7 @@ namespace Scenes.Algorithm.GeometryVisualize
             for (uint i = 0; i < m_RandomCount; i++)
             {
                 var p = ULowDiscrepancySequences.Hammersley2D(i, m_RandomCount)  - .5f;
+                p *= 2f;
                 math.sincos(p.x*math.PI*2,out var s,out var c);
                 m_Vertices.Add(new float2(s,c)*p.y*kRandomRadius);
             }
@@ -43,7 +44,7 @@ namespace Scenes.Algorithm.GeometryVisualize
         void PoissonDisk()
         {
             var size = (int)math.sqrt(m_RandomCount);
-            ULowDiscrepancySequences.PoissonDisk2D(size).Select(p=>(p - .5f)*kRandomRadius).FillList(m_Vertices);
+            ULowDiscrepancySequences.PoissonDisk2D(size).Select(p=>(p - .5f) * 2f*kRandomRadius).FillList(m_Vertices);
         }
 
         private void OnDrawGizmos()
@@ -65,6 +66,7 @@ namespace Scenes.Algorithm.GeometryVisualize
             }
         }
         
+#if UNITY_EDITOR
         private void OnEnable() => UnityEditor.SceneView.duringSceneGui += OnSceneGUI;
         private void OnDisable() => UnityEditor.SceneView.duringSceneGui -= OnSceneGUI;
 
@@ -75,5 +77,6 @@ namespace Scenes.Algorithm.GeometryVisualize
             ray.IntersectPoint(plane,out var hitPoint);
             m_Vertices[0] = ((float3)transform.worldToLocalMatrix.MultiplyPoint(hitPoint)).xz.clamp(-kRandomRadius, kRandomRadius);
         }
+#endif
     }
 }
