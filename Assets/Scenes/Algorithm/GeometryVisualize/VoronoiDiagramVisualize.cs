@@ -64,7 +64,7 @@ namespace Scenes.Algorithm.GeometryVisualize
                 vertices.AddRange(m_Vertices);
 
             var diagram = G2VoronoiDiagram.FromPositions(vertices);
-            var initialSite = diagram.sites.nodes[0].position;
+            var initialSite = diagram.sites[0];
             foreach (var (index,cell) in diagram.ToCells(m_Bounds).WithIndex())
             {
                 if (m_Solid)
@@ -90,16 +90,12 @@ namespace Scenes.Algorithm.GeometryVisualize
         }
 
 
-        private Counter m_PointInserter = new(.05f);
         private void Update()
         {
             if (!Application.isPlaying)
                 return;
-            if (m_Vertices.Count < 256 && m_PointInserter.TickTrigger(Time.deltaTime))
-            {
+            if (m_Vertices.Count < 256)
                 m_Vertices.Add(m_Bounds.center);
-                m_PointInserter.Replay();
-            }
             UGeometry.LlyodRelaxation(m_Vertices,m_Bounds);
         }
 
@@ -109,13 +105,14 @@ namespace Scenes.Algorithm.GeometryVisualize
 
         private void OnSceneGUI(UnityEditor.SceneView _sceneView)
         {
-            if (Application.isPlaying)
-                return;
-            
-            GRay ray = _sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
-            GPlane plane = new GPlane(Vector3.up, transform.position);
+            var ray = (GRay)_sceneView.camera.ScreenPointToRay(UnityEditor.Extensions.UECommon.GetScreenPoint(_sceneView));
+            var plane = new GPlane(Vector3.up, transform.position);
             ray.IntersectPoint(plane,out var hitPoint);
             m_MousePosition = m_Bounds.Clamp(((float3)transform.worldToLocalMatrix.MultiplyPoint(hitPoint)).xz);
+            
+            if (Application.isPlaying)
+                return;
+
             if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.R)
                 UGeometry.LlyodRelaxation(m_Vertices,m_Bounds);
         }

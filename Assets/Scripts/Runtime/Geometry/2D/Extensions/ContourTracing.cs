@@ -264,14 +264,14 @@ namespace Runtime.Geometry.Extension
 
     public static class UContourTracing
     {
-        public static List<float2> ContourTracing<T>(this IGraphFinite<T> _graph,Func<T,float2> _conversion)
+        public static List<float2> ContourTracing(this IGraphFinite<float2> _graph)
         {
             if (_graph.Count <= 3)
                 return null;
 
             var trace = new List<float2>();
-            var initialNode = _graph.MinElement(p => _conversion(p).y,out var curIndex);
-            var initialPoint = _conversion(initialNode);
+            var initialNode = _graph.MinElement(p => p.y,out var curIndex);
+            var initialPoint = initialNode;
 
             var currentDirection = kfloat2.down;
             var currentNode = initialNode;
@@ -279,9 +279,9 @@ namespace Runtime.Geometry.Extension
             for (var i = 1; i < _graph.Count; i++)
             {
                 var currentPoint = trace[^1];
-                var neighbor = _graph.GetAdjacentNodes(currentNode).MinElement(p => umath.getRadClockwise(currentDirection, _conversion(p) - currentPoint));
+                var neighbor = _graph.GetAdjacentNodes(currentNode).MinElement(p => umath.getRadClockwise(currentDirection, p - currentPoint));
                 
-                var nextPoint = _conversion(neighbor);
+                var nextPoint = neighbor;
                 trace.Add(nextPoint);
                 if ((nextPoint == initialPoint).all())
                     break;

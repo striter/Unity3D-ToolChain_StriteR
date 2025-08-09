@@ -99,7 +99,7 @@ namespace Runtime.Geometry
             for (var i = 0; i < sites.Count; i++)
             {
                 kInfiniteEdgeHelper.Clear();
-                var site = sites.nodes[i].position;
+                var site = sites[i];
                 List<float2> cellVertices = new List<float2>();
                 foreach(var edgeIndex in siteEdges[i])
                 {
@@ -152,8 +152,8 @@ namespace Runtime.Geometry
             edges.Traversal(p=> p.DrawGizmos(cellEdges));
             foreach (var (siteIndex,site) in sites.WithIndex())
             {
-                var siteCenter = site.position;
-                Gizmos.DrawWireSphere(site.position.to3xz(), .05f);
+                var siteCenter = site;
+                Gizmos.DrawWireSphere(site.to3xz(), .05f);
                 foreach (var edgeIndex in siteEdges[siteIndex])
                 {
                     var edge = edges[edgeIndex];

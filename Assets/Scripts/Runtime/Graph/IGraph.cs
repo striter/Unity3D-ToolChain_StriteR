@@ -9,18 +9,16 @@ public interface IGraph<Node>
 
 public interface IGraphFinite<Node> : IGraph<Node> , IEnumerable<Node>
 {
+
     int Count { get; }
+
     IEnumerable<Node> Nodes { get; }
 }
 
-public interface IGraphMapping<Node>
-{
-    bool PositionToNode(float3 _position, out Node _node);
-    bool NodeToPosition(Node _node,out float3 _position);
-}
-
-public interface IGraphPathFinding<Node> : IGraphFinite<Node> , IGraphMapping<Node>
+public interface IGraphPathFinding<Node> : IGraphFinite<Node>
 {
     float Heuristic(Node _src, Node _dst);
     float Cost(Node _src, Node _dst);
+    bool PositionToNode(float3 _position, out Node _node);
+    bool NodeToPosition(Node _node,out float3 _position);
 }

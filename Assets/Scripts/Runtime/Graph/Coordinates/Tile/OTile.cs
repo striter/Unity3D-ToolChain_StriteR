@@ -53,7 +53,7 @@ namespace Procedural.Tile
         }
     }
     
-    public class TileGraph:IGraph<int2>,IGraphMapping<int2>
+    public class TileGraph:IGraph<int2>
     {
         private float m_Size;
         public TileGraph(float _size)

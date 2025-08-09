@@ -9,50 +9,48 @@ using UnityEngine;
 
 namespace Runtime.Geometry
 {
-    public struct G2Graph : IGeometry2 , IGraphFinite<G2Graph.Node> , ISerializationCallbackReceiver
+    public struct G2Graph : IGeometry2 , IGraphFinite<float2>, ISerializationCallbackReceiver
     {
-        [Serializable]
-        public struct Node
-        {
-            public float2 position;
-            public List<int> connections;
-        }
-
-        [NonSerialized] public float2 origin;
-        public List<Node> nodes;
+        [NonSerialized] public float2 center;
+        private List<float2> positions;
+        private List<List<int>> connections;
         G2Graph Ctor()
         {
-            origin = nodes.Average(p=>p.position);
+            center = positions.Average();
             return this;
         }
-        public int Count => nodes.Count;
+        public int Count => positions.Count;
+        public float2 this[int _index] => positions[_index];
 
-        IEnumerable<Node> IGraphFinite<Node>.Nodes => nodes;
-        public IEnumerable<Node> GetAdjacentNodes(Node _src)
+        IEnumerable<float2> IGraphFinite<float2>.Nodes => positions;
+        public IEnumerable<float2> GetAdjacentNodes(float2 _src)
         {
-            foreach (var connection in _src.connections)
-                yield return nodes[connection];
+            var index = positions.MinIndex(p => math.distancesq(p, _src));
+            foreach (var connection in connections[index])
+                yield return positions[connection];
         }
         
-        public IEnumerable<float2> GetAdjacentPoints(int _index) => GetAdjacentNodes(nodes[_index]).Select(p=>p.position);
-        public IEnumerator<Node> GetEnumerator() => nodes.GetEnumerator(); 
+        public IEnumerator<float2> GetEnumerator() => positions.GetEnumerator(); 
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         public void DrawGizmos()
         {
-            foreach (var node in nodes)
-                Gizmos.DrawSphere(node.position.to3xz(), 0.025f);
+            foreach (var node in positions)
+                Gizmos.DrawSphere(node.to3xz(), 0.025f);
 
-            foreach (var node in nodes)
-                foreach (var connection in node.connections)
-                    Gizmos.DrawLine(node.position.to3xz(),math.lerp(node.position,nodes[connection].position,0.48f).to3xz());
+            foreach (var (index, nodeConnections) in connections.WithIndex())
+            {
+                var node = positions[index];           
+                foreach (var connection in nodeConnections)
+                    Gizmos.DrawLine(node.to3xz(),math.lerp(node,positions[connection],0.48f).to3xz());         
+            }
         }
 
-        public float2 Origin => Count > 0 ? nodes[0].position : float2.zero;
+        public float2 Origin => center;
         public float2 GetSupportPoint(float2 _direction)
         {
-            var center = origin;
-            return nodes.MaxElement(_p => math.dot(_direction, _p.position - center)).position;
+            var center = this.center;
+            return positions.MaxElement(_p => math.dot(_direction, _p - center));
         }
 
         public void OnBeforeSerialize(){}
@@ -61,17 +59,16 @@ namespace Runtime.Geometry
         public static G2Graph FromTriangles(IList<float2> _vertices, IList<PTriangle> _triangles)
         {
             var graph = new G2Graph {
-                nodes = new List<Node>(_triangles.Count)
+                positions = _vertices.ToList(),
+                connections = new List<List<int>>(_vertices.Count).Resize(_vertices.Count,()=>new List<int>()),
             };
-            
-            foreach (var vertex in _vertices)
-                graph.nodes.Add(new () { position = vertex ,connections = new () });
-            foreach (var edge in _triangles.Select(p=>p.Distinct()).SelectMany(p=>p.GetEdges()))
+
+            foreach (var edge in _triangles.GetDistinctEdges())
             {
-                var nodeStart = graph.nodes[edge.start];
-                var nodeEnd = graph.nodes[edge.end];
-                nodeStart.connections.Add(edge.end);
-                nodeEnd.connections.Add(edge.start);
+                var nodeStart = graph.connections[edge.start];
+                var nodeEnd = graph.connections[edge.end];
+                nodeStart.Add(edge.end);
+                nodeEnd.Add(edge.start);
             }
             return graph.Ctor();
         }

@@ -670,8 +670,8 @@ namespace System.Linq.Extensions
 
         public static void FillDefault<T>(this IList<T> _src, T _dst = default)
         {
-            int length = _src.Count;
-            for (int i = 0; i < length; i++)
+            var length = _src.Count;
+            for (var i = 0; i < length; i++)
                 _src[i] = _dst;
         }
         

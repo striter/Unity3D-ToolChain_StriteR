@@ -202,7 +202,6 @@ namespace Runtime.Geometry
                         break;
                 }
 
-
                 if (intersect)
                     return ConcaveHull(_positions,k+1);
                         
@@ -240,7 +239,7 @@ namespace Runtime.Geometry
             }
             
             var graph = G2Graph.FromTriangles(_positions,triangles);
-            return ((G2Polygon)graph.ContourTracing(p=>p.position));
+            return ((G2Polygon)graph.ContourTracing());
         }
         #endregion
     }
