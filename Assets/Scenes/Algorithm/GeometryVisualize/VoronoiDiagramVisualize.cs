@@ -68,7 +68,7 @@ namespace Scenes.Algorithm.GeometryVisualize
             {
                 if (m_Solid)
                 {
-                    Gizmos.color = m_VisualizationColor.Evaluate(1f - umath.repeat(math.distance(initialSite,cell.site) / m_Bounds.extent.magnitude(),1f));
+                    Gizmos.color = m_VisualizationColor.Evaluate( umath.repeat(math.distance(initialSite,cell.site) / m_Bounds.extent.magnitude(),1f));
                     cell.simplex.DrawGizmosSolidTriangle();
                 }
                 else
