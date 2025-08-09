@@ -38,7 +38,7 @@ namespace Runtime.Geometry
 
         private static Dictionary<PLine,List<int>> kEdgeMap = new();
         private static List<PTriangle> kTriangles = new();
-        public static G2VoronoiDiagram FromPositions(List<float2> _vertices)
+        public static G2VoronoiDiagram FromPositions(IList<float2> _vertices)
         {
             var sites = _vertices;
             UGeometry.Triangulation(sites,ref kTriangles);
@@ -93,10 +93,9 @@ namespace Runtime.Geometry
 
 
         private static List<VoronoiEdge> kInfiniteEdgeHelper = new();
-        public IEnumerable<G2VoronoiCell> ToCells()
+        public IEnumerable<G2VoronoiCell> ToCells(G2Box _bounds)
         {
             var edges = this.edges;
-            var bounds = G2Box.GetBoundingBox(sites.Select(p=>p.position));
             for (var i = 0; i < sites.Count; i++)
             {
                 kInfiniteEdgeHelper.Clear();
@@ -133,17 +132,17 @@ namespace Runtime.Geometry
                         }
                         else
                         {
-                            cellVertices.TryAdd(ray1.GetPoint(bounds.extent.magnitude()));
-                            cellVertices.TryAdd(ray2.GetPoint(bounds.extent.magnitude()));
+                            cellVertices.TryAdd(ray1.GetPoint(_bounds.extent.magnitude()));
+                            cellVertices.TryAdd(ray2.GetPoint(_bounds.extent.magnitude()));
                         }
                     }
                         break;
                 }
                 
                 var cell = G2Polygon.ConvexHull(cellVertices);
-                foreach (var clipPlane in bounds.GetClipPlanes())
+                foreach (var clipPlane in _bounds.GetClipPlanes())
                     cell = cell.Clip(clipPlane);
-                yield return new G2VoronoiCell(){site= site,cellEdges = cell};
+                yield return new G2VoronoiCell(){site= site,simplex = cell};
             }
         }
         
@@ -176,6 +175,6 @@ namespace Runtime.Geometry
     public struct G2VoronoiCell
     {
         public float2 site;
-        public G2Polygon cellEdges; 
+        public G2Polygon simplex; 
     }
 }

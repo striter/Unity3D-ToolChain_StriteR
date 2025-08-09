@@ -73,6 +73,7 @@ public static class UGizmos
         }
     }
 
+    public static void DrawPoints(IEnumerable<float3> _points,float _radius = .1f) => _points.Traversal(p => Gizmos.DrawWireSphere(p,_radius));
     public static void DrawLinesConcat(params float3[] _lines) => DrawLinesConcat(_lines.AsEnumerable());
     public static void DrawLinesConcat(IEnumerable<float3> _points)
     {

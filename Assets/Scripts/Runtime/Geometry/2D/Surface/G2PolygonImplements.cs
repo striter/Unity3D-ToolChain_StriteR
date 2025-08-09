@@ -48,6 +48,12 @@ namespace Runtime.Geometry
             foreach (var indexes in _triangleIndexexs)
                 yield return new G2Triangle(positions[indexes.V0], positions[indexes.V1], positions[indexes.V2]);
         }
+
+        public IEnumerable<G2Triangle> GetTrianglesConvex()
+        {
+            for (var i = 1; i < positions.Count - 1; i++)
+                yield return new G2Triangle(positions[0], positions[i], positions[i+1]);
+        }
         
         IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
         public void DrawGizmos()

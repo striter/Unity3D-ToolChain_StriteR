@@ -61,7 +61,7 @@ namespace Examples.Algorithm.GeometryVisualize
             finalTriangle.DrawGizmos();
             finalSphere3D.DrawGizmos();
             Gizmos.color = KColor.kHotPink;
-            GJK.Difference(finalTriangle,finalSphere3D,256).DrawGizmos();
+            UGizmos.DrawPoints(GJK.Difference(finalTriangle, finalSphere3D, 256),.01f);
         }
     }
 }

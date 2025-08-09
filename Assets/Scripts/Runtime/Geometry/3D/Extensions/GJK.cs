@@ -71,7 +71,7 @@ namespace Runtime.Geometry.Extension
         }
 
         static float3 Support(IVolume _a, IVolume _b, float3 _direction) => _a.GetSupportPoint(_direction) - _b.GetSupportPoint(-_direction);
-        public static GPointSets Difference(IVolume _a, IVolume _b, int _sampleCount = 64)
+        public static List<float3> Difference(IVolume _a, IVolume _b, int _sampleCount = 64)
         {
             var simplexHelper = PoolList<float3>.Empty(nameof(Intersect));
             for(var i=0;i<_sampleCount;i++)
@@ -82,7 +82,7 @@ namespace Runtime.Geometry.Extension
                     continue;
                 simplexHelper.Add(supportPoint);
             }
-            return new GPointSets(simplexHelper.ToList());
+            return simplexHelper.ToList();
         }
     }
         
