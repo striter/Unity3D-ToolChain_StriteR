@@ -35,9 +35,8 @@ namespace Runtime.Geometry.Extension
 
         public static G2Polygon Clip(this G2Polygon _polygon, G2Plane _plane)
         {
-            if (_polygon.Clip(_plane, out var clippedPolygon))
-                return clippedPolygon;
-            return _polygon;
+            _polygon.Clip(_plane, out var clippedPolygon);
+            return clippedPolygon;
         }
         
         public static bool Clip(this GTriangle _triangle,GPlane _plane, out IVolume _outputShape,bool _directed = true)

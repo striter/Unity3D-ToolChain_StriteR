@@ -44,7 +44,7 @@ namespace Scenes.Algorithm.GeometryVisualize
         void PoissonDisk()
         {
             var size = (int)math.sqrt(m_RandomCount);
-            ULowDiscrepancySequences.PoissonDisk2D(size).Select(p=>m_Bounds.GetPoint(p) ).FillList(m_Vertices);
+            ULowDiscrepancySequences.PoissonDisk2D(size).Select(p=>m_Bounds.GetPoint(p)).FillList(m_Vertices);
         }
 
         public bool m_Solid;
@@ -58,7 +58,8 @@ namespace Scenes.Algorithm.GeometryVisualize
             var vertices =  PoolList<float2>.Empty(nameof(VoronoiDiagramVisualize));
             vertices.Add(m_MousePosition);
             if (m_Dynamic)
-                vertices.AddRange(m_Vertices.Select((p,index)=> m_Bounds.Clamp(p + math.sin(UTime.time * ULowDiscrepancySequences.Hammersley2D((uint)index,(uint)m_Vertices.Count)))));
+                vertices.AddRange(m_Vertices.Select((p,index)=> p +
+                                                                (m_Bounds.Resize(8f).Contains(p)? new float2( math.sin(UTime.time * ULowDiscrepancySequences.Hammersley2D((uint)index,(uint)m_Vertices.Count))):0f)));
             else
                 vertices.AddRange(m_Vertices);
 

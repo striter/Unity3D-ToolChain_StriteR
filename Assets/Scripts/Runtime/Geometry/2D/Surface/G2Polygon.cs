@@ -15,9 +15,9 @@ namespace Runtime.Geometry
         [NonSerialized] public float2 center;
         public G2Polygon(IEnumerable<float2> _positions) : this(_positions.ToList()) { }
         public G2Polygon(params float2[] _positions) : this(_positions.ToList()) { }
-        public G2Polygon(List<float2> _positions)
+        private G2Polygon(List<float2> _positions)
         {
-            positions = _positions;
+            positions = _positions.ToList();
             center = _positions.Average();
         }
     }
