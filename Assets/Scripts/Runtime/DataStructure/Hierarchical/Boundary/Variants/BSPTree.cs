@@ -12,8 +12,8 @@ namespace Runtime.DataStructure
         public void Construct(IList<float2> _elements) => Construct(G2Plane.kDefault,_elements);
         protected override void Split(Node _parent, IList<float2> _elements, List<Node> _nodeList)
         {
-            PCA2.Evaluate(_parent.elementsIndex.Select(p=>_elements[p]), out var centre, out var right, out var up);
-            var plane = new G2Plane(up, centre);
+            var coordinates = G2Coordinates.PrincipleComponentAnalysis(_parent.elementsIndex.Select(p=>_elements[p]));
+            var plane = coordinates.RightPlane();
             var frontNode = Node.Spawn(_parent.iteration + 1,plane);
             var backNode = Node.Spawn(_parent.iteration + 1, plane.Flip());
             foreach (var elementIndex in _parent.elementsIndex)

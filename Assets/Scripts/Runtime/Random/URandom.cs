@@ -28,6 +28,7 @@ public static class URandom
     public static float RandomUnit(IRandomGenerator _seed = null) => Random01(_seed)*2f-1f;
     
     public static Vector3 RandomSphere(IRandomGenerator seed = null) => Random01(seed) * RandomDirection(seed);
+    public static Vector3 RandomCube(IRandomGenerator seed = null) => new Vector3(RandomUnit(seed), RandomUnit(seed), RandomUnit(seed));
 
     public static Vector3 RandomDirection(IRandomGenerator seed = null)
     {

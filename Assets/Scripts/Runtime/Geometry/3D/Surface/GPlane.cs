@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Runtime.Geometry
 {
-    public partial struct GPlane : ISurface
+    public partial struct GPlane 
     {
         public float3 normal;
         public float distance;
@@ -36,14 +36,15 @@ namespace Runtime.Geometry
                 distance = math.dot(normal, position);// UGeometryIntersect.PointPlaneDistance(_position, new GPlane(_normal, 0));
         }
 
-        public float3 Origin => position;
-        public float3 Normal => normal;
     }
 
     [Serializable]
-    public partial struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>,ISerializationCallbackReceiver ,IRayIntersection , ISDF
+    public partial struct GPlane:IEquatable<GPlane>,IEqualityComparer<GPlane>,ISerializationCallbackReceiver ,IRayIntersection , ISDF , ISurface
     {
+        public float3 Origin => position;
+        public float3 Normal => normal;
         public static readonly GPlane kComparer = new GPlane();
+        public static readonly GPlane kZero = new GPlane(Vector3.up, 0f);
         public static readonly GPlane kDefault = new GPlane(Vector3.up, 0f);
         public static readonly GPlane kUp = new GPlane(Vector3.up, 0f);
         
@@ -60,6 +61,49 @@ namespace Runtime.Geometry
         public static GPlane operator *(Matrix4x4 _matrix, GPlane _plane) => new GPlane(_matrix.MultiplyVector(_plane.normal),_matrix.MultiplyPoint(_plane.position));
         public static GPlane operator *(float4x4 _matrix, GPlane _plane) => new GPlane(math.mul(_matrix,_plane.normal.to4(0)).xyz,math.mul(_matrix,_plane.position.to4(1)).xyz);
 
+        //&https://www.geometrictools.com/GTE/Mathematics/ApprHeightPlane3.h
+        public static GPlane LeastSquaresRegression(IEnumerable<float3> _positions)
+        {
+            var count = 0;
+            var mean = kfloat3.zero;
+            foreach (var position in _positions)
+            {
+                mean += position;
+                count += 1;
+            }
+            mean /= count;
+            if (count <= 3)
+            {
+                Debug.Log($"[LeastSquaresRegression] {nameof(_positions)} Count Invalid : {count}");
+                return kZero;
+            }
+            var covar00 = 0f;
+            var covar01 = 0f;
+            var covar02 = 0f;
+            var covar11 = 0f;
+            var covar12 = 0f;
+            foreach (var position in _positions)
+            {
+                var diff = position - mean;
+                covar00 += diff[0] * diff[0];
+                covar01 += diff[0] * diff[1];
+                covar02 += diff[0] * diff[2];
+                covar11 += diff[1] * diff[1];
+                covar12 += diff[1] * diff[2];
+            }
+            
+            var det = covar00 * covar11 - covar01 * covar01;
+            if (det != 0f)
+            {
+                var invDet = 1f / det;
+                return new GPlane(new float3(
+                        (covar11 * covar02 - covar01*covar12) * invDet,
+                        (covar00 * covar12 - covar01 * covar02) * invDet,
+                        -1f).normalize(), mean);
+            }
+
+            return kZero;
+        }
         public static bool operator ==(GPlane _src, GPlane _dst) =>  _src.normal.Equals( _dst.normal) && math.abs(_src.distance - _dst.distance) < float.Epsilon;
         public static bool operator !=(GPlane _src, GPlane _dst) => !(_src == _dst);
         public bool Equals(GPlane _dst) => this == _dst;

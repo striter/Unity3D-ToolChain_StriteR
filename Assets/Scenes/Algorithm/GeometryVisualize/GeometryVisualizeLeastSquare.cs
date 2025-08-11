@@ -6,21 +6,14 @@ using Gizmos = UnityEngine.Gizmos;
 
 namespace Examples.Algorithm.GeometryVisualize
 {
-    public class GeometryVisualizePCA : MonoBehaviour
+    public class GeometryVisualizeLeastSquare : MonoBehaviour
     {
         [Header("3D")]
         public float3[] randomPoints;
         public EBoundsShape shape = EBoundsShape.Ellipsoid;
-        [Readonly] public float3 centre;
-        [Readonly] public float3 right;
-        [Readonly] public float3 forward;
-        [Readonly] public float3 up;
 
         [Header("2D")]
         public float2[] randomPoints2D;
-        [Readonly] public float2 centre2D;
-        [Readonly] public float2 right2D;
-        [Readonly] public float2 up2D;
         
         [InspectorButton]
         void GenerateRandomPoints()
@@ -30,7 +23,6 @@ namespace Examples.Algorithm.GeometryVisualize
             
             for (int i = 0; i < randomPoints2D.Length; i++)
                 randomPoints2D[i] = URandom.Random2DSphere();
-            OnValidate();
         }
 
         public enum EBoundsShape
@@ -38,12 +30,6 @@ namespace Examples.Algorithm.GeometryVisualize
             OrientedBox,
             Sphere,
             Ellipsoid,
-        }
-        
-        private void OnValidate()
-        {
-            PCA.Evaluate(randomPoints,out centre,out right,out up,out forward);
-            PCA2.Evaluate(randomPoints2D,out centre2D,out right2D,out up2D);
         }
 
         private void OnDrawGizmos()
@@ -54,23 +40,19 @@ namespace Examples.Algorithm.GeometryVisualize
             foreach (var point in randomPoints)
                 Gizmos.DrawSphere(point,.01f);
             
-            Gizmos.matrix = transform.localToWorldMatrix*Matrix4x4.Translate(centre);
-            Gizmos.DrawCube(Vector3.zero,.1f*Vector3.one);
-            Gizmos.color = Color.red;
-            UGizmos.DrawArrow(Vector3.zero,right,1f,.05f);
-            Gizmos.color = Color.green;
-            UGizmos.DrawArrow(Vector3.zero,up,1f,.05f);
-            Gizmos.color = Color.blue;
-            UGizmos.DrawArrow(Vector3.zero,forward,1f,.05f);
+            Gizmos.matrix = transform.localToWorldMatrix;
+            Gizmos.color = Color.white;
+            GPlane.LeastSquaresRegression(randomPoints).DrawGizmos(.5f);
+            var coordinates = GCoordinates.PrincipleComponentAnalysis(randomPoints);
+            coordinates.DrawGizmos();
 
             Gizmos.color = Color.white;
             switch (shape)
             {
                 case EBoundsShape.OrientedBox:
                 {
-                    var boxright = math.cross(up,forward);
-                    var box = GBox.GetBoundingBoxOriented( boxright,up,forward,randomPoints);
-                    Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.TRS(Vector3.zero,Quaternion.LookRotation(forward,up),Vector3.one);
+                    var box = GBox.GetBoundingBoxOriented( coordinates.right,coordinates.up,coordinates.forward,randomPoints);
+                    Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.TRS(Vector3.zero,Quaternion.LookRotation(coordinates.forward,coordinates.up),Vector3.one);
                     box.DrawGizmos();
                 }
                     break;
@@ -91,15 +73,13 @@ namespace Examples.Algorithm.GeometryVisualize
             
             
             //2D Gizmos
-            Gizmos.matrix = transform.localToWorldMatrix*Matrix4x4.Translate(centre2D.to3xz() + kfloat3.right * 5f);
+            Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(kfloat3.right * 3f);
+            var coordinates2D = G2Coordinates.PrincipleComponentAnalysis(randomPoints2D);
+            coordinates2D.DrawGizmos();
             Gizmos.color = Color.white;
             foreach (var point in randomPoints2D)
                 Gizmos.DrawSphere(point.to3xz(),.01f);
-            Gizmos.DrawCube(Vector3.zero,.1f*Vector3.one);
-            Gizmos.color = Color.red;
-            UGizmos.DrawArrow(Vector3.zero,right2D.to3xz(),1f,.05f);
-            Gizmos.color = Color.green;
-            UGizmos.DrawArrow(Vector3.zero,up2D.to3xz(),1f,.05f);
+            G2Plane.LeastSquaresRegression(randomPoints2D).DrawGizmos(1f);
         }
         
 

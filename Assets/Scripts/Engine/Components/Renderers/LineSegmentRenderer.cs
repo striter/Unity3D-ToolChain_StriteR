@@ -62,8 +62,8 @@ namespace Runtime
             m_LinePositions = _positions;
             m_Normal = kfloat3.up;
             m_ManualInput = false;
-            if(_positions.Length > 3)
-                PCA.Evaluate(_positions,out var _center,out var right,out var forward,out m_Normal);
+            if (_positions.Length > 3)
+                m_Normal = GCoordinates.PrincipleComponentAnalysis(_positions).forward;
             SetDirty();
         }
         public void SetPositions(float3[] _positions,float3[] _normals)

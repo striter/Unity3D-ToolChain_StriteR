@@ -15,7 +15,9 @@ namespace Examples.Rendering.Shadows
     {
         public void SortElements(int _median, GSphere _boundary, IList<int> _elementIndexes,IList<GCapsule> _elements)
         {
-            PCA.Evaluate(_elements.Select(p=>p.Origin),out var center,out var right,out var up,out var forward);
+            var coordinates = GCoordinates.PrincipleComponentAnalysis(_elements.Select(p=>p.Origin));
+            var center = coordinates.origin;
+            var right = coordinates.right;
             _elementIndexes.Divide(_median,
                 // .Sort(
                 // ESortType.Bubble,

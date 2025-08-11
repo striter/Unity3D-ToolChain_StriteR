@@ -16,6 +16,7 @@ namespace Runtime.Geometry
         public static readonly GEllipsoid kDefault = new GEllipsoid(float3.zero, new float3(.5f,1f,0.5f));
         public float3 Origin => center;
         public float3 GetSupportPoint(float3 _direction) => center + _direction.normalize() * radius;
+        public float3 GetNormalizedPoint(float3 _uvw) => center + (_uvw-.5f) * radius;
         public GSphere GetBoundingSphere() => new GSphere(center, radius.maxElement());
         public float SDF(float3 _position)
         {
@@ -55,7 +56,7 @@ namespace Runtime.Geometry
             distances =  new float2(t0, t1 - t0)/(2*a);
             return true;
         }
-        public void DrawGizmos( )
+        public void DrawGizmos()
         {
             //Dude
             Matrix4x4 preMatrix = Gizmos.matrix;
@@ -69,7 +70,7 @@ namespace Runtime.Geometry
             var box = GBox.GetBoundingBox(_positions);
             var m = math.mul(float3x3.identity,box.size);
             var sphere = GSphere.GetBoundingSphere(_positions.Select(p=>m * p));
-            return new GEllipsoid(sphere.center,sphere.radius*2*box.size);
+            return new GEllipsoid(sphere.center,sphere.radius*box.size);
         }
     }
 }

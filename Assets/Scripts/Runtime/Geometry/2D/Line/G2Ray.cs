@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
@@ -20,6 +21,10 @@ namespace Runtime.Geometry
         public float2 GetPoint(float _distance) => origin + direction * _distance;
         
         public static G2Ray StartEnd(float2 _start, float2 _end) => new G2Ray(_start, math.normalize(_end - _start));
+        
+        public G2Ray Forward(float _distance) => new G2Ray(origin + direction * _distance, direction);
+        public G2Ray SetOrigin(float2 _origin) => new G2Ray(_origin, direction);
+
         public float2 Origin => origin;
         public float SDF(float2 _position)
         {
@@ -27,6 +32,8 @@ namespace Runtime.Geometry
             var pointToStart = _position - origin;
             return math.length(umath.cross(lineDirection, pointToStart));
         }
+
+        public static G2Ray FromEquation(float _m, float _b) => new G2Ray(new(0, _b), math.normalize(new float2(1,_m)));
 
         public bool SideSign(float2 _point) => math.dot( umath.Rotate2DCW90(direction),(_point - origin)) > 0;
         public void DrawGizmos() => Gizmos.DrawRay(origin.to3xz(),direction.to3xz());

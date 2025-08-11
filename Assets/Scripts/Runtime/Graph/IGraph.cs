@@ -9,9 +9,7 @@ public interface IGraph<Node>
 
 public interface IGraphFinite<Node> : IGraph<Node> , IEnumerable<Node>
 {
-
     int Count { get; }
-
     IEnumerable<Node> Nodes { get; }
 }
 

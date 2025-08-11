@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq.Extensions;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
@@ -46,11 +48,44 @@ namespace Runtime.Geometry
             forward = -forward;
             return this;
         }
+
+        public static GCoordinates PrincipleComponentAnalysis(IEnumerable<float3> _points)
+        {
+            var right = kfloat3.right;
+            var up = kfloat3.up;
+
+            var m = _points.Average();
+            var a00 = 0f;
+            var a11 = 0f;
+            var a22 = 0f;
+            var a01mirror = 0f;
+            var a02mirror = 0f;
+            var a12mirror = 0f;
+            var count = 0;
+            foreach (var p in _points)
+            {
+                count++;
+                a00 += umath.pow2(p.x - m.x);
+                a11 += umath.pow2(p.y - m.y);
+                a22 += umath.pow2(p.z - m.z);
+
+                a01mirror += (p.x - m.x) * (p.y - m.y);
+                a02mirror += (p.x - m.x) * (p.z - m.z);
+                a12mirror += (p.y - m.y) * (p.z - m.z);
+            }
+
+            var matrix = new float3x3(a00, a01mirror, a02mirror,
+                a01mirror, a11, a12mirror,
+                a02mirror, a12mirror, a22) / count;
+            var centre = m;
+            matrix.GetEigenVectors(out right, out up, out _);
+            return new GCoordinates(centre, right, up);
+        }
         
         public quaternion GetRotation() => quaternion.LookRotation(forward,up);
-        public GLine Right() => new GLine(origin, origin + right);
-        public GLine Up() => new GLine(origin, origin + up);
-        public GLine Forward() => new GLine(origin, origin + forward);
+        public GLine Right() => new (origin, origin + right);
+        public GLine Up() => new (origin, origin + up);
+        public GLine Forward() => new (origin, origin + forward);
         public float3 GetPoint(float2 _uv) => origin + _uv.x * right + _uv.y * up;
         public float2 GetUV(float3 _point)
         {

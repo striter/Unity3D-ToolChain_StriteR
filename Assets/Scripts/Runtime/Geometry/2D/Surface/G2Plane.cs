@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -43,7 +44,7 @@ namespace Runtime.Geometry
             Ctor();
         }
         
-        public G2Plane Flip() => new G2Plane(-normal,position);
+        public G2Plane Flip() => new G2Plane(-normal,position); 
         public static implicit operator float3(G2Plane _plane)=>_plane.normal.to3xy(_plane.distance);
         public bool IsPointFront(float2 _point) =>  math.dot(_point.to3xy(-1),this)>0;
         public float2 Origin => position;
@@ -57,6 +58,32 @@ namespace Runtime.Geometry
         }
         
         public G2Ray ToRay() => new G2Ray(position, normal.cross());
+
+        public static G2Plane FromEquation(float _A, float _C)
+        {
+            return new G2Plane(-new float2(1f, _A).normalize().cross(),new float2(0, _C));
+        }
+        //https://www.mathsisfun.com/data/least-squares-regression.html
+        public static G2Plane LeastSquaresRegression(IEnumerable<float2> _positions)
+        {
+            var sumX = 0f;
+            var sumY = 0f;
+            var sumXX = 0f;
+            var sumXY = 0f;
+            var N = 0;
+            foreach (var position in _positions)
+            {
+                N += 1;
+                sumX += position.x;
+                sumY += position.y;
+                sumXX += position.x * position.x;
+                sumXY += position.x * position.y;
+            }
+            
+            var m = (N*sumXY - sumX*sumY) / (N*sumXX - sumX*sumX);
+            var b = (sumY - m * sumX) / N;
+            return FromEquation(m,b);
+        }
     }
 
     public static class G2Plane_Extension
