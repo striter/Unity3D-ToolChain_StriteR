@@ -59,30 +59,39 @@ namespace Runtime.Geometry
         
         public G2Ray ToRay() => new G2Ray(position, normal.cross());
 
-        public static G2Plane FromEquation(float _A, float _C)
-        {
-            return new G2Plane(-new float2(1f, _A).normalize().cross(),new float2(0, _C));
-        }
-        //https://www.mathsisfun.com/data/least-squares-regression.html
+        
+        //https://www.geometrictools.com/GTE/Mathematics/ApprHeightLine2.h
         public static G2Plane LeastSquaresRegression(IEnumerable<float2> _positions)
         {
-            var sumX = 0f;
-            var sumY = 0f;
-            var sumXX = 0f;
-            var sumXY = 0f;
-            var N = 0;
+            var mean = kfloat2.zero;
+            var count = 0;
             foreach (var position in _positions)
             {
-                N += 1;
-                sumX += position.x;
-                sumY += position.y;
-                sumXX += position.x * position.x;
-                sumXY += position.x * position.y;
+                mean += position;
+                count += 1;
             }
+
+            mean /= count;
+            if (count <= 2)
+            {
+                Debug.Log($"[LeastSquaresRegression] {nameof(_positions)} Count Invalid : {count}");
+                return kDefault;
+            }
+
+            var covar00 = 0f;
+            var covar01 = 0f;
+            foreach (var position in _positions)
+            {
+                var diff = position - mean;
+                covar00 += diff[0] * diff[0];
+                covar01 += diff[0] * diff[1];
+            }
+
+            if (covar00 <= 0)
+                return kDefault;
             
-            var m = (N*sumXY - sumX*sumY) / (N*sumXX - sumX*sumX);
-            var b = (sumY - m * sumX) / N;
-            return FromEquation(m,b);
+            var line = new G2Line(mean,new float2(covar01/covar00,-1));
+            return ((G2Ray)line).RotateCW90(3).ToPlane();
         }
     }
 

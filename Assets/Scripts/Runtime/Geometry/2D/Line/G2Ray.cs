@@ -35,6 +35,8 @@ namespace Runtime.Geometry
 
         public static G2Ray FromEquation(float _m, float _b) => new G2Ray(new(0, _b), math.normalize(new float2(1,_m)));
 
+        public G2Plane ToPlane() => new G2Plane(direction, origin);
+        public G2Ray RotateCW90(int _times = 1) => new G2Ray(origin, umath.Rotate2DCW90(direction,_times));
         public bool SideSign(float2 _point) => math.dot( umath.Rotate2DCW90(direction),(_point - origin)) > 0;
         public void DrawGizmos() => Gizmos.DrawRay(origin.to3xz(),direction.to3xz());
         public bool RayIntersection(G2Ray _ray, out float distance)

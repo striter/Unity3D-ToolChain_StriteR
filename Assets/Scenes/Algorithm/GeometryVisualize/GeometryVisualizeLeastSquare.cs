@@ -1,4 +1,5 @@
 using Runtime.Geometry;
+using Runtime.Geometry.Curves;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
