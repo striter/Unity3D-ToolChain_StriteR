@@ -39,7 +39,8 @@ namespace Runtime.Geometry
     [Serializable]
     public partial struct GTriangle :IVolume, IConvex , ISurface , IRayIntersection , ITriangle<float3>, IIterate<float3>,ISerializationCallbackReceiver ,ISDF
     {
-        public GTriangle(List<float3> _vertices,PTriangle _src) => this = (GTriangle)_src.Convert(_vertices);
+        public GTriangle(IList<float3> _vertices,PTriangle _src) => this = (GTriangle)_src.Convert(_vertices);
+        public static GTriangle FromPositions<T>(IList<T> _vertices,PTriangle _src,Func<T,float3> _converter)  => new (_converter(_vertices[_src.V0]),_converter(_vertices[_src.V1]),_converter(_vertices[_src.V2]));
         public float3 V0 => triangle.v0;
         public float3 V1 => triangle.v1;
         public float3 V2 => triangle.v2;
@@ -48,14 +49,14 @@ namespace Runtime.Geometry
         public float3 GetForward()=> (V0 - (V1 + V2) / 2).normalize();
         public quaternion GetRotation() => quaternion.LookRotation(GetForward(),normal);
 
-        public static readonly GTriangle kDefault = new GTriangle(new float3(0,0,.5f),new float3(-.5f,0,-.5f),new float3(.5f,0,-.5f));
-        public static explicit operator GTriangle(Triangle<float3> _src) => new GTriangle(_src.v0,_src.v1,_src.v2);
-        public static explicit operator GTriangle(Triangle<Vector3> _src) => new GTriangle(_src.v0,_src.v1,_src.v2);
-        public static GTriangle Convert<T>(ITriangle<T> _src,Func<T,float3> _converter)where T:struct => new GTriangle(_converter(_src.V0),_converter(_src.V1),_converter(_src.V2)); 
-        public Triangle<Vector3> ToVector3() => new Triangle<Vector3>(V0, V1, V2);
-        public static GTriangle operator +(GTriangle _src, float3 _dst)=> new GTriangle(_src.V0 + _dst, _src.V1 + _dst, _src.V2 + _dst);
-        public static GTriangle operator -(GTriangle _src, float3 _dst)=> new GTriangle(_src.V0 - _dst, _src.V1 - _dst, _src.V2 - _dst);
-        public static GTriangle operator*(Matrix4x4 _matrix,GTriangle _triangle) => new GTriangle(
+        public static readonly GTriangle kDefault = new (new float3(0,0,.5f),new float3(-.5f,0,-.5f),new float3(.5f,0,-.5f));
+        public static explicit operator GTriangle(Triangle<float3> _src) => new (_src.v0,_src.v1,_src.v2);
+        public static explicit operator GTriangle(Triangle<Vector3> _src) => new (_src.v0,_src.v1,_src.v2);
+        public static GTriangle Convert<T>(ITriangle<T> _src,Func<T,float3> _converter) where T:struct => new (_converter(_src.V0),_converter(_src.V1),_converter(_src.V2)); 
+        public Triangle<Vector3> ToVector3() => new(V0, V1, V2);
+        public static GTriangle operator +(GTriangle _src, float3 _dst) => new (_src.V0 + _dst, _src.V1 + _dst, _src.V2 + _dst);
+        public static GTriangle operator -(GTriangle _src, float3 _dst) => new (_src.V0 - _dst, _src.V1 - _dst, _src.V2 - _dst);
+        public static GTriangle operator*(Matrix4x4 _matrix,GTriangle _triangle) => new (
             _matrix.MultiplyPoint(_triangle.V0),
             _matrix.MultiplyPoint(_triangle.V1),
             _matrix.MultiplyPoint(_triangle.V2));

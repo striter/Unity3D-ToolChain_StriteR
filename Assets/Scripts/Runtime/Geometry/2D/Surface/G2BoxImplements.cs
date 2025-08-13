@@ -106,7 +106,7 @@ namespace Runtime.Geometry
             return true;
         }
         
-        //https://www.skytopia.com/project/articles/compsci/clipping.html
+        //https://www.skytopia.com/project/articles/compsci/clipping.html -Liang Barskey
         public bool Clip(G2Line _line,out G2Line _clippedLine)
         {
             _clippedLine = G2Line.kZero;

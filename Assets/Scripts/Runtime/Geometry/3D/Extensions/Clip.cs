@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using Runtime.Pool;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace Runtime.Geometry.Extension
 {
@@ -39,16 +36,13 @@ namespace Runtime.Geometry.Extension
             return clippedPolygon;
         }
         
-        public static bool Clip(this GTriangle _triangle,GPlane _plane, out IVolume _outputShape,bool _directed = true)
+        public static bool Clip(this GTriangle _triangle,GPlane _plane, out IVolume _outputShape)
         {
             _outputShape = null;
-            if (_directed && math.dot(_triangle.normal, _plane.normal) < 0)
-                return false;
-
             int forwardCount = 0;
             for (int i = 0; i < 3; i++)
             {
-                var curPoint = _triangle[(i + 1) % 3];
+                var curPoint = _triangle[i];
                 
                 var curDot = _plane.dot(curPoint);
                 if (curDot > 0)
@@ -57,9 +51,9 @@ namespace Runtime.Geometry.Extension
                     continue;
                 }
                 
-                var prePoint = _triangle[i];
+                var prePoint = _triangle[(i+2)%3];
                 var preDot = _plane.dot(prePoint);
-                var nextPoint = _triangle[(i + 2) % 3];
+                var nextPoint = _triangle[(i + 1) % 3];
                 var nextDot = _plane.dot(nextPoint);
 
                 if (preDot < 0 && nextDot < 0)     //No intersections
@@ -68,9 +62,9 @@ namespace Runtime.Geometry.Extension
                 if (nextDot < 0)
                 {
                     _outputShape = new GTriangle(
-                        math.lerp(nextPoint, prePoint, nextDot / math.dot(_plane.normal,nextPoint-prePoint)),
                         prePoint,
-                        math.lerp(curPoint, prePoint, curDot / math.dot(_plane.normal,curPoint-prePoint)));
+                        math.lerp(curPoint, prePoint, curDot / math.dot(_plane.normal,curPoint-prePoint)),
+                        math.lerp(nextPoint, prePoint, nextDot / math.dot(_plane.normal,nextPoint-prePoint)));
                 }
                 else if (preDot < 0)
                 {
@@ -94,5 +88,7 @@ namespace Runtime.Geometry.Extension
             
             return _outputShape != null; 
         }
+
+
     }
 }

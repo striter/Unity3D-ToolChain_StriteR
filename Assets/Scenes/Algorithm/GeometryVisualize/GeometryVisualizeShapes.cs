@@ -27,6 +27,7 @@ public class GeometryVisualizeShapes : MonoBehaviour
             if (value is not IVolume volume)
                 continue;
 
+            UGizmos.DrawString(volume.GetType().Name);
             Gizmos.color = Color.green;
             var center = volume.Origin;
             Gizmos.DrawSphere(center, .05f);

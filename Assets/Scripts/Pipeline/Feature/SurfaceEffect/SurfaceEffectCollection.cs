@@ -53,6 +53,20 @@ namespace Rendering.Pipeline.Component
         public SurfaceEffectCurve[] curves;
         public static bool operator == (SurfaceEffectClip _a, SurfaceEffectClip _b) => _a.name == _b.name && _a.material == _b.material;
         public static bool operator != (SurfaceEffectClip _a, SurfaceEffectClip _b) => _a.name != _b.name || _a.material != _b.material;
+        public bool Equals(SurfaceEffectClip other)
+        {
+            return Equals(material, other.material) && name == other.name && length.Equals(other.length) && warpMode == other.warpMode && Equals(curves, other.curves);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is SurfaceEffectClip other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(material, name, length, (int)warpMode, curves);
+        }
     }
 }
 

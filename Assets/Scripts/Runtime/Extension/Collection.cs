@@ -50,7 +50,24 @@ namespace System.Linq.Extensions
                         yield return element;
                 }
             }
-            
+
+            public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> _collection, int _chunkSize)
+            {
+                var index = 0;
+                var chunk = PoolList<T>.Empty(nameof(Chunk));
+                foreach (var element in _collection)
+                {
+                    chunk.Add(element);
+                    if (++index % _chunkSize == 0)
+                    {
+                        yield return chunk;
+                        chunk.Clear();
+                    }
+                }
+                if (chunk.Count != 0)
+                    yield return chunk;
+            }
+
             public static IEnumerable<(int index,T value)> WithIndex<T>(this IEnumerable<T> _collection)
             {
                 int index = 0;
@@ -1064,6 +1081,13 @@ namespace System.Linq.Extensions
             return _list;
         }
         
+        public static IList<T> Remake<T>(this IList<T> _array,T _value) where T:struct
+        {
+            var count = _array.Count;
+            for (var i = 0; i < count; i++)
+                _array[i] = _value;
+            return _array;
+        }
         public static IList<T> Remake<T>(this IList<T> _array, Func<T, T> _onEach)
         {
             var count = _array.Count;

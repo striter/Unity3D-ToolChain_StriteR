@@ -44,12 +44,12 @@ namespace Runtime
             
             
             //Clip Planes
-            foreach (var plane in new GBox(float3.zero, intersectBox.extent).GetPlanes(true, true, true))
+            foreach (var plane in new GBox(float3.zero, intersectBox.extent).GetPlanes())
             {
-                for (int i = triangles.Count - 1; i >= 0; i--)
+                for (var i = triangles.Count - 1; i >= 0; i--)
                 {
                     var triangle = triangles[i];
-                    if (triangle.Clip(plane, out var clippedShape, false))
+                    if (triangle.Clip(plane, out var clippedShape))
                     {
                         if (clippedShape is GTriangle clippedTriangle)
                         {

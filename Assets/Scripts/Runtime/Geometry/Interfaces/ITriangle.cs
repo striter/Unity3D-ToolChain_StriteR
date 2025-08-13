@@ -93,5 +93,10 @@ namespace Runtime.Geometry
         
         public static bool operator ==(Triangle<T> left, Triangle<T> right) => left.v0.Equals( right.v0) && left.v1.Equals(right.v1) && left.v2.Equals(right.v2);
         public static bool operator !=(Triangle<T> left, Triangle<T> right) => !(left == right);
+        public override bool Equals(object obj)
+        {
+            return obj is Triangle<T> other && Equals(other);
+        }
+
     }
 }

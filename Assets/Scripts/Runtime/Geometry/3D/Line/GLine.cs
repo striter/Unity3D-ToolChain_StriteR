@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace Runtime.Geometry
         [HideInInspector]public float3 direction;
         [HideInInspector]public float length;
         public float3 GetPoint(float _distance) => start + direction * _distance;
+        public float3 GetPointNormalized(float _normalized) => start + direction * _normalized * length;
 
         public GLine(float3 _start, float3 _end)
         {
@@ -30,6 +32,8 @@ namespace Runtime.Geometry
             end = start + direction * length;
         }
         
+        public GLine(IList<float3> _vertices,PLine _src):this(_vertices[_src.start],_vertices[_src.end]) => Ctor();
+        public static GLine FromPositions<T>(IList<T> _vertices, PLine _src, Func<T, float3> _selector) =>  new GLine(_selector(_vertices[_src.start]), _selector(_vertices[_src.end]));
         void Ctor()
         {
             var offset = end - start;

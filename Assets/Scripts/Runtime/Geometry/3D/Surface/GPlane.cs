@@ -131,6 +131,7 @@ namespace Runtime.Geometry
             var nrD = math.dot(normal, _ray.direction);
             return (distance - nrO) / nrD;
         }
+        
         public float SDF(float3 _position) => math.dot(normal, _position - position);
 
         public static implicit operator float4(GPlane _plane)=>_plane.normal.to4(_plane.distance);

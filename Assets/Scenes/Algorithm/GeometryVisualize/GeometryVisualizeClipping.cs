@@ -9,8 +9,8 @@ namespace Examples.Algorithm.GeometryVisualize
     
     public class GeometryVisualizeClipping : MonoBehaviour
     {
+        public bool m_DynamicPlane;
         public GTriangle gTriangle = GTriangle.kDefault;
-        public bool gDirected = false;
         public GPlane gPlane = GPlane.kDefault;
         
         [Header("2D Clipping")]
@@ -21,14 +21,16 @@ namespace Examples.Algorithm.GeometryVisualize
         [Header("2D Box Clip")]
         public G2Line line = G2Line.kDefault;
         public G2Box box = G2Box.kDefault;
-        
+
         private void OnDrawGizmos()
         {
             //Door Clip
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.color = Color.white.SetA(.5f);
             door.DrawGizmos();
-            var movedPlane = new G2Plane(plane.normal,plane.distance * math.sin(UTime.time)*2);
+            var movedPlane = plane;
+            if (m_DynamicPlane)
+                movedPlane = new G2Plane(plane.normal,plane.distance * math.sin(UTime.time)*2);
             movedPlane.DrawGizmos(G2Circle.GetBoundingCircle(door.positions).radius);
 
             if (door.Clip(movedPlane, out var clippedPolygon))
@@ -50,10 +52,12 @@ namespace Examples.Algorithm.GeometryVisualize
             
             Gizmos.matrix = transform.localToWorldMatrix * Matrix4x4.Translate(Vector3.back*5f);
             Gizmos.color = Color.white.SetA(.5f);
-            var movedGPlane  = new GPlane(gPlane.normal,gPlane.distance * math.sin(UTime.time)*2);
+            var movedGPlane  = gPlane;
+            if (m_DynamicPlane)
+                movedGPlane = new GPlane(gPlane.normal,gPlane.distance * math.sin(UTime.time)*2);
             movedGPlane.DrawGizmos(G2Circle.GetBoundingCircle(triangle.triangle.Iterate()).radius);
             gTriangle.DrawGizmos();
-            if (gTriangle.Clip(movedGPlane, out var clippedGShape,gDirected))
+            if (gTriangle.Clip(movedGPlane, out var clippedGShape))
             {
                 Gizmos.color = Color.yellow;
                 clippedGShape.DrawGizmos();
@@ -70,7 +74,6 @@ namespace Examples.Algorithm.GeometryVisualize
                 Gizmos.color = Color.yellow;
                 clippedLine.DrawGizmos();
             }
-
         }
     }
 }

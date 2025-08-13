@@ -14,6 +14,13 @@ namespace Runtime.Geometry
         public PTriangle(Triangle<int> _triangle) { triangle = _triangle;  }
         public PTriangle(int _index0, int _index1, int _index2):this(new Triangle<int>(_index0,_index1,_index2)){}
         public PTriangle(int[] _indexes):this(new Triangle<int>(_indexes[0],_indexes[1],_indexes[2])){}
+
+        public PTriangle(IEnumerable<int> _indexes)
+        {
+            triangle = default;
+            foreach (var (index,value) in _indexes.WithIndex())
+                triangle[index] = value;
+        }
     }
 
 

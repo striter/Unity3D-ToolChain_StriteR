@@ -70,5 +70,6 @@ namespace Runtime.Geometry
         
         public static G2Line operator -(G2Line _line,float2 _position) => new G2Line(_line.start - _position,_line.end - _position);
         public static G2Line operator +(G2Line _line,float2 _position) => new G2Line(_line.start + _position,_line.end + _position);
+        public G2Line Clip(G2Box _box) => _box.Clip(this,out var _clipped) ? _clipped : this;
     }
 }
