@@ -16,7 +16,7 @@ namespace UnityEngine.UI
 
         public EMode m_Mode = EMode.AutomaticConvex;
         [Foldout(nameof(m_Mode),EMode.AutomaticConvex),Min(0f)] public float m_Expand = 0f;
-        public G2Polygon m_PolygonNS = G2Polygon.kDefaultUV;
+        [Foldout(nameof(m_Mode), EMode.Manual)] public G2Polygon m_PolygonNS = G2Polygon.kDefaultUV;
 
         private void OnValidate()
         {
@@ -43,9 +43,7 @@ namespace UnityEngine.UI
             return texture as Texture2D;
         }
 
-
-        private const float m_AlphaClip = .5f;
-
+        private const float m_AlphaClip = .1f;
         [InspectorButtonFoldout(nameof(m_Mode), EMode.Manual)]
         void ConstructConvex(float _expand = 0f)
         {

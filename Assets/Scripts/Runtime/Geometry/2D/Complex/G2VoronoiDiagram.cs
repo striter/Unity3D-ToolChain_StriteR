@@ -126,7 +126,7 @@ namespace Runtime.Geometry
                         var ray2 = kInfiniteEdgeHelper[1].ToRay(vertices);
                         cellVertices.TryAdd(ray1.origin);
                         cellVertices.TryAdd(ray2.origin);
-                        if (ray1.RayIntersection(ray2, out var distance))
+                        if (ray1.Intersect(ray2, out var distance))
                         {
                             cellVertices.Add(ray2.GetPoint(distance));
                         }

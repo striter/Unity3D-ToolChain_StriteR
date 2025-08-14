@@ -86,7 +86,7 @@ namespace Runtime.Geometry
         //0.5 * |x1(y2 - y3) + x2(y3 - y1) + x3(y1 - y2)|
         public float GetArea() => 0.5f * math.abs(V0.x * (V1.y - V2.y) + V1.x * (V2.y - V0.y) + V2.x * (V0.y - V1.y));
 
-        public float GetCircumradius()
+        public float GetCircumscribeRadius()
         {
             var ab = (V1 - V0).magnitude();
             var bc = (V2 - V1).magnitude();

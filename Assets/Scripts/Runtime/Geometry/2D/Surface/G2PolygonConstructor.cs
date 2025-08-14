@@ -228,7 +228,7 @@ namespace Runtime.Geometry
             UGeometry.Triangulation(_positions,ref triangles);
             
             var alphaValues = PoolList<float>.Empty(nameof(AlphaShape));
-            alphaValues.AddRange(triangles.Select(p=>new G2Triangle(_positions,p).GetCircumradius()));
+            alphaValues.AddRange(triangles.Select(p=>new G2Triangle(_positions,p).GetCircumscribeRadius()));
             alphaValues.MinmaxElement(p=>p,out var min,out var max);
             alphaValues.Remake(p=>umath.invLerp(min,max,p));
             for (var i = triangles.Count - 1; i >= 0; i--)

@@ -22,7 +22,7 @@ namespace Runtime.Geometry.Extension
             var ray = new G2Ray(_point, kfloat2.up);
             foreach (var edge in _convex.GetEdges())
             {
-                if (edge.RayIntersection(ray, out _))
+                if (edge.Intersect(ray, out _))
                     intersection++;
             }
             return intersection % 2 == 1;

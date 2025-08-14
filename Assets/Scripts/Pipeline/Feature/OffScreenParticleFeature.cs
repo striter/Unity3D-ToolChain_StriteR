@@ -14,7 +14,7 @@ namespace Rendering.Pipeline
         public CullingMask layerMask;
         public EDownSample downSample;
         public Shader blendShader;
-
+        
         public bool Valid => layerMask != 0 && downSample != EDownSample.None && blendShader != null;
 
         public static readonly OffScreenParticleData kDefault = new()
@@ -100,7 +100,6 @@ namespace Rendering.Pipeline
 
             m_VDMColorHandle?.Release();
             m_VDMColorHandle = RTHandles.Alloc(kVDMColor);
-            ConfigureTarget(m_VDMColorHandle);
         }
 
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)

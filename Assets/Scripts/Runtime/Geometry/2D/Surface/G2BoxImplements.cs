@@ -147,6 +147,7 @@ namespace Runtime.Geometry
             _clippedLine = new G2Line(new float2(x0clip,y0clip),new float2(x1clip,y1clip));
             return true;        // (clipped) line is drawn
         }
+
     }
 
 }

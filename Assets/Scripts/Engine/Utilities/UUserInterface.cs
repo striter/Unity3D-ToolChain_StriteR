@@ -172,8 +172,7 @@ public static class UUserInterface
     public static bool TransformScreenToLocal(this RectTransform _rectTransform, Vector2 _screenPoint, Camera _camera, out Vector2 _positionLS)
     {
         _positionLS = default;
-        Vector3 worldPoint;
-        if (!_rectTransform.TransformScreenToWorld(_screenPoint, _camera, out worldPoint))
+        if (!_rectTransform.TransformScreenToWorld(_screenPoint, _camera, out var worldPoint))
             return false;
         _positionLS =  _rectTransform.worldToLocalMatrix.MultiplyPoint(worldPoint);
         return true;
