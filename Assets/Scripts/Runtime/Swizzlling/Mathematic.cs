@@ -49,6 +49,11 @@ public static partial class umath       //Swizzling
     public static float2 clamp(this float2 _value,float2 _min,float2 _max)=> math.min(math.max(_value,_min) ,_max);
     public static float3 clamp(this float3 _value,float3 _min,float3 _max)=> math.min(math.max(_value,_min) ,_max);
     public static float4 clamp(this float4 _value,float4 _min,float4 _max)=> math.min(math.max(_value,_min) ,_max);
+    
+    public static int clamp(this int _value,int _min,int _max)=> math.min(math.max(_value,_min) ,_max);
+    public static int2 clamp(this int2 _value,int2 _min,int2 _max)=> math.min(math.max(_value,_min) ,_max);
+    public static int3 clamp(this int3 _value,int3 _min,int3 _max)=> math.min(math.max(_value,_min) ,_max);
+    public static int4 clamp(this int4 _value,int4 _min,int4 _max)=> math.min(math.max(_value,_min) ,_max);
 
     public static float dot(this float3 _src) => math.dot(_src, _src);
     public static float dot(this float3 _src,float3 _dst) => math.dot(_src, _dst);

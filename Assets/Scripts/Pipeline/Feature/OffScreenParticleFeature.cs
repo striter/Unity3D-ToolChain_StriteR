@@ -124,12 +124,13 @@ namespace Rendering.Pipeline
             _context.ExecuteCommandBuffer(cmd);
         }
 
-        public override void OnFinishCameraStackRendering(CommandBuffer cmd)
+        public override void FrameCleanup(CommandBuffer cmd)
         {
-            base.OnFinishCameraStackRendering(cmd);
+            base.FrameCleanup(cmd);
             m_VDMColorHandle?.Release();
             m_VDMColorHandle = null;
             UDebug.SetFieldValue(m_DrawTransparentsPass, "m_FilteringSettings", m_SrcFilterSettings);
         }
+
     }
 }

@@ -8,6 +8,7 @@ namespace Rendering.Pipeline
         None = -1,
         Half = 2,
         Quarter = 4,
+        Eighth = 8
     }
 
     public static class KRenderTextures

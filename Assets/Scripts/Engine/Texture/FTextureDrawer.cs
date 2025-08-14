@@ -22,13 +22,13 @@ namespace UnityEditor.Extensions
             colors.FillDefault(_initial);
         }
         public FTextureDrawer(int _x, int _y, Color _initial = default) : this(new int2(_x, _y), _initial) { }
-        public void Line(float2 _start,float2 _end,Color _color)
+        public void Line(float2 _start,float2 _end,Color _color) => Line((int2)(_start * size),(int2)(_end * size),_color);
+        public void Line(int2 start,int2 end,Color _color)
         {
-            _start = _start.clamp(-.1f,1.1f);
-            _end = _end.clamp(-.1f,1.1f);
-            var start = (int2)(_start * size);
-            var end = (int2)(_end * size);
-            UCartographicGeneralization.Bresenham.Line(start,end,(pos,opacity) => Pixel(pos.x,pos.y, _color.SetA(opacity)));
+            start = start.clamp(0, size);
+            end = end.clamp(0, size);
+            UCartographicGeneralization.Bresenham.Line(start, end,
+                (pos, opacity) => Pixel(pos.x, pos.y, _color.SetA(opacity)));
         }
 
         public void LineWidth(float2 _start, float2 _end, float wd, Color _color)
@@ -56,21 +56,22 @@ namespace UnityEditor.Extensions
         
         public void Clear(Color _color) => colors.FillDefault(_color);
 
-        private float2 pre;
-        public void PixelContinuousStart(float2 _uv) => pre = _uv;
-        public void PixelContinuous(float2 _uv,Color _color)
+        private int2 pre;
+        public void PixelContinuousStart(float2 _uv) => PixelContinuousStart((int2)(_uv * size));
+        public void PixelContinuousStart(int2 _uv) => pre = _uv;
+        public void PixelContinuous(float2 _uv,Color _color) => PixelContinuous((int2)(_uv * size),_color); 
+        public void PixelContinuous(int2 _pixel,Color _color)
         {
-            Line(pre, _uv, _color);
-            pre = _uv;
+            Line(pre, _pixel , _color);
+            pre = _pixel;
         }
         
-        public void Circle(float2 _centreUV,int _radius = 5,Color _color = default)
+        public void Circle(float2 _centreUV,int _radius = 5,Color _color = default) => Circle((int2)(_centreUV * size),_radius,_color);
+        public void Circle(int2 _centerPixel, int _radius = 5, Color _color = default)
         {
-            if (_centreUV.x < 0 || _centreUV.x > 1 || _centreUV.y < 0 || _centreUV.y > 1)
+            if (_centerPixel.x < 0 || _centerPixel.x > size.x || _centerPixel.y < 0 || _centerPixel.y > size.y)
                 return;
-            
-            var pos = (int2)(_centreUV * size);
-            UCartographicGeneralization.Bresenham.Circle(pos,_radius,(pos,opacity) => Pixel(pos.x,pos.y, _color.SetA(opacity)));
+            UCartographicGeneralization.Bresenham.Circle(_centerPixel,_radius,(pos,opacity) => Pixel(pos.x,pos.y, _color.SetA(opacity)));
         }
 
         static readonly float2 kDigitCellSize = new(4,5);
