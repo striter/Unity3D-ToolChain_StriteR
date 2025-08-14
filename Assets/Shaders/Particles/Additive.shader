@@ -36,7 +36,7 @@ Shader "Game/Particles/Additive"
         
          Pass
         {
-            Blend One One
+            Blend One One , Zero One
 		    ZWrite Off
 		    ZTest [_ZTest]
 		    Cull [_Cull]

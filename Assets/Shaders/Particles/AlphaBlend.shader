@@ -17,7 +17,7 @@ Shader "Game/Particles/AlphaBlend"
 		Tags{"Queue" = "Transparent"}
         Pass
         {
-            Blend SrcAlpha OneMinusSrcAlpha
+            Blend SrcAlpha OneMinusSrcAlpha , Zero OneMinusSrcAlpha
 		    ZWrite Off
 		    ZTest LEqual
 		    Cull Back

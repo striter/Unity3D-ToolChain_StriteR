@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Assets\Shaders\Templates\HLSLIncludeTemplate.hlsl.txt">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Assets\Shaders\Templates\HLSLTemplate.shader.txt">
           <value>
             <Attribute>

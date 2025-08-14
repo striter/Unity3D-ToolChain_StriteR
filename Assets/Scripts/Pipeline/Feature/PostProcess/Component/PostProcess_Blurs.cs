@@ -456,7 +456,11 @@ namespace Rendering.PostProcess
             _buffer.SetGlobalInt(kDecodeID, compress && _iterationIndex != 0 ? 1 : 0);
             _buffer.SetGlobalInt(kEncodeID,compress && _iterationIndex != _totalIteration - 1 ? 1 : 0);
             // _buffer.Blit(_src, _dst,_material,_passIndex);
-            _buffer.BlitFullScreenMesh(_src, _dst, _material, _passIndex);
+            _buffer.SetGlobalTexture("_BlurTex", _src);
+            _buffer.SetRenderTarget(_dst,
+                RenderBufferLoadAction.DontCare,RenderBufferStoreAction.Store,
+                RenderBufferLoadAction.DontCare,RenderBufferStoreAction.DontCare);
+            _buffer.DrawMesh(UPipeline.kFullscreenMesh, Matrix4x4.identity, _material,0,_passIndex);
         }
     }
 }

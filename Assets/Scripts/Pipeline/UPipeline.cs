@@ -46,11 +46,11 @@ namespace Rendering
         }
 
 
-        public static DrawingSettings CreateDrawingSettings(bool _fillDefault, Camera _camera)
+        public static DrawingSettings CreateDrawingSettings(bool _fillDefault, Camera _camera,SortingCriteria _criteria = SortingCriteria.None)
         {
             DrawingSettings settings = new DrawingSettings
             {
-                sortingSettings = new SortingSettings(_camera),
+                sortingSettings = new SortingSettings(_camera){criteria = _criteria},
                 enableDynamicBatching = true,
                 enableInstancing = true
             };
@@ -208,18 +208,6 @@ namespace Rendering
             tr = startPos + toRight + toTop;
             bl = startPos - toRight - toTop;
             br = startPos + toRight - toTop;
-        }
-
-        public static void BlitFullScreenMesh(this CommandBuffer _buffer, RenderTargetIdentifier _source, RenderTargetIdentifier _destination, Material _material = null, int _pass = 0)
-        {
-            if (_material == null || _material.passCount < _pass + 1)
-                _pass = 0;
-            
-            _buffer.SetGlobalTexture("_BlurTex", _source);
-            _buffer.SetRenderTarget(_destination,
-                RenderBufferLoadAction.DontCare,RenderBufferStoreAction.Store,
-                RenderBufferLoadAction.DontCare,RenderBufferStoreAction.DontCare);
-            _buffer.DrawMesh(kFullscreenMesh, Matrix4x4.identity, _material, 0, _pass);
         }
     }
 }
