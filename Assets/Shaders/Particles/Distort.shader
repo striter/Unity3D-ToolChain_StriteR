@@ -12,7 +12,7 @@
 		{		
 			Cull Back
 			Blend Off
-			ZWrite On
+			ZWrite Off
 			Blend One Zero,Zero Zero
 			
 			name "Main"
