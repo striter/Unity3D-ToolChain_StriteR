@@ -5,7 +5,7 @@ half _Decode;
 TEXTURE2D(_CameraFocalMaskTexture); SAMPLER(sampler_CameraFocalMaskTexture);
 TEXTURE2D(_BlurTex);SAMPLER(sampler_BlurTex);
 float4 _BlurTex_TexelSize;
-half3 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
+half4 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
 {
     #if _DOF_DISTANCE
         float2 sampleUV = uv + offset * .5f;
@@ -18,31 +18,31 @@ half3 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
         offset *= (1-max(SAMPLE_TEXTURE2D(_CameraFocalMaskTexture,sampler_CameraFocalMaskTexture,uv+offset).r,SAMPLE_TEXTURE2D(_CameraFocalMaskTexture,sampler_CameraFocalMaskTexture,uv).r));
     #endif
 
-    float4 color = SAMPLE_TEXTURE2D(_tex,_sampler,uv+offset);
+    half4 color = SAMPLE_TEXTURE2D(_tex,_sampler,uv+offset);
 
     if(_Decode <= .9)
-        return color.rgb;
+        return color.rgba;
     
-    return DecodeFromRGBM(color);
+    return half4(DecodeFromRGBM(color),1);
 }
 
-half4 RecordBlurTex(float3 _color)
+half4 RecordBlurTex(half4 _color)
 {
     if(_Encode <= .9)
-        return float4(_color,1);
+        return _color;
     
     return EncodeToRGBM(_color.rgb);
 }
     
-half3 SampleMainBlur(float2 _uv,float2 _offset)
+half4 SampleMainBlur(float2 _uv,float2 _offset)
 {
     return SampleBlurTex(TEXTURE2D_ARGS(_BlurTex,sampler_BlurTex),_uv,_offset);
 }
 
-half3 DualFilteringDownFilter(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv,float4 _texelSize,half _blurSize)
+half4 DualFilteringDownFilter(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv,float4 _texelSize,half _blurSize)
 {
     float2 uvDelta=_texelSize.xy *_blurSize;
-    half3 sum =  SampleBlurTex(TEXTURE2D_ARGS(_tex,_sampler),_uv ,0)*4;
+    half4 sum =  SampleBlurTex(TEXTURE2D_ARGS(_tex,_sampler),_uv ,0)*4;
     sum +=  SampleBlurTex(TEXTURE2D_ARGS(_tex,_sampler),_uv , float2(0, 1)*uvDelta);
     sum +=  SampleBlurTex(TEXTURE2D_ARGS(_tex,_sampler),_uv , float2(1, 0)*uvDelta);
     sum +=  SampleBlurTex(TEXTURE2D_ARGS(_tex,_sampler),_uv ,float2(0, -1)*uvDelta);
@@ -50,10 +50,10 @@ half3 DualFilteringDownFilter(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv,float4 _
     return sum*.125h;
 }
 
-half3 DualFilteringUpFilter(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv,float4 _texelSize,half _blurSize)
+half4 DualFilteringUpFilter(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv,float4 _texelSize,half _blurSize)
 {
     float2 uvDelta=_texelSize.xy *_blurSize;
-    half3 sum = 0;
+    half4 sum = 0;
     sum += SampleBlurTex(TEXTURE2D_ARGS(_tex,_sampler),_uv , float2(0, 2)*uvDelta);
     sum += SampleBlurTex(TEXTURE2D_ARGS(_tex,_sampler),_uv , float2(2,0)*uvDelta);
     sum += SampleBlurTex(TEXTURE2D_ARGS(_tex,_sampler),_uv , float2(0, -2)*uvDelta);
@@ -65,10 +65,10 @@ half3 DualFilteringUpFilter(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv,float4 _te
     return sum*0.08333h;
 }
 
-half3 TentFilter3x3(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv,float4 _texelSize,half _blurSize)
+half4 TentFilter3x3(TEXTURE2D_PARAM(_tex,_sampler),float2 _uv,float4 _texelSize,half _blurSize)
 {
     float2 uvDelta=_texelSize.xy *_blurSize;
-    half3 sum = 0;
+    half4 sum = 0;
     sum += SampleBlurTex(TEXTURE2D_ARGS(_tex,_sampler),_uv , float2(1, 1)*uvDelta);
     sum += SampleBlurTex(TEXTURE2D_ARGS(_tex,_sampler),_uv , float2(1, -1)*uvDelta);
     sum += SampleBlurTex(TEXTURE2D_ARGS(_tex,_sampler),_uv , float2(-1, 1)*uvDelta);

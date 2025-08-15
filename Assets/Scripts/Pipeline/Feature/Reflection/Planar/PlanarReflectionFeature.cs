@@ -34,7 +34,6 @@ namespace Rendering.Pipeline
             if (PlanarReflectionProvider.m_Reflections.Count == 0)
                 return;
             
-            var propertyBlock = new MaterialPropertyBlock();
             var index = 0; 
             foreach (var reflectionComponent in PlanarReflectionProvider.m_Reflections)
             {
@@ -43,7 +42,7 @@ namespace Rendering.Pipeline
                     Debug.LogWarning("Reflection Plane Outta Limit!");
                     break;
                 }
-                reflectionComponent.SetPropertyBlock(propertyBlock,index);
+                reflectionComponent.ApplyIndex(index);
 
                 var data = reflectionComponent.m_Data;
                 APlanarReflectionBase reflectionPass=null;

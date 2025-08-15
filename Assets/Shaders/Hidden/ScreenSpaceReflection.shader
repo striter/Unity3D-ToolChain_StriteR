@@ -58,7 +58,7 @@ Shader "Hidden/ScreenSpaceReflection"
                     if(sourceDepth < compareDepth)
                         continue;
 
-                    finalCol=float4(SampleMainTex(uv).rgb,1);
+                    finalCol=float4(SampleMainTex(uv).rgb,saturate(invlerp(1,.9,uv.y)));
                     break;
                 }
 

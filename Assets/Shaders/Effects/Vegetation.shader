@@ -20,8 +20,8 @@ Shader "Game/Lit/Vegetation"
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
-        [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
-        [Foldout(_ALPHACLIP)]_AlphaCutoff("Range",Range(0.01,1))=0.01
+        [Toggle(_ALPHATEST_ON)]_AlphaClip("Alpha Clip",float)=0
+        [Foldout(_ALPHATEST_ON)]_AlphaCutoff("Range",Range(0.01,1))=0.01
     }
     SubShader
     {
@@ -56,7 +56,7 @@ Shader "Game/Lit/Vegetation"
             INSTANCING_BUFFER_END
             
 			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
-			#pragma shader_feature_local_fragment _ALPHACLIP
+			#pragma shader_feature_local_fragment _ALPHATEST_ON
             #pragma shader_feature_local_vertex _WIGGLE
 
             TEXTURE2D(_WindFlowTex);SAMPLER(sampler_WindFlowTex);

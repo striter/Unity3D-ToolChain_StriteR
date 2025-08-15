@@ -111,12 +111,14 @@ namespace Rendering.Pipeline
 
          public sealed override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
          {
-             var cmd = CommandBufferPool.Get($"Planar Reflection Pass ({m_Index})");
-             
+             var title = $"Planar Reflection Pass ({m_Index})";
+             var cmd = CommandBufferPool.Get(title);
+             cmd.BeginSample(title);
              Execute(ref m_Data,_context,ref _renderingData,cmd,ref m_Compnent,ref m_ColorDescriptor,ref m_ColorTarget);
              if (m_Data.m_BlurParam.blurType!=EBlurType.None)
                  FBlursCore.Instance.Execute(m_ColorDescriptor ,ref m_Data.m_BlurParam,cmd, m_ColorTarget, m_ReflectionTextureID,_context,ref _renderingData); 
             
+             cmd.EndSample(title);
              _context.ExecuteCommandBuffer(cmd);
              cmd.Clear();
              CommandBufferPool.Release(cmd);

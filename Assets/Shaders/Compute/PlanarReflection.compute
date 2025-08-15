@@ -46,7 +46,7 @@ void ReflectionMapping(float2 uv)
 //          if (!DepthGreater(depthM, _Result[resultIDM].a))
 //             _Result[resultIDM]= float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb,depthM);
 // #endif
-        _Result[resultIDM]= float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb,1);
+        _Result[resultIDM] = float4(_Input.SampleLevel(sampler_PointClamp, uv, 0).rgb, saturate(invlerp(1,.9,uv.y)));
     }
 }
 

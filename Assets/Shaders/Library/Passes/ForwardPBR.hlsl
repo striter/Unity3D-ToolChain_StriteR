@@ -50,6 +50,11 @@ BRDFSurface InitializeFragmentSurface(v2ff i)
 #else
 	SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*INSTANCE(_Color);
 #endif
+
+#ifndef _ALPHATEST_ON
+	albedoAlpha.a = 1.0h;
+#endif
+	
 	float3 normalTS = float3(0,0,1);
 	float3 normalWS = i.normalWS;
 #if !defined (_NORMALOFF)
@@ -99,7 +104,7 @@ float smoothness=0.5,metallic=0,ao =1;
 	surface.normal = normalWS;
 	surface.tangent = i.tangentWS;
 	surface.biTangent = i.biTangentWS;
-	surface.viewDir = i.viewDirWS;
+	surface.viewDir = GetViewDirectionWS(i.positionWS);
 	surface.reflectDir = normalize(reflect(-surface.viewDir, surface.normal));
 	surface.NDV = dot(surface.normal,surface.viewDir);
 	surface.TDV = dot(surface.tangent,surface.viewDir);

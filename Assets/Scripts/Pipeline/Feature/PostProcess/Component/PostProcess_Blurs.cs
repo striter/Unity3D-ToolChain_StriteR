@@ -239,7 +239,7 @@ namespace Rendering.PostProcess
                 return;
             
             var sampleName = _data.blurType.ToString();
-            _buffer.BeginSample(sampleName);
+            _buffer.BeginSample($"Blur_{sampleName}");
             var baseDownSample = math.max(_data.downSample, 1);
             var startWidth = _descriptor.width / baseDownSample;
             var startHeight = _descriptor.height / baseDownSample;

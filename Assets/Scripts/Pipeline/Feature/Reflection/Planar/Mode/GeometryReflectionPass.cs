@@ -60,9 +60,9 @@ namespace Rendering.Pipeline
             }
             else if (_config.m_Geometry == EPlanarReflectionGeometry._PLANE)
             {
-                var _plane = _config.m_PlaneData;
-                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlaneNormal, math.normalize(_plane.normal).to4());
-                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlanePosition, _plane.position.to4());
+                var plane = _config.m_PlaneData;
+                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlaneNormal, math.normalize(plane.normal).to4());
+                _cmd.SetComputeVectorParam(m_ReflectionComputeShader, kPlanePosition, plane.position.to4());
             }
             
             _cmd.SetComputeTextureParam(m_ReflectionComputeShader, m_Kernels, kKernelInput, _renderingData.cameraData.renderer.cameraColorTargetHandle);

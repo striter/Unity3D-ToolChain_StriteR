@@ -40,8 +40,8 @@
         [Enum(Off,0,On,1)]_ZWrite("Z Write",int)=1
         [Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
         [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=2
-        [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
-        [Foldout(_ALPHACLIP)]_AlphaCutoff("Range",Range(0.01,1))=0.01
+        [Toggle(_ALPHATEST_ON)]_AlphaClip("Alpha Clip",float)=0
+        [Foldout(_ALPHATEST_ON)]_AlphaCutoff("Range",Range(0.01,1))=0.01
 		
 		[Header(Stencil)]
         _Stencil ("Stencil ID", Float) = 0
@@ -102,7 +102,7 @@
 			#pragma shader_feature_local_fragment _PBRMAP
 			#pragma shader_feature_local_fragment _DEPTHBUFFER
 			#pragma shader_feature_local_fragment _DEPTHMAP
-			#pragma shader_feature_local_fragment _ALPHACLIP
+			#pragma shader_feature_local_fragment _ALPHATEST_ON
 
 			#define F2O_ADDITIONAL float depth:SV_DEPTH;
 			void GetPBRParameters(float2 uv,inout float smoothness,inout float metallic,inout float ao)

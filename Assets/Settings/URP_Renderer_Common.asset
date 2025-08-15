@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: SurfaceEffectFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  m_Event: 500
 --- !u!114 &-924903564014875152
 MonoBehaviour:
   m_ObjectHideFlags: 0

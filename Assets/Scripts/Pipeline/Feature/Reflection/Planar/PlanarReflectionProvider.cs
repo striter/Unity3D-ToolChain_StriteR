@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using Runtime.Geometry;
@@ -28,8 +29,10 @@ namespace Rendering.Pipeline
             }
         }
 
-        public GSphere m_SphereData=>new GSphere(transform.position,transform.localScale.x);
+        public GSphere m_SphereData => new GSphere(transform.position,transform.localScale.x);
 
+        private MaterialPropertyBlock m_PropertyBlock;
+        private int m_Index=-1;
         private void OnEnable()
         {
             m_Reflections.Add(this);
@@ -39,23 +42,29 @@ namespace Rendering.Pipeline
         private void OnDisable()
         {
             m_Reflections.Remove(this);
+            m_Index = -1;
+            OnValidate();
         }
 
         static readonly int kReflectionTextureOn = Shader.PropertyToID("_CameraReflectionTextureOn");
         static readonly int kReflectionTextureIndex = Shader.PropertyToID("_CameraReflectionTextureIndex");
         static readonly int kReflectionNormalDistort = Shader.PropertyToID("_CameraReflectionNormalDistort");
-        public void SetPropertyBlock(MaterialPropertyBlock _block,int _reflectionIndex)
+        public void ApplyIndex(int _reflectionIndex)
         {
-            _block.SetInt(kReflectionTextureOn, 1);
-            _block.SetInt(kReflectionTextureIndex,_reflectionIndex);
-            _block.SetFloat(kReflectionNormalDistort, m_NormalDistort);
-            m_MeshRenderer.SetPropertyBlock(_block);
-            #if UNITY_EDITOR
-                  m_Index=_reflectionIndex;
-            #endif
+            m_Index=_reflectionIndex;
+            OnValidate();
         }
+
+        private void OnValidate()
+        {
+            m_PropertyBlock??= new MaterialPropertyBlock();
+            m_PropertyBlock.SetInt(kReflectionTextureOn, m_Index != -1 ? 1 : 0);
+            m_PropertyBlock.SetInt(kReflectionTextureIndex,m_Index);
+            m_PropertyBlock.SetFloat(kReflectionNormalDistort, m_NormalDistort);
+            m_MeshRenderer.SetPropertyBlock(m_PropertyBlock);
+        }
+
 #if UNITY_EDITOR
-        private int m_Index=-1;
         private void OnDrawGizmos()
         {
             if (!gameObject.activeInHierarchy||!enabled||!m_MeshFilter.sharedMesh)

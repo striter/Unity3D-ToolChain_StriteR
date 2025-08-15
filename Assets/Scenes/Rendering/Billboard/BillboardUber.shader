@@ -12,8 +12,8 @@ Shader "Hidden/BillboardUber"
     	[Foldout(_ATLAS)]_AtlasWidth("Width",int)=0
     	[Foldout(_ATLAS)]_AtlasHeight("Height",int)=0
     	[Foldout(_ATLAS)]_AtlasIndex("Index",int)=0
-        [Toggle(_ALPHACLIP)]_AlphaClip("Alpha Clip",float)=0
-        [Foldout(_ALPHACLIP)]_AlphaCutoff("Range",Range(0.01,1))=0.01
+        [Toggle(_ALPHATEST_ON)]_AlphaClip("Alpha Clip",float)=0
+        [Foldout(_ALPHATEST_ON)]_AlphaCutoff("Range",Range(0.01,1))=0.01
         
     	[Header(Lighting)]
     	[Toggle(_LIGHTING)]_Lighting("Enable",float)=1
@@ -94,7 +94,7 @@ Shader "Hidden/BillboardUber"
 			#pragma shader_feature_local _DEPTHBUFFER
 			#pragma shader_feature_local _DEPTHMAP
 			#include "Assets/Shaders/Library/Additional/Local/AlphaClip.hlsl"
-			#pragma shader_feature_local _ALPHACLIP
+			#pragma shader_feature_local _ALPHATEST_ON
 
 			#include "Assets/Shaders/Library/Additional/CloudShadow.hlsl"
 			#pragma shader_feature _CLOUDSHADOW

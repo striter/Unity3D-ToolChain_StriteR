@@ -99,7 +99,7 @@ Shader "PCG/Foliage"
 			#define GET_POSITION_WS(v,o) GetPositionWS(v.positionOS,v.color,v.normalOS,v.tangentOS)
 			#define GET_ALBEDO(i) GetAlbedoOverride(i.uv);
 			#define _NORMALOFF
-    		#define _ALPHACLIP
+    		#define _ALPHATEST_ON
 			#define _PBROFF
     	ENDHLSL
     	
