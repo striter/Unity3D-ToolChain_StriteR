@@ -58,9 +58,9 @@ namespace Rendering.Pipeline
         private static readonly string kTitle = "VDM DownSample Rendering";
         private OffScreenParticleData m_Data;
         private int m_SrcLayerMask;
-        private static readonly int kVDMTextureID = Shader.PropertyToID("_VDMColor");
-        private static readonly RenderTargetIdentifier kVDMColor = new RenderTargetIdentifier(kVDMTextureID);
-        private RTHandle m_VDMColorHandle;
+        private static readonly int kColorTextureID = Shader.PropertyToID("_OffScreenParticleTexture");
+        private static readonly RenderTargetIdentifier kColorTextureRT = new RenderTargetIdentifier(kColorTextureID);
+        private RTHandle m_ColorHandle;
         private ScriptableCullingParameters m_CullParameters;
         private Material m_BlendMaterial;
 
@@ -96,17 +96,17 @@ namespace Rendering.Pipeline
             cameraTextureDescriptor.width /= downSize;
             cameraTextureDescriptor.height /= downSize;
             cameraTextureDescriptor.colorFormat = GraphicsFormatUtility.IsHDRFormat(cameraTextureDescriptor.graphicsFormat) ? RenderTextureFormat.ARGBHalf : RenderTextureFormat.ARGB32;
-            cmd.GetTemporaryRT(kVDMTextureID, cameraTextureDescriptor);
+            cmd.GetTemporaryRT(kColorTextureID, cameraTextureDescriptor);
 
-            m_VDMColorHandle?.Release();
-            m_VDMColorHandle = RTHandles.Alloc(kVDMColor);
+            m_ColorHandle?.Release();
+            m_ColorHandle = RTHandles.Alloc(kColorTextureRT);
         }
 
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             var cmd = CommandBufferPool.Get(kTitle);
             cmd.BeginSample(kTitle);
-            cmd.SetRenderTarget(m_VDMColorHandle, m_VDMColorHandle);
+            cmd.SetRenderTarget(m_ColorHandle, m_ColorHandle);
             cmd.DrawMesh(UPipeline.kFullscreenMesh, Matrix4x4.identity, m_BlendMaterial, 0, 0); //Blit Depth
 
             _context.ExecuteCommandBuffer(cmd);
@@ -127,8 +127,9 @@ namespace Rendering.Pipeline
         public override void FrameCleanup(CommandBuffer cmd)
         {
             base.FrameCleanup(cmd);
-            m_VDMColorHandle?.Release();
-            m_VDMColorHandle = null;
+            cmd.ReleaseTemporaryRT(kColorTextureID);
+            m_ColorHandle?.Release();
+            m_ColorHandle = null;
             UDebug.SetFieldValue(m_DrawTransparentsPass, "m_FilteringSettings", m_SrcFilterSettings);
         }
 

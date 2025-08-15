@@ -78,7 +78,7 @@ Shader "Hidden/OffScreenParticle"
             };
 
             TEXTURE2D(_BaseTex);SAMPLER(sampler_BaseTex);
-            TEXTURE2D(_VDMColor);SAMPLER(sampler_VDMColor);
+            TEXTURE2D(_OffScreenParticleTexture);SAMPLER(sampler_OffScreenParticleTexture);
             
             v2f vert (a2v v)
             {
@@ -93,7 +93,7 @@ Shader "Hidden/OffScreenParticle"
 
             float4 frag (v2f i) : SV_Target
             {
-                return SAMPLE_TEXTURE2D(_VDMColor,sampler_VDMColor,i.ndc);
+                return SAMPLE_TEXTURE2D(_OffScreenParticleTexture,sampler_OffScreenParticleTexture,i.ndc);
             }
             ENDHLSL
         }
