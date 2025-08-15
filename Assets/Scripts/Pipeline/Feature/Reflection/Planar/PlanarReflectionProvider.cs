@@ -36,8 +36,6 @@ namespace Rendering.Pipeline
         private void OnEnable()
         {
             m_Reflections.Add(this);
-            m_MeshFilter = GetComponent<MeshFilter>();
-            m_MeshRenderer = GetComponent<MeshRenderer>();
         }
         private void OnDisable()
         {
@@ -51,12 +49,16 @@ namespace Rendering.Pipeline
         static readonly int kReflectionNormalDistort = Shader.PropertyToID("_CameraReflectionNormalDistort");
         public void ApplyIndex(int _reflectionIndex)
         {
+            if (m_Index == _reflectionIndex) 
+                return;
             m_Index=_reflectionIndex;
             OnValidate();
         }
 
         private void OnValidate()
         {
+            m_MeshFilter??= GetComponent<MeshFilter>();
+            m_MeshRenderer??= GetComponent<MeshRenderer>();
             m_PropertyBlock??= new MaterialPropertyBlock();
             m_PropertyBlock.SetInt(kReflectionTextureOn, m_Index != -1 ? 1 : 0);
             m_PropertyBlock.SetInt(kReflectionTextureIndex,m_Index);
