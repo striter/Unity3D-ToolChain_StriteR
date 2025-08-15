@@ -13,6 +13,7 @@
 			Cull Back
 			Blend Off
 			ZWrite On
+			Blend One Zero,Zero Zero
 			
 			name "Main"
 			HLSLPROGRAM
