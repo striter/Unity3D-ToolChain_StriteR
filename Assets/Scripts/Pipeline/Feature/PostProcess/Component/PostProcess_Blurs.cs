@@ -238,8 +238,8 @@ namespace Rendering.PostProcess
             if(_descriptor.width <= 16 || _descriptor.height <= 16) 
                 return;
             
-            var sampleName = _data.blurType.ToString();
-            _buffer.BeginSample($"Blur_{sampleName}");
+            var sampleName = $"Blur_{_data.blurType.ToString()}";
+            _buffer.BeginSample(sampleName);
             var baseDownSample = math.max(_data.downSample, 1);
             var startWidth = _descriptor.width / baseDownSample;
             var startHeight = _descriptor.height / baseDownSample;
@@ -256,7 +256,7 @@ namespace Rendering.PostProcess
                         {
                             var blitSrc = i == 0 ? _src : (i % 2 == 0 ? kBlurTempRT1 : kBlurTempRT2);
                             var blitTarget = i == _data.iteration - 1 ? _dst : (i % 2 == 0 ? kBlurTempRT2 : kBlurTempRT1);
-                            m_Material.SetFloat(kIDBlurSize, _data.blurSize / _data.downSample * (1 + i));
+                            _buffer.SetGlobalFloat(kIDBlurSize, _data.blurSize / _data.downSample * (1 + i));
                             switch (_data.blurType)
                             {
                                 case EBlurType.Kawase:
@@ -305,16 +305,16 @@ namespace Rendering.PostProcess
                 case EBlurType.Grainy:
                     {
                         var grainyPass = (int)EBlurPass.Grainy;
-                        m_Material.SetFloat(kIDBlurSize, _data.blurSize * 32);
+                        _buffer.SetGlobalFloat(kIDBlurSize, _data.blurSize * 32);
                         Blit(_buffer,m_Material, grainyPass,_src, _dst, RenderTextureFormat.ARGB32, 0, 1);
                     }
                     break;
                 case EBlurType.Bokeh:
                     {
                         var bokehPass = (int)EBlurPass.Bokeh;
-                        m_Material.SetFloat(kIDBlurSize, _data.blurSize);
-                        m_Material.SetInt(kIDIteration, _data.iteration * 32);
-                        m_Material.SetFloat(kIDAngle, _data.angle);
+                        _buffer.SetGlobalFloat(kIDBlurSize, _data.blurSize);
+                        _buffer.SetGlobalInt(kIDIteration, _data.iteration * 32);
+                        _buffer.SetGlobalFloat(kIDAngle, _data.angle);
                         Blit(_buffer,m_Material, bokehPass,_src, _dst, RenderTextureFormat.ARGB32, 0, 1);
                     }
                     break;
@@ -324,9 +324,9 @@ namespace Rendering.PostProcess
                         var diagonalPass = (int)EBlurPass.Hexagon_Diagonal;
                         var rhomboidPass = (int)EBlurPass.Hexagon_Rhomboid;
 
-                        m_Material.SetFloat(kIDBlurSize, _data.blurSize * 2);
-                        m_Material.SetFloat(kIDIteration, _data.iteration * 2);
-                        m_Material.SetFloat(kIDAngle, _data.angle);
+                        _buffer.SetGlobalFloat(kIDBlurSize, _data.blurSize * 2);
+                        _buffer.SetGlobalFloat(kIDIteration, _data.iteration * 2);
+                        _buffer.SetGlobalFloat(kIDAngle, _data.angle);
                         _buffer.GetTemporaryRT(kHexagonVerticalID, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
                         _buffer.GetTemporaryRT(kHexagonDiagonalID, startWidth, startHeight, 0, FilterMode.Bilinear, _descriptor.colorFormat);
 
@@ -349,7 +349,7 @@ namespace Rendering.PostProcess
                     _buffer.GetTemporaryRT(kBlinkingHorizontalID,startWidth,startHeight,0,FilterMode.Bilinear, RenderTextureFormat.ARGB32);
                     Action<int, Vector2, float, int, float, RenderTargetIdentifier> DoRadialBlur = (_iteration, _direction, _blurSize, _downSample, _attenuation, _RTid) => {
                         var radialDirection = _direction;
-                        m_Material.SetVector(kIDAttenuation, new Vector4(1, _attenuation, umath.sqr(_attenuation), umath.pow3(_attenuation)));
+                        _buffer.SetGlobalVector(kIDAttenuation, new Vector4(1, _attenuation, umath.sqr(_attenuation), umath.pow3(_attenuation)));
                         for (var i = 0; i < _iteration; i++)
                         {
                             var blitSrc =  i == 0 ? _src : (i % 2 == 0 ? kBlurTempRT1 : kBlurTempRT2);
@@ -377,7 +377,7 @@ namespace Rendering.PostProcess
                     var upSamplePass = (int)EBlurPass.DualFiltering_UpSample;
 
                     var downSampleCount = Mathf.FloorToInt(_data.iteration / 2f);
-                    m_Material.SetFloat(kIDBlurSize, _data.blurSize / _data.downSample*4f);
+                    _buffer.SetGlobalFloat(kIDBlurSize, _data.blurSize / _data.downSample*4f);
 
                     for (var i = 0; i < _data.iteration - 1; i++)
                     {
@@ -404,7 +404,7 @@ namespace Rendering.PostProcess
                         var upSamplePass = (int)EBlurPass.NextGen_UpSample;
                         var upSampleFinalPass = (int) EBlurPass.NextGen_UpSampleFinal;
 
-                        m_Material.SetFloat(kIDBlurSize, _data.blurSize / _data.downSample*4f);
+                        _buffer.SetGlobalFloat(kIDBlurSize, _data.blurSize / _data.downSample*4f);
 
                         for (var i = 0; i < iteration; i++)
                         {

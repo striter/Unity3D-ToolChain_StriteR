@@ -5,7 +5,6 @@
         [PreRenderData]_MainTex ("Texture", 2D) = "white" {}
     }
 
-	
     HLSLINCLUDE
     #pragma target 3.5
     #include "Assets/Shaders/Library/PostProcess.hlsl"

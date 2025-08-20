@@ -9,30 +9,18 @@ namespace Rendering.Pipeline.GrabPass
 {
     public class GrabTexturePass : ScriptableRenderPass
     {
-        private GrabTextureFeature m_Feature;
+        private GrabTextureBehaviour m_Behaviour;
         public GrabTextureData m_Data;
 
-        private int m_TextureID;
-        private RenderTargetIdentifier m_TextureRT;
         private int m_BlurTextureID;
         private RenderTargetIdentifier m_BlurTextureRT;
-
-        private RTHandle m_TargetRT;
         private RenderTextureDescriptor m_TargetDescriptor;
-        public static GrabTexturePass Spawn(GrabTextureFeature _feature,GrabTextureData _data) => TObjectPool.ObjectPool<GrabTexturePass>.Spawn().Setup(_feature,_data);
-
-        GrabTexturePass Setup(GrabTextureFeature _feature,GrabTextureData _data)
+        public GrabTexturePass Setup(GrabTextureBehaviour _behaviour)
         {
-            m_Data = _data;
-            m_Feature = _feature;
-
-            var passEvent = RenderPassEvent.BeforeRenderingOpaques;
-            if (_data.mode == EGrabTextureMode.CopyPass)
-                passEvent = _data.renderPassEvent;
-            this.renderPassEvent = passEvent;
-            m_TextureID = Shader.PropertyToID(_data.textureName);
-            m_TextureRT = new RenderTargetIdentifier(m_TextureID);
-            m_BlurTextureID = Shader.PropertyToID(_data.textureName + "_Blur");
+            m_Behaviour = _behaviour;
+            m_Data = _behaviour.m_Data;
+            this.renderPassEvent = _behaviour.m_Data.renderPassEvent;
+            m_BlurTextureID = Shader.PropertyToID(m_Data.textureName + "_Blur");
             m_BlurTextureRT = new RenderTargetIdentifier(m_BlurTextureID);
             return this;
         }
@@ -40,52 +28,30 @@ namespace Rendering.Pipeline.GrabPass
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
             base.Configure(cmd, cameraTextureDescriptor);
-
             var downSample = math.max(m_Data.downSample, 1);
             cameraTextureDescriptor.height /= downSample;
             cameraTextureDescriptor.width /= downSample;
             m_TargetDescriptor = cameraTextureDescriptor;
-            cmd.GetTemporaryRT(m_TextureID, cameraTextureDescriptor);
-            var targetRT = m_TextureRT;
-            if (m_Data.blurData.Validate())
-            {
-                cmd.GetTemporaryRT(m_BlurTextureID, m_TargetDescriptor, FilterMode.Bilinear);
-                targetRT = m_BlurTextureRT;
-            }
-
-            m_TargetRT = RTHandles.Alloc(targetRT);
-            ConfigureTarget(m_TargetRT);
-            ConfigureClear(ClearFlag.All, Color.black);
         }
 
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
+            var renderBuffer = m_Behaviour.GetBuffer(_renderingData.cameraData.camera, m_TargetDescriptor);
             var buffer = CommandBufferPool.Get($"Grab Texture {m_Data.textureName}");
-            switch (m_Data.mode)
+            if (renderBuffer.Capture(m_Behaviour))
             {
-                case EGrabTextureMode.Redraw:
+                if (m_Data.blurData.Validate())
                 {
-                    var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
-                    drawingSettings.perObjectData = PerObjectData.None;
-                    var filterSettings = new FilteringSettings(RenderQueueRange.all) { layerMask = m_Data.renderMask };
-                    _context.DrawRenderers(_renderingData.cullResults, ref drawingSettings, ref filterSettings);
+                    buffer.GetTemporaryRT(m_BlurTextureID, m_TargetDescriptor, FilterMode.Bilinear);
+                    buffer.Blit(_renderingData.cameraData.renderer.cameraColorTargetHandle, m_BlurTextureRT);
+                    FBlursCore.Instance.Execute(m_TargetDescriptor, ref m_Data.blurData,buffer, m_BlurTextureRT,renderBuffer.texture,_context,ref _renderingData);
                 }
-                    break;
-                case EGrabTextureMode.CopyPass:
+                else
                 {
-                    buffer.Blit(_renderingData.cameraData.renderer.cameraColorTargetHandle, m_TargetRT);
+                    buffer.Blit(_renderingData.cameraData.renderer.cameraColorTargetHandle, renderBuffer.texture);
                 }
-                    break;
-                default:
-                {
-                    Debug.LogError("Invalid GrabTextureMode:" + m_Data.mode);
-                }
-                    break;
             }
-
-            if (m_Feature.m_Config.blurActive && m_Data.blurData.Validate())
-                FBlursCore.Instance.Execute(m_TargetDescriptor, ref m_Data.blurData,buffer, m_TargetRT, m_TextureRT,_context,ref _renderingData);
-
+            buffer.SetGlobalTexture(m_Data.textureName, renderBuffer.texture);
             _context.ExecuteCommandBuffer(buffer);
             CommandBufferPool.Release(buffer);
         }
@@ -95,11 +61,6 @@ namespace Rendering.Pipeline.GrabPass
             base.FrameCleanup(_cmd);
             if (m_Data.blurData.Validate())
                 _cmd.ReleaseTemporaryRT(m_BlurTextureID);
-            _cmd.ReleaseTemporaryRT(m_TextureID);
-            m_TargetRT?.Release();
-            m_TargetRT = null;
-            
-            TObjectPool.ObjectPool<GrabTexturePass>.Recycle(this);
         }
     }
 }

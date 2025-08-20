@@ -26,9 +26,7 @@ MonoBehaviour:
   m_Name: GrabTextureFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  m_Config:
-    blurActive: 1
-  kActiveComponents: []
+  kActiveComponentsDebug: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

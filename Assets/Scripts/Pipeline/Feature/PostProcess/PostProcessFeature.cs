@@ -40,13 +40,16 @@ namespace Rendering.Pipeline
             
             m_PostprocessQueue.Clear();
             
-            if (!_renderingData.cameraData.isSceneViewCamera && _renderingData is { postProcessingEnabled: true, cameraData: { postProcessEnabled: true } })
+            if (_renderingData is { postProcessingEnabled: true, cameraData: { postProcessEnabled: true } })
             {
-                var antiAliasing = m_AntiAliasing.mode;
-                if(antiAliasing != EAntiAliasing.None)
-                    m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
-                if(antiAliasing == EAntiAliasing.TAA)
-                    _renderer.EnqueuePass(m_TAASetup.Setup(ref _renderingData));
+                if (!_renderingData.cameraData.isSceneViewCamera)
+                {
+                    var antiAliasing = m_AntiAliasing.mode;
+                    if(antiAliasing != EAntiAliasing.None)
+                        m_PostprocessQueue.Add(m_AntiAliasingPostProcess);
+                    if(antiAliasing == EAntiAliasing.TAA)
+                        _renderer.EnqueuePass(m_TAASetup.Setup(ref _renderingData));
+                }
 
                 _renderingData.cameraData.camera.GetComponentsInChildren(kResults);
                 m_PostprocessQueue.AddRange(kResults);

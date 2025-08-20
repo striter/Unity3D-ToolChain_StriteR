@@ -41,7 +41,7 @@
 		Pass
 		{
 			ZWrite On
-			Blend Off
+			Blend One Zero
 			ZTest [_ZTest]
 			Cull [_Cull]
 			
@@ -56,9 +56,8 @@
     	Pass
 		{
 			ZWrite On
-			Blend Off
+			Blend One Zero
 			ZTest [_ZTest]
-			ColorMask [_ColorMask]
 			Cull [_Cull]
 			
 			NAME "Forward"
