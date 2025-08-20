@@ -38,13 +38,13 @@ public class RenameAttribute : PropertyAttribute
 [AttributeUsage(AttributeTargets.Field)]
 public class IntEnumAttribute : PropertyAttribute
 {
-    public readonly int[] m_Values;
-    public IntEnumAttribute(params int[] _values)
+    public readonly object[] m_Values;
+    public IntEnumAttribute(params object[] _values)
     {
         m_Values = _values;
         #if UNITY_EDITOR
-        Type intType =typeof(int);
-        if (m_Values.Any(p => p.GetType() != intType))
+        var targetType = _values[0].GetType();
+        if (m_Values.Any(p => p.GetType() != targetType))
             throw new Exception("Type Must All Equals");
         #endif 
     }
@@ -123,8 +123,10 @@ public class ClampAttribute:PropertyAttribute
 
 [AttributeUsage(AttributeTargets.Field)]
 public class CullingMaskAttribute : PropertyAttribute {
-    public static bool Enabled(int _mask,int _layer) =>  _mask == -1 || ((_mask >> _layer) & 1) == 1;
 }
+
+[AttributeUsage(AttributeTargets.Field)]
+public class LayerAttribute : PropertyAttribute { }
 
 [AttributeUsage(AttributeTargets.Field)]
 public class DefaultAssetAttribute : PropertyAttribute

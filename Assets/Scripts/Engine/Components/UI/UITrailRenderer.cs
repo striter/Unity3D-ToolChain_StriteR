@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-namespace UnityEngine.UI
+namespace UnityEngine.UI.Extension
 {
     [ExecuteInEditMode,RequireComponent(typeof(CanvasRenderer))]
     public class UITrailRenderer : MaskableGraphic

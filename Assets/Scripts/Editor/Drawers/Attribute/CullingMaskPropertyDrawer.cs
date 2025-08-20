@@ -12,19 +12,8 @@ namespace UnityEditor.Extensions
         {
             if (!OnGUIAttributePropertyCheck(position, property, SerializedPropertyType.Integer))
                 return;
-            var allLayers = UECommon.GetAllLayers(true);
-            var values = new List<string>();
-            foreach (var key in allLayers.Keys)
-                values.Add(allLayers[key] == string.Empty ? null : allLayers[key]);
-            for (int i = allLayers.Count - 1; i >= 0; i--)
-            {
-                if (allLayers.SelectValue(i) == string.Empty)
-                    values.RemoveAt(i);
-                else
-                    break;
-            }
 
-            property.intValue = EditorGUI.MaskField(position, label.text, property.intValue, values.ToArray());
+            CullingMaskDrawer.DrawGUI(position, property, label);
         }
     }
 }

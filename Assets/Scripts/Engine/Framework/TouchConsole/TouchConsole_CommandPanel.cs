@@ -6,6 +6,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 using TPool;
+using UnityEngine.UI.Extension;
 using static TouchConsole;
 public static class TouchConsole_Extend
 {

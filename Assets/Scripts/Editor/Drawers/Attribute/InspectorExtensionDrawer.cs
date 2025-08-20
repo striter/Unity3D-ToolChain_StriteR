@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace UnityEditor.Extensions
+namespace UnityEditor.Extensions.AttributeDrawers
 {
     [CustomPropertyDrawer(typeof(InspectorExtensionAttribute))]
     public class InspectorExtensionDrawer : AAttributePropertyDrawer<InspectorExtensionAttribute>

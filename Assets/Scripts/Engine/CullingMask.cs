@@ -23,4 +23,5 @@ public struct CullingMask
     public static bool HasLayer(CullingMask _value, int _layer) => _value.HasLayer(_layer);
     public static CullingMask kAll = -1;
     public static CullingMask kNone = 0;
+    public static bool Enabled(int _mask,int _layer) =>  _mask == -1 || ((_mask >> _layer) & 1) == 1;
 }

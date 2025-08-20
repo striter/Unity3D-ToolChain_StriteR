@@ -102,6 +102,15 @@ namespace Rendering.Pipeline
             m_ColorHandle = RTHandles.Alloc(kColorTextureRT);
         }
 
+        public override void FrameCleanup(CommandBuffer cmd)
+        {
+            base.FrameCleanup(cmd);
+            cmd.ReleaseTemporaryRT(kColorTextureID);
+            m_ColorHandle?.Release();
+            m_ColorHandle = null;
+            UDebug.SetFieldValue(m_DrawTransparentsPass, "m_FilteringSettings", m_SrcFilterSettings);
+        }
+        
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             var cmd = CommandBufferPool.Get(kTitle);
@@ -123,15 +132,5 @@ namespace Rendering.Pipeline
             cmd.EndSample(kTitle);
             _context.ExecuteCommandBuffer(cmd);
         }
-
-        public override void FrameCleanup(CommandBuffer cmd)
-        {
-            base.FrameCleanup(cmd);
-            cmd.ReleaseTemporaryRT(kColorTextureID);
-            m_ColorHandle?.Release();
-            m_ColorHandle = null;
-            UDebug.SetFieldValue(m_DrawTransparentsPass, "m_FilteringSettings", m_SrcFilterSettings);
-        }
-
     }
 }

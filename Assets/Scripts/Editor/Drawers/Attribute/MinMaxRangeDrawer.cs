@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 
-namespace UnityEditor.Extensions
+namespace UnityEditor.Extensions.AttributeDrawers
 {
     [CustomPropertyDrawer(typeof(MinMaxRangeAttribute))]
-    public class MinMaxRangePropertyDrawer : AAttributePropertyDrawer<MinMaxRangeAttribute>
+    public class MinMaxRangeDrawer : AAttributePropertyDrawer<MinMaxRangeAttribute>
     {
         void DrawMinmaxGUI(Rect position,GUIContent label,MinMaxRangeAttribute attribute,ref float min,ref float max)
         {

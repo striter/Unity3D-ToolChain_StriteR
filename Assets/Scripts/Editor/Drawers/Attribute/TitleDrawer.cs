@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 
-namespace UnityEditor.Extensions
+namespace UnityEditor.Extensions.AttributeDrawers
 {
-
     [CustomPropertyDrawer(typeof(TitleAttribute))]
-    public class TitlePropertyDrawer : AAttributePropertyDrawer<TitleAttribute>
+    public class TitleDrawer : AAttributePropertyDrawer<TitleAttribute>
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

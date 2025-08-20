@@ -57,7 +57,7 @@ float4 FragmentSceneSelection(v2fs i) :SV_TARGET
 	#if defined(GET_ALBEDO)
 		GET_ALBEDO(i);
 	#else
-			SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*INSTANCE(_Color);
+		SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*INSTANCE(_Color);
 	#endif
 
 	AlphaClip(albedoAlpha.a);

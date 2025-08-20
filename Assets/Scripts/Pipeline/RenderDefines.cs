@@ -23,6 +23,23 @@ namespace Rendering.Pipeline
         _8192 = 8192
     }
 
+    public static class KShaderTagId
+    {
+        public static ShaderTagId kSRPDefaultUnlit = new ShaderTagId("SRPDefaultUnlit");
+        public static ShaderTagId kSRPDefaultLit = new ShaderTagId("SRPDefaultLit");
+        public static ShaderTagId kLightweightForward = new ShaderTagId("LightweightForward");
+        public static ShaderTagId kUniversalForwardOnly = new ShaderTagId("UniversalForwardOnly");
+        public static ShaderTagId kUniversalForward = new ShaderTagId("UniversalForward");
+        public static ShaderTagId kShadowCaster = new ShaderTagId("ShadowCaster");
+        public static ShaderTagId kDepthOnly = new ShaderTagId("DepthOnly");
+        public static ShaderTagId kMeta = new ShaderTagId("Meta");
+        public static ShaderTagId kWorldNormal = new ShaderTagId("WorldNormal");
+        public static ShaderTagId kWorldPosition = new ShaderTagId("WorldPosition");
+        public static ShaderTagId kSceneSelectionPassTag = new ShaderTagId("SceneSelectionPass");
+        public static ShaderTagId kAlbedoAlpha = new ShaderTagId("AlbedoAlpha");
+        public static ShaderTagId kDepthNormals = new ShaderTagId("DepthNormals");
+    }
+    
     public static class KRenderTextures
     {
         public static readonly int kCameraNormalTex = Shader.PropertyToID("_CameraNormalTexture");

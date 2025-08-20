@@ -1436,7 +1436,7 @@ MonoBehaviour:
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
   m_ConstantSize: 1
   m_BaseSize: 399
-  m_OSRotation: {x: 69.34, y: 52.02, z: 0}
+  m_OSRotation: {x: 0, y: 0, z: -44.28}
 --- !u!1 &1939613183
 GameObject:
   m_ObjectHideFlags: 0
@@ -1701,7 +1701,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:

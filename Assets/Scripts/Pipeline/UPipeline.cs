@@ -13,10 +13,10 @@ namespace Rendering
         public static PassiveInstance<List<ShaderTagId>> kDefaultShaderTags => new(() =>
             new List<ShaderTagId>()
             {
-                new("SRPDefaultUnlit"),
-                new("UniversalForward"),
-                new("UniversalForwardOnly"),
-                new("LightweightForward"),
+                KShaderTagId.kSRPDefaultUnlit,
+                KShaderTagId.kSRPDefaultLit,
+                KShaderTagId.kUniversalForward,
+                KShaderTagId.kUniversalForwardOnly
             });
 
         public static readonly Mesh kFullscreenMesh = GetFullScreenMesh();
@@ -48,7 +48,7 @@ namespace Rendering
 
         public static DrawingSettings CreateDrawingSettings(bool _fillDefault, Camera _camera,SortingCriteria _criteria = SortingCriteria.None)
         {
-            DrawingSettings settings = new DrawingSettings
+            var settings = new DrawingSettings
             {
                 sortingSettings = new SortingSettings(_camera){criteria = _criteria},
                 enableDynamicBatching = true,

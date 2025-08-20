@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Procedural.Tile;
 using UnityEngine.UI;
+using UnityEngine.UI.Extension;
 
 namespace Examples.Algorithm.WaveFunctionCollapse
 {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityEditor.Extensions
+namespace UnityEditor.Extensions.AttributeDrawers
 {
 
     [CustomPropertyDrawer(typeof(PositionAttribute))]

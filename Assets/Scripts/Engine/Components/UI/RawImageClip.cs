@@ -1,14 +1,10 @@
-﻿using System;
-using Runtime.Geometry;
+﻿using Runtime.Geometry;
 using Unity.Mathematics;
-using UnityEngine;
-using UnityEngine.UI;
-
-namespace UnityEngine.UI
+namespace UnityEngine.UI.Extension
 {
     [RequireComponent(typeof(CanvasRenderer))]
-public class RawImageClip : MaskableGraphic , ICanvasRaycastFilter
-{
+    public class RawImageClip : MaskableGraphic , ICanvasRaycastFilter
+    {
         [SerializeField] Texture m_Texture;
         
         public RectTransform m_ClipRect;
@@ -74,11 +70,11 @@ public class RawImageClip : MaskableGraphic , ICanvasRaycastFilter
         [InspectorButton]
         public override void SetNativeSize()
         {
-            Texture tex = mainTexture;
+            var tex = mainTexture;
             if (tex != null)
             {
-                int w = Mathf.RoundToInt(tex.width);
-                int h = Mathf.RoundToInt(tex.height);
+                var w = Mathf.RoundToInt(tex.width);
+                var h = Mathf.RoundToInt(tex.height);
                 rectTransform.anchorMax = rectTransform.anchorMin;
                 rectTransform.sizeDelta = new Vector2(w, h);
             }
@@ -107,7 +103,7 @@ public class RawImageClip : MaskableGraphic , ICanvasRaycastFilter
 
         protected override void OnPopulateMesh(VertexHelper vh)
         {
-            Texture tex = mainTexture;
+            var tex = mainTexture;
             vh.Clear();
             if (tex == null)
                 return;

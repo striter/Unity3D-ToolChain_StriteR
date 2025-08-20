@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
-namespace UnityEditor.Extensions
+namespace UnityEditor.Extensions.AttributeDrawers
 {
     [CustomPropertyDrawer(typeof(RangeVectorAttribute))]
-    public class RangeVectorPropertyDrawer:AAttributePropertyDrawer<RangeVectorAttribute>
+    public class RangeVectorDrawer:AAttributePropertyDrawer<RangeVectorAttribute>
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {

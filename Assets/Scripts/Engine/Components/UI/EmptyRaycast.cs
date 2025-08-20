@@ -1,5 +1,5 @@
 
-namespace UnityEngine.UI
+namespace UnityEngine.UI.Extension
 {
     [RequireComponent(typeof(CanvasRenderer))]
     public class EmptyRaycast : Graphic

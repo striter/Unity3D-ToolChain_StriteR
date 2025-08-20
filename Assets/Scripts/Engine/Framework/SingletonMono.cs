@@ -4,24 +4,22 @@ using UnityEngine;
 
 public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
 {
-    static T instance;
-    public static T Instance
-    {
-        get
-        {
-            if (!instance)
-                instance = new GameObject().AddComponent<T>();
-            return instance;
-        }
-    }
+    static T kInstance;
+    public static T Instance => kInstance;
 
     protected virtual void Awake()
     {
-        instance = this.GetComponent<T>();
+        if (kInstance)
+        {
+            Debug.Log("SingletonMono " + typeof(T) + " Already Exists!");
+            return;
+        }
+        
+        kInstance = this.GetComponent<T>();
         this.name = typeof(T).Name;
     }
     protected  virtual void OnDestroy()
     {
-        instance = null;
+        kInstance = null;
     }
 }

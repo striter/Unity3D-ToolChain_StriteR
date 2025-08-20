@@ -3,7 +3,7 @@ using System.Linq;
 using Runtime.Geometry;
 using Unity.Mathematics;
 
-namespace UnityEngine.UI
+namespace UnityEngine.UI.Extension
 {
     [ExecuteInEditMode,RequireComponent(typeof(CanvasRenderer))]
     public class UIMeshRenderer : MaskableGraphic

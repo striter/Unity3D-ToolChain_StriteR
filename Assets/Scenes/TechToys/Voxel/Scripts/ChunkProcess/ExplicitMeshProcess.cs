@@ -60,7 +60,7 @@ namespace TheVoxel.ChunkProcess
             public void Execute(int _)
             {
                 var v = new Vertex();
-                var length = voxels.Count();
+                var length = voxels.Count;
                 var keys = voxels.GetKeyArray(Allocator.Temp);
 
                 var vertexIndex = 0;

@@ -39,8 +39,8 @@ namespace Rendering.Pipeline
 
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            FilteringSettings filterSettings = new FilteringSettings( RenderQueueRange.all,m_LayerMask);
-            DrawingSettings drawingSettings = new DrawingSettings  {
+            var filterSettings = new FilteringSettings( RenderQueueRange.all,m_LayerMask);
+            var drawingSettings = new DrawingSettings  {
                 sortingSettings = new SortingSettings(_renderingData.cameraData.camera),
                 enableDynamicBatching = true,
                 enableInstancing = true,

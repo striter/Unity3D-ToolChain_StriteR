@@ -5,10 +5,10 @@ using System.Reflection;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace UnityEditor.Extensions
+namespace UnityEditor.Extensions.AttributeDrawers
 {
     [CustomPropertyDrawer(typeof(ScriptableObjectEditAttribute))]
-    public class ScriptableObjectEditPropertyDrawer : AAttributePropertyDrawer<ScriptableObjectEditAttribute>
+    public class ScriptableObjectEditDrawer : AAttributePropertyDrawer<ScriptableObjectEditAttribute>
     {
         private bool m_FoldoutValue;
         private SerializedObject m_SerializedObject;

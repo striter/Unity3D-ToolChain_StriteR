@@ -18,17 +18,15 @@ namespace UnityEditor.Extensions
             screenPoint.y = _sceneView.camera.pixelHeight - screenPoint.y;
             return screenPoint;
         }
-        public static Dictionary<int,string> GetAllLayers(bool emptyInclusive)
+        public static IEnumerable<(int,string)> GetAllLayers(bool includeEmpty = false)
         {
-            Dictionary<int, string> dic = new Dictionary<int, string>();
-            for (int i = 0; i < 32; i++)
+            for (var i = 0; i < 32; i++)
             {
-                string layerName = LayerMask.LayerToName(i);
-                if (!emptyInclusive&&layerName == string.Empty)
+                var layerName = LayerMask.LayerToName(i);
+                if (!includeEmpty&&layerName == string.Empty)
                     continue;
-                dic.Add(i, layerName);
+                yield return (i, layerName);
             }
-            return dic;
         }
 
         public static void UndoDestroyChildren(this Transform _transform)

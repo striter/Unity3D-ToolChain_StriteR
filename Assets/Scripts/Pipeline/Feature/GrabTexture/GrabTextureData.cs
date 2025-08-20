@@ -15,6 +15,7 @@ namespace Rendering.Pipeline.GrabPass
     public struct GrabTextureData
     {
         public string textureName;
+        public bool isStatic;
         public EGrabTextureMode mode;
         [Foldout(nameof(mode), EGrabTextureMode.Redraw)] public CullingMask renderMask;
         [Foldout(nameof(mode),EGrabTextureMode.CopyPass)] public RenderPassEvent renderPassEvent;
@@ -24,6 +25,7 @@ namespace Rendering.Pipeline.GrabPass
             mode = EGrabTextureMode.CopyPass,
             renderPassEvent = RenderPassEvent.AfterRenderingOpaques,
             blurData = DBlurs.kNone,
+            isStatic = true,
             textureName = "_GrabTexture",
             downSample = 4,
         };

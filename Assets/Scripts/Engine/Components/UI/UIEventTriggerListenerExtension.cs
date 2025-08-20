@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace UnityEngine.UI
+namespace UnityEngine.UI.Extension
 {
     public class UIEventTriggerListenerExtension : EventTrigger
     {

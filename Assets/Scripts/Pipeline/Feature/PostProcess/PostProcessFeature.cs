@@ -52,7 +52,7 @@ namespace Rendering.Pipeline
                 m_PostprocessQueue.AddRange(kResults);
                 foreach (var volume in PostProcessVolume.kVolumes)
                 {
-                    if (!CullingMaskAttribute.Enabled(_renderingData.cameraData.volumeLayerMask.value, volume.gameObject.layer))
+                    if (!CullingMask.Enabled(_renderingData.cameraData.volumeLayerMask.value, volume.gameObject.layer))
                         continue;
                     
                     volume.GetComponents(kResults);

@@ -297,6 +297,7 @@
 		}
 		Pass
 		{
+			Name "Scene Selection"
             Tags{"LightMode" = "SceneSelectionPass"}
             ZWrite On
 
@@ -305,6 +306,38 @@
             #pragma fragment FragmentSceneSelection
             #include "Assets/Shaders/Library/Passes/SceneOutlinePass.hlsl"
             ENDHLSL
+		}
+
+		Pass
+		{
+			Name "Albedo Alpha"
+            Tags{"LightMode" = "AlbedoAlpha"}
+			Blend [_SrcBlend] [_DstBlend]
+			Cull [_Cull]
+			ZWrite [_ZWrite]
+			ZTest [_ZTest]
+
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "Assets/Shaders/Library/Passes/AlbedoAlphaPass.hlsl"
+            ENDHLSL
+		}
+
+		Pass
+		{
+			Name "Normal Depth"
+			Tags{"LightMode" = "DepthNormals"}
+			Blend One Zero
+			Cull [_Cull]
+			ZWrite [_ZWrite]
+			ZTest [_ZTest]
+
+			HLSLPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			#include "..\..\Library\Passes\DepthNormalsPass.hlsl"
+			ENDHLSL
 		}
 	}
 	
