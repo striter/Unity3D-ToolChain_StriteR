@@ -13,7 +13,7 @@ namespace Rendering.Pipeline.GrabPass
         private Dictionary<int,GrabTextureBuffer> m_Buffers = new Dictionary<int, GrabTextureBuffer>();
         public GrabTexturePass m_Pass { get; private set; } = new();
         
-        [InspectorButtonFoldout(nameof(m_Static),false)]
+        [InspectorButtonFoldout(nameof(m_Static),true)]
         public void Recapture()
         {
             m_Buffers.Values.Traversal(p=>p.Dispose());

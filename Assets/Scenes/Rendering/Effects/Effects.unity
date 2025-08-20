@@ -175,13 +175,13 @@ MonoBehaviour:
     textureName: _GrabTexture
     renderPassEvent: 300
     blurData:
-      blurType: 8
-      blurSize: 0.2
-      iteration: 5
+      blurType: 2
+      blurSize: 0.29
+      iteration: 6
       downSample: 1
       angle: 0
       attenuation: 1
-    downSample: 1
+    downSample: 4
 --- !u!23 &9094739
 MeshRenderer:
   m_ObjectHideFlags: 0
