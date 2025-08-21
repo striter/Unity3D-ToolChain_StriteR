@@ -43,8 +43,7 @@ namespace Scenes.Algorithm.GeometryVisualize
         [InspectorButton(true)]
         void PoissonDisk()
         {
-            var size = (int)math.sqrt(m_RandomCount);
-            ULowDiscrepancySequences.PoissonDisk2D(size).Select(p=>m_Bounds.GetPoint(p)).FillList(m_Vertices);
+            ULowDiscrepancySequences.PoissonDisk2D((int)m_RandomCount).Select(p=>m_Bounds.GetPoint(p)).FillList(m_Vertices);
         }
 
         public bool m_Solid;

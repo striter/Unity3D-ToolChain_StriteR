@@ -13,7 +13,6 @@ namespace Examples.Rendering.Shadows.Shadowmap
     {
         public EShadowMapResolution resolution;
         [Min(0)] public float distance;
-        public bool pointSampler;
         [Range(0, 1)] public float border;
 
         public static FShadowMapConfig kDefault = new FShadowMapConfig()
@@ -21,7 +20,6 @@ namespace Examples.Rendering.Shadows.Shadowmap
             resolution = EShadowMapResolution._1024,
             distance = 100f,
             border = 0.8f,
-            pointSampler = false,
         };
 
         public RenderTextureDescriptor GetDescriptor()
@@ -34,10 +32,7 @@ namespace Examples.Rendering.Shadows.Shadowmap
                     ? ShadowSamplingMode.CompareDepths
                     : ShadowSamplingMode.None
             };
-            ;
         }
-
-        public FilterMode GetFilterMode() => pointSampler ? FilterMode.Point : FilterMode.Bilinear;
     }
 
     public class ShadowmapFeature : ScriptableRendererFeature

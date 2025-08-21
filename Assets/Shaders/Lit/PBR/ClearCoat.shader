@@ -144,14 +144,14 @@ Shader "Game/Lit/PBR/ClearCoat"
 			float3 GetGlobalIllumination(v2ff i,BRDFSurface surface,Light mainLight)
 			{
 				half3 indirectDiffuse = IndirectDiffuse(mainLight,i,surface.normal);
-				half3 indirectSpecular = IndirectSpecularWithSSR(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,surface.normalTS);
+				half3 indirectSpecular = IndirectCubeSpecular(surface.reflectDir, surface.perceptualRoughness);
 			    float fresnelTerm = F_Schlick(max(0,surface.NDV));
 				float3 surfaceReduction = 1.0 / (surface.roughness2 + 1.0) * lerp(surface.specular, surface.grazingTerm, fresnelTerm);
 			    half3 giDiffuse = indirectDiffuse * surface.diffuse;
 				half3 giSpecular = indirectSpecular * surfaceReduction;
             	half3 baseColor = giDiffuse + giSpecular;
 	  
-			    half3 coatIndirectSpecular = IndirectSpecularWithSSR(surface.reflectDir, surface.clearCoat.perceptualRoughness, i.positionHCS,surface.normalTS);
+			    half3 coatIndirectSpecular = IndirectCubeSpecular(surface.reflectDir, surface.clearCoat.perceptualRoughness);
 			    float coatSurfaceReduction = 1.0 / (Sq(surface.clearCoat.smoothness) + 1.0);
 			    half3 coatColor = coatIndirectSpecular * coatSurfaceReduction * lerp(surface.clearCoat.specular, surface.clearCoat.grazingTerm, fresnelTerm);
             	half clearCoatMask = surface.clearCoat.mask;

@@ -50,8 +50,7 @@ namespace Examples.Algorithm.GeometryVisualize
         [InspectorButton(true)]
         void PoissonDisk()
         {
-            var size = (int)math.sqrt(m_RandomCount);
-            ULowDiscrepancySequences.PoissonDisk2D(size).Select(p=>(p - .5f) * 2f*kRandomRadius).FillList(m_Vertices);
+            ULowDiscrepancySequences.PoissonDisk2D((int)m_RandomCount).Select(p=>(p - .5f) * 2f*kRandomRadius).FillList(m_Vertices);
         }
 
         private float2 m_MousePosition = float2.zero;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TPool;
 using System.Linq.Extensions;
 using Procedural.Tile;
+using Rendering.Pipeline;
 using Runtime.DataStructure;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;

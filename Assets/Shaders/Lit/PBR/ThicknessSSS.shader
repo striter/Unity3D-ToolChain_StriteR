@@ -75,7 +75,13 @@ Shader "Game/Lit/PBR/ThicknessSSS"
 
 			#include "Assets/Shaders/Library/PBR/BRDFInput.hlsl"
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
-            
+            half3 SSSLighting(half _thickness,half _influence,half _intensity,Light _light,half3 _normalWS,half3 _viewDirWS)
+			{
+			    half3 h=normalize(_light.direction + _normalWS*_influence);
+			    half vdh=saturate(dot(_viewDirWS,-h));
+			    half sssIntensity = saturate(vdh*_thickness)*_light.distanceAttenuation;
+			    return sssIntensity*_intensity*_light.color;
+			}
 			half3 LightingWithSSS(BRDFSurface surface,Light light)
 			{
 				BRDFLightInput input=BRDFLightInput_Ctor(surface,light.direction,light.color,light.shadowAttenuation,light.distanceAttenuation);
@@ -84,7 +90,7 @@ Shader "Game/Lit/PBR/ThicknessSSS"
 				output += SSSLighting(surface.thickness,surface.sssInfluence,surface.sssIntensity,light,surface.normal,surface.viewDir)*surface.diffuse;
 				return output;
 			}
-            
+
 			#define GET_LIGHTING_OUTPUT(surface,light) LightingWithSSS(surface,light);
             
 			#pragma vertex ForwardVertex

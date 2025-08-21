@@ -72,6 +72,7 @@ struct BRDFSurface
 
     half3 normalTS;
     half3x3 TBNWS;
+    half2 positionNDC;
     
     #if defined(BRDF_SURFACE_ADDITIONAL)
         BRDF_SURFACE_ADDITIONAL

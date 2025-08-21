@@ -237,12 +237,13 @@
 				return mainLight;
 			}
 			#define GET_MAINLIGHT(i) GetMainLight(i.positionWS,i.normalWS) 
-
 			float3 GetGlobalIllumination(v2ff i,BRDFSurface surface,Light mainLight)
 			{
 				half3 indirectDiffuse = IndirectDiffuse(mainLight,i,surface.normal);
-				half3 indirectSpecular = IndirectSpecularWithSSR(surface.reflectDir, surface.perceptualRoughness,i.positionHCS,surface.normalTS);
-				return BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
+			    half3 specular = IndirectCubeSpecular(surface.reflectDir, surface.perceptualRoughness,0);
+			    half4 indirectSpecular = IndirectSSRSpecular(surface.positionNDC,RawToEyeDepth(i.positionHCS.z / max(FLT_EPS,i.positionHCS.w)), surface.normalTS);
+			    specular = lerp(specular,indirectSpecular.rgb,indirectSpecular.a);
+			    return BRDFGlobalIllumination(surface,indirectDiffuse,specular);
 			}
 			#define GET_GI(i,surface,mainLight) GetGlobalIllumination(i,surface,mainLight);
             
@@ -337,6 +338,22 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#include "..\..\Library\Passes\DepthNormalsPass.hlsl"
+			ENDHLSL
+		}
+		
+		Pass
+		{
+			Name "World Position"
+			Tags{"LightMode" = "WorldPosition"}
+			Blend One Zero
+			Cull [_Cull]
+			ZWrite [_ZWrite]
+			ZTest [_ZTest]
+
+			HLSLPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			#include "..\..\Library\Passes\WorldPositionPass.hlsl"
 			ENDHLSL
 		}
 	}

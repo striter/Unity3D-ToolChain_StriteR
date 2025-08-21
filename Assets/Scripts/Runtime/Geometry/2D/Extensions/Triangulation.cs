@@ -48,14 +48,15 @@ namespace Runtime.Geometry.Extension
                         if (!triangle.circumscribedCircle.Contains(vertex))
                             continue;
                         foreach (var edge in triangle.complex.GetEdges())
-                            kPolygon.Add(edge.Distinct());
+                            kPolygon.Add(edge);
                         kComplexes.RemoveAt(i);
                         i--;
                     }
                     
                     foreach (var edge in kPolygon)
                     {
-                        if (kPolygon.Count(p => p.Equals(edge)) > 1)
+                        var distinctEdge = edge.Distinct();
+                        if (kPolygon.Count(p => p.Distinct().Equals(distinctEdge)) > 1)
                             continue;
                         
                         var polygon = new PTriangle(edge.start,edge.end,vertexIndex);

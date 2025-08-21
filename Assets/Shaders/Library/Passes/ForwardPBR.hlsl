@@ -115,6 +115,7 @@ float smoothness=0.5,metallic=0,ao =1;
 	surface.perceptualRoughness = 1.0h - smoothness;
 	surface.roughness = max(HALF_MIN_SQRT, surface.perceptualRoughness * surface.perceptualRoughness);
 	surface.roughness2 = max(HALF_MIN, surface.roughness * surface.roughness);
+	surface.positionNDC = TransformHClipToNDC(i.positionHCS);
     
 	surface.normalTS = normalTS;
     

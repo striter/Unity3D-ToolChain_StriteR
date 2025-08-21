@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Extensions;
 using Procedural.Tile;
 using Runtime.DataStructure;
 using Runtime.Random;
@@ -111,8 +112,10 @@ public static partial class ULowDiscrepancySequences   // 0 - 1
         return points;
     }
 
-    public static float2[] PoissonDisk2D(int _maxCount,int _k = 30,IRandomGenerator _seed = null,Func<float2,float> _getRadiusNormalized = null) => PoissonDisk2D(1f,new float2(_maxCount,_maxCount),_k,_seed,_getRadiusNormalized);
-    public static float2[] PoissonDisk2D(float _radius,float2 _gridSize,int _k = 30,IRandomGenerator _seed = null,Func<float2,float> _getRadiusNormalized = null)
+    private static List<float2> kCheckList =  new List<float2>();
+    private static MultiHashMap<int2,float2> kSamplePoints = new MultiHashMap<int2,float2>();
+    public static IList<float2> PoissonDisk2D(int _maxCount,int _k = 30,IRandomGenerator _seed = null,Func<float2,float> _getRadiusNormalized = null) => PoissonDisk2D(1f,sqrt(_maxCount),_k,_seed,_getRadiusNormalized);
+    public static IList<float2> PoissonDisk2D(float _radius,float2 _gridSize,int _k = 30,IRandomGenerator _seed = null,Func<float2,float> _getRadiusNormalized = null)
     {
         if (_gridSize.anyLesser(0f))
         {
@@ -126,18 +129,19 @@ public static partial class ULowDiscrepancySequences   // 0 - 1
             r = 1f;
         }
         var k = _k;
-        var checkList =  new List<float2>();
-        var samplePoints = new MultiHashMap<int2,float2>();
         
         var initialPoint = new float2(URandom.Random01(_seed) , URandom.Random01(_seed) ) * _gridSize;
         
-        checkList.Add(initialPoint);
-        samplePoints.Add((int2)floor(initialPoint), initialPoint);
+        kCheckList.Clear();
+        kSamplePoints.Clear();
         
-        while (checkList.Count > 0)     //Optimize with spatial hashmap
+        kCheckList.Add(initialPoint);
+        kSamplePoints.Add((int2)floor(initialPoint), initialPoint);
+        
+        while (kCheckList.Count > 0)     //Optimize with spatial hashmap
         {
-            var activeIndex = URandom.RandomInt(checkList.Count - 1,_seed);
-            var activePoint = checkList[activeIndex];
+            var activeIndex = URandom.RandomInt(kCheckList.Count - 1,_seed);
+            var activePoint = kCheckList[activeIndex];
 
             var found = false;
             for (var i = 0; i < k; i++)
@@ -152,21 +156,21 @@ public static partial class ULowDiscrepancySequences   // 0 - 1
                     continue;
 
                 var gridPosition = (int2)floor(newPoint);
-                if (!samplePoints.GetValues(UTile.GetAxisRange(gridPosition, 2)
+                if (!kSamplePoints.GetValues(UTile.GetAxisRange(gridPosition, 2)
                                  .Select(p => new int2(p.x, p.y)))
                                  .All(p => (newPoint - p).sqrmagnitude() > radius * radius))
                     continue;
                 found = true;
-                checkList.Add(newPoint);
-                samplePoints.Add(gridPosition, newPoint);
+                kCheckList.Add(newPoint);
+                kSamplePoints.Add(gridPosition, newPoint);
                 break;
             }
 
             if (!found)
-                checkList.RemoveAt(activeIndex);
+                kCheckList.RemoveAt(activeIndex);
         }
-        
-        return samplePoints.Values.Select(p=>p/_gridSize).ToArray();
+
+        return kSamplePoints.Values.Remake(p=>p/_gridSize);
     }
 
     private static List<float2> kPositionHelper = new();

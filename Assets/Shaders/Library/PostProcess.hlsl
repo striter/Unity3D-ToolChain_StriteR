@@ -3,6 +3,8 @@
 TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
 float4 _MainTex_ST;
 float4 _MainTex_TexelSize;
+
+float4 _CameraDepthTexture_TexelSize;
 #define _MainTex_TexelRight float2(1,0)*_MainTex_TexelSize.xy
 #define _MainTex_TexelUp float2(0,1)*_MainTex_TexelSize.xy
 #define _MainTex_TexelUpRight float2(1,1)*_MainTex_TexelSize.xy
@@ -52,10 +54,19 @@ v2f_img vert_img_procedural( uint vertexID:SV_VertexID)
     o.uv = GetFullScreenTriangleTexCoord(vertexID);
     return o;
 }
+
+
 #include "PostProcess/Color.hlsl"
 #include "PostProcess/Depth.hlsl"
 #include "PostProcess/Normal.hlsl"
 #include "PostProcess/MotionVector.hlsl"
 
-
+half3 WorldSpaceNormalFromDepth(float2 uv)
+{
+    float3 position = TransformNDCToWorld(uv);
+    float3 position1 = TransformNDCToWorld(uv+_CameraDepthTexture_TexelSize.xy*uint2(1,0));
+    float3 position2 = TransformNDCToWorld(uv+_CameraDepthTexture_TexelSize.xy*uint2(0,1));
+    return normalize(cross(position2-position,position1-position));
+}
+            
 

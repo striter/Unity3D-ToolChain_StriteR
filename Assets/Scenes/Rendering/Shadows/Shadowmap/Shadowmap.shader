@@ -31,8 +31,6 @@ Shader "Hidden/Shadowmap"
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
 			
-			#pragma multi_compile_fragment _ SHADOWS_VOLUME
-
 			TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
 			TEXTURE2D(_EmissionTex);SAMPLER(sampler_EmissionTex);
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
@@ -47,22 +45,18 @@ Shader "Hidden/Shadowmap"
 			#include "Assets/Shaders/Library/PBR/BRDFMethods.hlsl"
 
 			float4x4 _WorldToShadow;
-			TEXTURE2D(_ShadowmapTexture);SAMPLER(sampler_ShadowmapTexture);
+			TEXTURE2D(_ShadowmapTexture); SAMPLER(sampler_ShadowmapTexture);
 			float4 _ShadowParams;
 			Light GetMainLight(v2ff i)
 			{
 			    Light light = GetMainLight();
 				float3 positionWS = i.positionWS;
 				float4 shadowCoord = mul(_WorldToShadow, float4(positionWS, 1.0));
-		        ShadowSamplingData shadowSamplingData = GetMainLightShadowSamplingData();
-		        half4 shadowParams = GetMainLightShadowParams();
-
-				float shadowMap = SampleShadowmap(TEXTURE2D_ARGS(_ShadowmapTexture, sampler_LinearClampCompare), shadowCoord, shadowSamplingData, shadowParams, false);
+				float shadowMap = SAMPLE_TEXTURE2D_SHADOW(_ShadowmapTexture, sampler_LinearClampCompare, shadowCoord);
 			    float3 camToPixel = positionWS - _WorldSpaceCameraPos;
 			    float distanceCamToPixel2 = dot(camToPixel, camToPixel);
-
 				float fade = saturate(distanceCamToPixel2 * float(_ShadowParams.z) + float(_ShadowParams.w));
-				light.shadowAttenuation = shadowMap;
+				light.shadowAttenuation = shadowMap * (1-fade);
 				return light;
 			}
 			

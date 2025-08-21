@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Extensions;
+using Rendering.Pipeline;
 using Runtime.Geometry;
 using TechToys.ThePlanet.Module.Cluster;
 using TPool;

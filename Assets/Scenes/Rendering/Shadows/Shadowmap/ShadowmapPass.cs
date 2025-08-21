@@ -1,28 +1,20 @@
 ﻿using Pipeline;
+using Rendering.Pipeline;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 namespace Examples.Rendering.Shadows.Shadowmap
 {
-    using static FShadowMapConstants;
     using static UShadow;
-    public struct FShadowMapConstants
-    {
-        public static readonly string kShadowmapName = "_ShadowmapTexture";
-        public static readonly int kWorldSpaceCameraPos = Shader.PropertyToID("_WorldSpaceCameraPos");
-        public static readonly int kShadowBias = Shader.PropertyToID("_ShadowBias");
-        public static readonly int kLightDirection = Shader.PropertyToID("_LightDirection");
-        public static readonly int kLightPosition = Shader.PropertyToID("_LightPosition");
-        public static readonly int kShadowmapSize = Shader.PropertyToID("_MainLightShadowmapSize");
-        public static readonly int kShadowParams = Shader.PropertyToID("_ShadowParams");
-        public static readonly int kWorldToShadow = Shader.PropertyToID("_WorldToShadow");
-    }
 
+    using static KShaderProperties;
     public class ShadowmapPass :ScriptableRenderPass
     {
         private RTHandle m_ShadowmapRT;
         private ValueChecker<FShadowMapConfig> m_Config = new ValueChecker<FShadowMapConfig>(default);
         private bool supportsMainLightShadows;
+        
+        public static readonly string kShadowmapName = "_ShadowmapTexture";
         public ShadowmapPass Setup(FShadowMapConfig _config, ref RenderingData _data)
         {
             var shadowLightIndex = _data.lightData.mainLightIndex;
@@ -46,7 +38,7 @@ namespace Examples.Rendering.Shadows.Shadowmap
             if (m_Config.Check(_config))
             {
                 m_ShadowmapRT?.Release();
-                m_ShadowmapRT = RTHandles.Alloc(m_Config.m_Value.GetDescriptor(),m_Config.m_Value.GetFilterMode(),TextureWrapMode.Clamp, true,1,0,FShadowMapConstants.kShadowmapName);
+                m_ShadowmapRT = RTHandles.Alloc(m_Config.m_Value.GetDescriptor(),FilterMode.Point,TextureWrapMode.Clamp, true,1,0,kShadowmapName);
             }
             return this;
         }
@@ -79,7 +71,6 @@ namespace Examples.Rendering.Shadows.Shadowmap
             var shadowLight = lightData.visibleLights[shadowLightIndex];
             var light = shadowLight.light;
             
-            
             if (!_renderingData.cullResults.GetShadowCasterBounds(shadowLightIndex, out var bounds))
                 return;
             
@@ -103,8 +94,6 @@ namespace Examples.Rendering.Shadows.Shadowmap
             };
             _context.DrawShadows(ref settings);
             cmd.Clear();
-            cmd.DisableScissorRect();
-            _context.ExecuteCommandBuffer(cmd);
             cmd.SetGlobalMatrix(kWorldToShadow,CalculateWorldToShadowMatrix(projMatrix,viewMatrix));
             cmd.SetGlobalDepthBias(0f,0f);
             cmd.SetGlobalTexture(m_ShadowmapRT.name,m_ShadowmapRT.nameID);

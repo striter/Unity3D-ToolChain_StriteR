@@ -5,7 +5,7 @@ namespace Rendering.Pipeline
 {
     public enum EDownSample
     {
-        None = -1,
+        None = 1,
         Half = 2,
         Quarter = 4,
         Eighth = 8
@@ -38,6 +38,28 @@ namespace Rendering.Pipeline
         public static ShaderTagId kSceneSelectionPassTag = new ShaderTagId("SceneSelectionPass");
         public static ShaderTagId kAlbedoAlpha = new ShaderTagId("AlbedoAlpha");
         public static ShaderTagId kDepthNormals = new ShaderTagId("DepthNormals");
+    }
+
+    public static class KShaderProperties
+    {
+        public static readonly int kMainTex = Shader.PropertyToID("_MainTex");
+        public static readonly int kWorldSpaceCameraPos = Shader.PropertyToID("_WorldSpaceCameraPos");
+        public static readonly int kShadowBias = Shader.PropertyToID("_ShadowBias");
+        public static readonly int kLightDirection = Shader.PropertyToID("_LightDirection");
+        public static readonly int kLightPosition = Shader.PropertyToID("_LightPosition");
+        public static readonly int kShadowmapSize = Shader.PropertyToID("_MainLightShadowmapSize");
+        public static readonly int kShadowParams = Shader.PropertyToID("_ShadowParams");
+        public static readonly int kWorldToShadow = Shader.PropertyToID("_WorldToShadow");
+    
+        public static readonly int kColor = Shader.PropertyToID("_Color");
+        public static readonly int kEmissionColor = Shader.PropertyToID("_EmissionColor");
+        public static readonly int kAlpha = Shader.PropertyToID("_Alpha");
+        public static readonly int kAlphaClip = Shader.PropertyToID("_AlphaClip");
+    
+        public static readonly int kColorMask = Shader.PropertyToID("_ColorMask");
+        public static readonly int kZTest = Shader.PropertyToID("_ZTest");
+        public static readonly int kZWrite = Shader.PropertyToID("_ZWrite");
+        public static readonly int kCull = Shader.PropertyToID("_Cull");
     }
     
     public static class KRenderTextures

@@ -190,7 +190,7 @@ Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
             {
 				UNITY_SETUP_INSTANCE_ID(i);
             	ImposterFragmentOutput imposterFragmentOutput = F2O_IMPOSTER_FRAGMENT(i);
-                return float4(imposterFragmentOutput.normalWS,i.positionCS.z/i.positionCS.w);
+                return float4(imposterFragmentOutput.normalWS * 0.5 + 0.5,i.positionCS.z/i.positionCS.w);
             }
             #pragma vertex vert
             #pragma fragment frag

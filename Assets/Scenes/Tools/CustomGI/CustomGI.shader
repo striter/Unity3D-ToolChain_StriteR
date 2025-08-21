@@ -80,6 +80,15 @@ Shader "Hidden/CustomGI"
 			}
 
 			#include "Assets/Shaders/Library/PBR/BRDFLighting.hlsl"
+			void Transfer(a2vf v,inout v2ff i)
+			{
+		#if _WORLDUV
+				i.uv = i.positionWS.xz + i.positionWS.yz + i.positionWS.xy;
+				i.uv /= 3;
+		#endif
+			}
+				
+			#define V2F_ADDITIONAL_TRANSFER(v,o) Transfer(v,o);
 			float3 _IrradianceParameters;
 			float3 OverrideGlobalIllumination(v2ff i,BRDFSurface surface,Light mainLight)
 			{
@@ -119,15 +128,6 @@ Shader "Hidden/CustomGI"
 				return BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 			}
 
-				void Transfer(a2vf v,inout v2ff i)
-				{
-			#if _WORLDUV
-					i.uv = i.positionWS.xz + i.positionWS.yz + i.positionWS.xy;
-					i.uv /= 3;
-			#endif
-				}
-				
-			#define V2F_ADDITIONAL_TRANSFER(v,o) Transfer(v,o);
 			
 			#define GET_GI(i,surface,mainLight) OverrideGlobalIllumination(i,surface,mainLight);
 			

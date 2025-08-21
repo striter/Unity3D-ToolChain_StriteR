@@ -14,22 +14,20 @@ namespace UnityEditor.Extensions
                 return;
 
             var value = property.GetFieldValue();
-            Debug.Log(value);
-            
 
-            // switch (property.propertyType)
-            // {
-                // case SerializedPropertyType.Integer:
-                    // property.intValue = EditorGUI.IntPopup(position, label, property.intValue,
-                        // attribute.m_Values.Select(p => new GUIContent(p.ToString())).ToArray(),
-                        // attribute.m_Values.Select(p => (int)p).ToArray());
-                    // break;
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.Integer:
+                    property.intValue = EditorGUI.IntPopup(position, label, property.intValue,
+                        attribute.m_Values.Select(p => new GUIContent(p.ToString())).ToArray(),
+                        attribute.m_Values.Select(p => (int)p).ToArray());
+                    break;
                 // case SerializedPropertyType.Float:
                     // property.floatValue = EditorGUI.Popup()
                     // break;
                 // case SerializedPropertyType.String:
                     // break;
-            // }
+            }
         }
     }
 

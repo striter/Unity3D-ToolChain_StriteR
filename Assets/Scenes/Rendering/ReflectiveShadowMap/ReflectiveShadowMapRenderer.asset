@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5071613825529119939
+--- !u!114 &-6691445836900065267
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -26,16 +26,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de640fe3d0db1804a85f9fc8f5cadab6, type: 3}
-  m_Name: ShadowmapRenderer
+  m_Name: ReflectiveShadowMapRenderer
   m_EditorClassIdentifier: 
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
-  - {fileID: -5071613825529119939}
-  - {fileID: 5260401770450578518}
-  m_RendererFeatureMap: 3d7b60a318029eb956ec8a178ab30049
+  - {fileID: -6691445836900065267}
+  - {fileID: 5553318077861063815}
+  - {fileID: 819738633036104270}
+  m_RendererFeatureMap: 0d20ced1763523a387eca97b5e59114d4e02c88ef14b600b
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -74,11 +75,11 @@ MonoBehaviour:
     zFailOperation: 0
   m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
-  m_DepthPrimingMode: 0
+  m_DepthPrimingMode: 2
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
---- !u!114 &5260401770450578518
+--- !u!114 &819738633036104270
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -87,11 +88,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dd1dd6e2ca70114ebb594ec54214458, type: 3}
-  m_Name: SRFShadowMap
+  m_Script: {fileID: 11500000, guid: ee3c680f40de577479abaf2dcf781d1a, type: 3}
+  m_Name: ReflectiveShadowMapFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  m_ShadowMapConfig:
-    resolution: 1024
-    distance: 100
-    border: 0.2
+  m_Data:
+    intensity: 2.46
+    sampleRadius: 3
+    maxSampleCount: 512
+    shadowMapResolution: 512
+    downSample: 2
+    screenSpaceSample: {fileID: 4800000, guid: 567260371894b004eb3c6d382ce60253, type: 3}
+    debug: 0
+--- !u!114 &5553318077861063815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73a36542a2a2406bb20ceb87b0f8ea59, type: 3}
+  m_Name: PostProcessFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  m_AntiAliasing:
+    mode: 0
+    fxaa: 2
+    additionalSample: 1
+    useDepth: 0
+    contrastSkip: 0.1
+    relativeSkip: 0.2
+    subPixelBlend: 1
+    blend: 0.104
