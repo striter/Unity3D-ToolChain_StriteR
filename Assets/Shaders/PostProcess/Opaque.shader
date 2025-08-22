@@ -248,7 +248,7 @@
 					}
 					occlusion*=rcp(_AOSampleCount);
 					occlusion = saturate(occlusion  * _AOIntensity);
-					occlusion*=step(HALF_MIN,abs(rawDepth-Z_END));		//Clip Skybox
+					occlusion*=step(HALF_MIN,abs(rawDepth-Z_FAR));		//Clip Skybox
 					ao=occlusion;
 				#endif
 				

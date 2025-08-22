@@ -2,12 +2,12 @@
 //Depth Conversion
 #if !UNITY_REVERSED_Z
     #define Z_Multiply 1.h
-    #define Z_BEGIN 0.h
-    #define Z_END 1.h
+    #define Z_NEAR 0.h
+    #define Z_FAR 1.h
 #else
     #define Z_Multiply -1.h
-    #define Z_BEGIN 1.h
-    #define Z_END 0.h
+    #define Z_NEAR 1.h
+    #define Z_FAR 0.h
 #endif
 
 bool DepthGreater(float _depthSrc,float _depthComp)

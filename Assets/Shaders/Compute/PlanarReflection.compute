@@ -35,7 +35,7 @@ void ReflectionMapping(float2 uv)
 #endif
     
     float4 positionCSM = TransformWorldToHClip(positionWSM);
-    if (projDistance>0 && positionCSM.w > 0 && DepthLesser( depth,Z_END))
+    if (projDistance>0 && positionCSM.w > 0 && DepthLesser( depth,Z_FAR))
     {
         half2 uvM=0.h;
         half depthM = 0.h;

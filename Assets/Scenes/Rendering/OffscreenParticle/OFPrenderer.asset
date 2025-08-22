@@ -16,7 +16,8 @@ MonoBehaviour:
   m_Data:
     layerMask:
       value: 192
-    downSample: 8
+    downSample: 4
+    maxDepth: 1
     blendShader: {fileID: 4800000, guid: 8a07bc90b55722e4fb4052d3e8652699, type: 3}
 --- !u!114 &-6691445836900065267
 MonoBehaviour:
@@ -32,8 +33,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
-  m_Data:
-    m_Features: 2
+  m_Features: 0
+  m_NormalTextureData:
+    mode: 0
+    downSample: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

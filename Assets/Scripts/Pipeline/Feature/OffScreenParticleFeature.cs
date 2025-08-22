@@ -13,6 +13,7 @@ namespace Rendering.Pipeline
     {
         public CullingMask layerMask;
         public EDownSample downSample;
+        public bool maxDepth;
         public Shader blendShader;
         
         public bool Valid => layerMask != 0 && downSample != EDownSample.None && blendShader != null;
@@ -21,6 +22,7 @@ namespace Rendering.Pipeline
         {
             layerMask = -1,
             downSample = EDownSample.Quarter,
+            maxDepth = false,
         };
     }
 
@@ -55,11 +57,12 @@ namespace Rendering.Pipeline
 
     public class OffScreenParticlePass : ScriptableRenderPass
     {
-        private static readonly string kTitle = "VDM DownSample Rendering";
+        private static readonly string kTitle = "Off Screen Particle";
         private OffScreenParticleData m_Data;
         private int m_SrcLayerMask;
-        private static readonly int kColorTextureID = Shader.PropertyToID("_OffScreenParticleTexture");
-        private static readonly RenderTargetIdentifier kColorTextureRT = new RenderTargetIdentifier(kColorTextureID);
+        private static readonly string kColorTextureName = "_OffScreenParticleTexture";
+        private static readonly int kColorTextureID = Shader.PropertyToID(kColorTextureName);
+        private static readonly RenderTargetIdentifier kColorTextureRT = new(kColorTextureID);
         private RTHandle m_ColorHandle;
         private ScriptableCullingParameters m_CullParameters;
         private Material m_BlendMaterial;
@@ -111,11 +114,17 @@ namespace Rendering.Pipeline
             UDebug.SetFieldValue(m_DrawTransparentsPass, "m_FilteringSettings", m_SrcFilterSettings);
         }
         
+        private static readonly int kDownSample = Shader.PropertyToID("_DownSample");
+        private static string kMaxDepthKeyword = "_MAX_DEPTH";
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             var cmd = CommandBufferPool.Get(kTitle);
-            cmd.BeginSample(kTitle);
+            cmd.BeginSample(kColorTextureName);
             cmd.SetRenderTarget(m_ColorHandle, m_ColorHandle);
+
+            m_BlendMaterial.SetInt(kDownSample, (int)m_Data.downSample);
+            m_BlendMaterial.EnableKeyword(kMaxDepthKeyword,m_Data.maxDepth);
+            
             cmd.DrawMesh(UPipeline.kFullscreenMesh, Matrix4x4.identity, m_BlendMaterial, 0, 0); //Blit Depth
 
             _context.ExecuteCommandBuffer(cmd);
@@ -129,7 +138,7 @@ namespace Rendering.Pipeline
                 RenderBufferLoadAction.Load, RenderBufferStoreAction.Store,
                 RenderBufferLoadAction.DontCare, RenderBufferStoreAction.DontCare);
             cmd.DrawMesh(UPipeline.kFullscreenMesh, Matrix4x4.identity, m_BlendMaterial, 0, 1); //Blit Color
-            cmd.EndSample(kTitle);
+            cmd.EndSample(kColorTextureName);
             _context.ExecuteCommandBuffer(cmd);
         }
     }

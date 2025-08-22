@@ -13,17 +13,7 @@ Shader "Hidden/OffScreenParticle"
             Blend Off
             
             HLSLPROGRAM
-            #include "Assets/Shaders/Library/Common.hlsl"
-            struct a2v
-            {
-                float3 positionOS : POSITION;
-            };
-
-            struct v2f
-            {
-                float4 positionCS : SV_POSITION;
-                float2 ndc : TEXCOORD0;
-            };
+            #include "Assets/Shaders/Library/PostProcess.hlsl"
 
             struct f2o
             {
@@ -31,25 +21,27 @@ Shader "Hidden/OffScreenParticle"
                 float4 color : SV_Target;
             };
             
-            #pragma vertex vert
+            #pragma vertex vert_fullScreenMesh
             #pragma fragment frag
 
-            TEXTURE2D_FLOAT(_CameraDepthTexture);SAMPLER(sampler_CameraDepthTexture);
-            v2f vert (a2v v)
-            {
-                v2f o;
-                o.positionCS = float4(v.positionOS.xyz, 1.0);
-                #if UNITY_UV_STARTS_AT_TOP
-                    o.positionCS.y *= -1;
-                #endif
-                o.ndc = ComputeNormalizedDeviceCoordinates(o.positionCS.xyz).xy;
-                return o;
-            }
+            #pragma multi_compile _ _MAX_DEPTH
+            int _DownSample;
 
-            f2o frag (v2f i) 
+            f2o frag (v2f_img i) 
             {
                 f2o o;
-                o.depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,i.ndc).r;
+                o.depth = Z_NEAR;
+                #if _MAX_DEPTH
+                    for (int x = 0; x < _DownSample; x++)
+                        for (int y = 0; y < _DownSample; y++)
+                        {
+                            float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,i.uv + _CameraDepthTexture_TexelSize.xy * int2(x,y)).r;
+                            if (DepthGreater(depth,o.depth))
+                                o.depth = depth;
+                        }
+                #else
+                    o.depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,i.uv).r;
+                #endif
                 o.color = float4(0,0,0,1);
                 return o;
             }
@@ -61,39 +53,17 @@ Shader "Hidden/OffScreenParticle"
             Name "VDM Blend"
             Blend One SrcAlpha
             HLSLPROGRAM
-            #pragma vertex vert
+            #pragma vertex vert_fullScreenMesh
             #pragma fragment frag
 
-            #include "Assets/Shaders/Library/Common.hlsl"
-
-            struct a2v
-            {
-                float3 positionOS : POSITION;
-            };
-
-            struct v2f
-            {
-                float4 positionCS : SV_POSITION;
-                float2 ndc : TEXCOORD0;
-            };
+            #include "Assets/Shaders/Library/PostProcess.hlsl"
 
             TEXTURE2D(_BaseTex);SAMPLER(sampler_BaseTex);
             TEXTURE2D(_OffScreenParticleTexture);SAMPLER(sampler_OffScreenParticleTexture);
             
-            v2f vert (a2v v)
+            float4 frag (v2f_img i) : SV_Target
             {
-                v2f o;
-                o.positionCS = float4(v.positionOS.xyz, 1.0);
-                #if UNITY_UV_STARTS_AT_TOP
-                    o.positionCS.y *= -1;
-                #endif
-                o.ndc = ComputeNormalizedDeviceCoordinates(o.positionCS.xyz).xy;
-                return o;
-            }
-
-            float4 frag (v2f i) : SV_Target
-            {
-                return SAMPLE_TEXTURE2D(_OffScreenParticleTexture,sampler_OffScreenParticleTexture,i.ndc);
+                return SAMPLE_TEXTURE2D(_OffScreenParticleTexture,sampler_OffScreenParticleTexture,i.uv);
             }
             ENDHLSL
         }
