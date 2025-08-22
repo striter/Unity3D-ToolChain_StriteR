@@ -10,7 +10,7 @@ Shader "Hidden/NormalsFromDepth"
         Pass
         {
             HLSLPROGRAM
-            #pragma vertex vert_blit
+            #pragma vertex vert_fullScreenMesh
             #pragma fragment frag
             #include "Assets/Shaders/Library/PostProcess.hlsl"
 

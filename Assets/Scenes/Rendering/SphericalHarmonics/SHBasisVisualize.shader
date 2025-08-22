@@ -2,6 +2,7 @@ Shader "Hidden/SHBasisVisualize"
 {
     SubShader
     {
+        Tags { "Queue" = "Transparent" }
         Pass
         {
             HLSLPROGRAM

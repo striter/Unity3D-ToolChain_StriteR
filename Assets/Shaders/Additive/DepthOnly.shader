@@ -1,12 +1,5 @@
 ﻿Shader "Game/Additive/DepthOnly"
 {
-	Properties
-	{
-		[Header(Misc)]
-		[Enum(UnityEngine.Rendering.CompareFunction)]_ZTest("Z Test",int)=2
-		[Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull",int)=1
-	}
-	
     SubShader
     {
     	HLSLINCLUDE
@@ -42,8 +35,8 @@
 		{
 			ZWrite On
 			Blend One Zero
-			ZTest [_ZTest]
-			Cull [_Cull]
+			ZTest LEqual
+			Cull Back
 			
 			NAME "MAIN"
 			Tags{ "LightMode" = "DepthOnly" }
@@ -57,8 +50,8 @@
 		{
 			ZWrite On
 			Blend One Zero
-			ZTest [_ZTest]
-			Cull [_Cull]
+			ZTest LEqual
+			Cull Back
 			
 			NAME "Forward"
 			Tags{"LightMode" = "UniversalForward"}

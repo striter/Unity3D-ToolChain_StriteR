@@ -2,6 +2,7 @@ Shader "Game/Unfinished/UnitySHL2"
 {
     SubShader
     {
+        Tags { "Queue" = "Transparent" }
         Pass
         {
             HLSLPROGRAM

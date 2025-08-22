@@ -294,7 +294,6 @@ MonoBehaviour:
         iteration: 8
         downSample: 4
         angle: 0
-        vector: {x: 0.5, y: 0.5}
         attenuation: 0
     downSample: 2
     SSAO: 1
@@ -393,7 +392,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 0
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: 2
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -647,7 +646,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 0
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: 2
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -1684,7 +1683,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 0
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: 2
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -2059,7 +2058,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 0
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: 2
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -2192,7 +2191,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 0
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: 2
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -2244,7 +2243,6 @@ MonoBehaviour:
     mixGreen: {x: 0, y: 0, z: 0}
     mixBlue: {x: 0, y: 0, z: 0}
     toneMapping: 1
-    toneMappinType: 1
     bloom: 1
     bloomData:
       m_SampleMode: 0
@@ -2262,7 +2260,6 @@ MonoBehaviour:
         iteration: 3
         downSample: 2
         angle: 0
-        vector: {x: 0, y: 0}
         attenuation: 0
       m_BloomDebug: 0
     motionBlur: 0
@@ -2372,7 +2369,6 @@ MonoBehaviour:
     iteration: 4
     downSample: 1
     angle: 0
-    vector: {x: 0, y: 0}
     attenuation: 0
   m_Focal: 1
   m_FocalData:
@@ -2467,7 +2463,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 0
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: 2
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -2523,7 +2519,6 @@ MonoBehaviour:
       iteration: 7
       downSample: 2
       angle: 0
-      vector: {x: 0.5, y: 0.5}
       attenuation: 1
     multiScattering: 0
     multiScatteringData:

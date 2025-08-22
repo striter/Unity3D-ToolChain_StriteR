@@ -15,7 +15,7 @@ namespace Rendering.Pipeline
 
         public override void Configure(CommandBuffer _cmd, RenderTextureDescriptor _cameraTextureDescriptor)
         {
-            _cmd.GetTemporaryRT(KRenderTextures.kCameraMotionVector, _cameraTextureDescriptor.width, _cameraTextureDescriptor.height,16, FilterMode.Point, RenderTextureFormat.RGFloat);
+            _cmd.GetTemporaryRT(KRenderTextures.kCameraMotionVectorID, _cameraTextureDescriptor.width, _cameraTextureDescriptor.height,16, FilterMode.Point, RenderTextureFormat.RGFloat);
             ConfigureTarget(RTHandles.Alloc(KRenderTextures.kCameraMotionVectorRT));
             ConfigureClear(ClearFlag.All,Color.black);
         }
@@ -23,7 +23,7 @@ namespace Rendering.Pipeline
         public override void FrameCleanup(CommandBuffer _cmd)
         {
             base.FrameCleanup(_cmd);
-            _cmd.ReleaseTemporaryRT(KRenderTextures.kCameraMotionVector);
+            _cmd.ReleaseTemporaryRT(KRenderTextures.kCameraMotionVectorID);
         }
         
         static readonly string kSampling = nameof(MotionVectorTexturePass); 

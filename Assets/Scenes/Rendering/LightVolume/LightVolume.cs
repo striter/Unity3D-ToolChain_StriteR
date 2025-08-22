@@ -31,6 +31,7 @@ namespace Examples.Rendering.LightVolume
         }
     }
     
+    [ExecuteInEditMode]
     public class LightVolume : MonoBehaviour
     {
         private MeshRenderer[] renderers;
@@ -52,6 +53,9 @@ namespace Examples.Rendering.LightVolume
 
         private void Update()
         {
+            if (!Application.isPlaying)
+                return;
+            
             for (int i = 0; i < renderers.Length; i++)
                 renderers[i].transform.position = transforms[i].Tick(Time.deltaTime);
         }

@@ -43,9 +43,14 @@ namespace Rendering.Pipeline
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            if(m_ReflectionShadowMapPass == null)
+            if(m_ReflectionShadowMapPass == null || renderingData.cameraData.isPreviewCamera)
                 return;
-            renderer.EnqueuePass(m_ReflectionShadowMapPass.Setup(ref renderingData));
+            
+            var pass = m_ReflectionShadowMapPass.Setup(ref renderingData);
+            if(pass == null)
+                return;
+            
+            renderer.EnqueuePass(pass);
         }
     }
 
@@ -202,7 +207,7 @@ namespace Rendering.Pipeline
                 p = (p - .5f) ;
                 var direction = (cameraUp * p.y + cameraRight * p.x) * m_Data.sampleRadius;
                 var directionSS = math.mul(worldToShadowProjection, direction.ToVector4(0));
-                return directionSS;
+                return new float4(directionSS.xyz,p.magnitude() * 2f);
             }).Traversal((i, p) => m_RandomVectors[i] = p);
             m_SampleMaterial.SetInt(kRandomVectorCount,m_PoissonDisk.Length);
             m_SampleMaterial.SetVectorArray(kRandomVectors,m_RandomVectors);

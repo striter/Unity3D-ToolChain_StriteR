@@ -64,16 +64,20 @@ namespace Rendering.Pipeline
     
     public static class KRenderTextures
     {
-        public static readonly int kCameraNormalTex = Shader.PropertyToID("_CameraNormalTexture");
-        public static readonly RenderTargetIdentifier kRTCameraNormalTex = new RenderTargetIdentifier(kCameraNormalTex);
+        public static readonly string kCameraNormalTexure = "_CameraNormalTexture";
+        public static readonly int kCameraNormalID = Shader.PropertyToID(kCameraNormalTexure);
+        public static readonly RenderTargetIdentifier kRTCameraNormalTex = new(kCameraNormalID);
 
-        public static readonly int kCameraMotionVector = Shader.PropertyToID("_CameraMotionVectorTexture");
-        public static readonly RenderTargetIdentifier kCameraMotionVectorRT = new RenderTargetIdentifier(kCameraMotionVector);
+        public static readonly string kCameraMotionVectorTexture = "_CameraMotionVectorTexture";
+        public static readonly int kCameraMotionVectorID = Shader.PropertyToID(kCameraMotionVectorTexture);
+        public static readonly RenderTargetIdentifier kCameraMotionVectorRT = new(kCameraMotionVectorID);
         
-        public static readonly int kCameraLightMask = Shader.PropertyToID("_CameraLightMaskTexture");
-        public static readonly RenderTargetIdentifier kCameraLightMaskRT = new RenderTargetIdentifier(kCameraLightMask);
+        public static readonly string kCameraDepthNormalsTexture = "_CameraDepthNormalsTexture";
+        public static readonly int kCameraDepthNormalsID = Shader.PropertyToID(kCameraDepthNormalsTexture);
+        public static readonly RenderTargetIdentifier kCameraDepthNormalsRT = new(kCameraDepthNormalsID);
         
-        public static readonly int kCameraDepthTexture = Shader.PropertyToID("_CameraDepthTexture");
-        public static readonly RenderTargetIdentifier kCameraDepthTextureRT = new RenderTargetIdentifier(kCameraDepthTexture);
+        public static readonly string kCameraDepthTexture = "_CameraDepthTexture";
+        public static readonly int kCameraDepthTextureID = Shader.PropertyToID(kCameraDepthTexture);
+        public static readonly RenderTargetIdentifier kCameraDepthTextureRT = new(kCameraDepthTextureID);
     }
 }

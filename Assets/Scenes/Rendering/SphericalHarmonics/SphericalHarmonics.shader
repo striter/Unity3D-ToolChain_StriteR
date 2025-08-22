@@ -2,6 +2,7 @@ Shader "Game/Unfinished/SphericalHarmonicsL2"
 {
     SubShader
     {
+        Tags { "Queue" = "Transparent" }
         Pass
         {
             HLSLPROGRAM

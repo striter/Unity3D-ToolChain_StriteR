@@ -5,7 +5,7 @@
 		[Header(Base Tex)]
 		_MainTex("Main Tex",2D) = "white"{}
 		_Color("Color Tint",Color) = (1,1,1,1)
-		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Nomral Tex",2D)="white"{}
+		[ToggleTex(_NORMALMAP)][NoScaleOffset]_NormalTex("Normal Tex",2D)="white"{}
 		
 		[Header(PBR)]
 		[ToggleTex(_PBRMAP)] [NoScaleOffset]_PBRTex("PBR Tex(Smoothness.Metallic.AO)",2D)="white"{}
@@ -267,6 +267,7 @@
             #include "Assets/Shaders/Library/Passes/DepthOnly.hlsl"
 			ENDHLSL
 		}
+
 		Pass
 		{
 			NAME "SHADOWCASTER"

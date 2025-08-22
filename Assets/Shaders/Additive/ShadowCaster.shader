@@ -12,8 +12,8 @@
 			NAME "MAIN"
 			Tags{"LightMode" = "ShadowCaster"}
 			HLSLPROGRAM
-			#pragma vertex ShadowVertex
-			#pragma fragment ShadowFragment
+			#pragma vertex vert
+			#pragma fragment frag
 			#pragma multi_compile_instancing
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
@@ -29,7 +29,7 @@
 				V2F_SHADOW_CASTER;
 			};
 
-			v2f ShadowVertex(a2f v)
+			v2f vert(a2f v)
 			{
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
@@ -37,7 +37,7 @@
 				return o;
 			}
 
-			float4 ShadowFragment(v2f i) :SV_TARGET
+			float4 frag(v2f i) :SV_TARGET
 			{
 				return 0;
 			}

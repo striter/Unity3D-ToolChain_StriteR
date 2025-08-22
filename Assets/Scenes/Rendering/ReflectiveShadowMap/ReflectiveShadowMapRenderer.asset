@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
-  m_Data:
-    m_Features: 0
+  m_Features: 1
+  m_NormalTextureData:
+    mode: 2
+    downSample: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,9 +95,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_Data:
-    intensity: 2.46
-    sampleRadius: 3
-    maxSampleCount: 512
+    intensity: 3.76
+    sampleRadius: 2
+    maxSampleCount: 256
     shadowMapResolution: 512
     downSample: 2
     screenSpaceSample: {fileID: 4800000, guid: 567260371894b004eb3c6d382ce60253, type: 3}
@@ -114,7 +116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_AntiAliasing:
-    mode: 0
+    mode: 2
     fxaa: 2
     additionalSample: 1
     useDepth: 0

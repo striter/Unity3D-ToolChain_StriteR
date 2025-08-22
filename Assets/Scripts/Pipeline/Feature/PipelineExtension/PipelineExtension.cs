@@ -14,24 +14,14 @@ namespace Rendering.Pipeline
         MotionVector = 1 << 1,
     }
     
-    [Serializable]
-    public struct FPipelineExtensionParameters
-    {
-        [Header("Screen Space"), Tooltip("Screen Space World Position Reconstruction")]
-
-        public EPipeLineExtensionFeature m_Features;
-
-        public static FPipelineExtensionParameters kDefault = new FPipelineExtensionParameters()
-        {
-            m_Features = default,
-        };
-    }
 
     public class PipelineExtension : AScriptableRendererFeature
     {
         public static PipelineExtension Instance { get; private set; } 
         [DefaultAsset("Assets/Settings/RenderResources.asset")] public RenderResources m_Resources;
-        public FPipelineExtensionParameters m_Data = FPipelineExtensionParameters.kDefault;
+        
+        public EPipeLineExtensionFeature m_Features;
+        [Foldout(nameof(m_Features),EPipeLineExtensionFeature.Normal)] public NormalTexturePassData m_NormalTextureData = NormalTexturePassData.kDefault;
         private GlobalParametersPass m_GlobalParameters;
         private NormalTexturePass m_Normal;
         private MotionVectorTexturePass m_MotionVectorTexture;
@@ -41,7 +31,7 @@ namespace Rendering.Pipeline
             Instance = this;
             m_GlobalParameters = new GlobalParametersPass() { renderPassEvent = RenderPassEvent.BeforeRendering };
             m_MotionVectorTexture = new MotionVectorTexturePass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1 };
-            m_Normal = new NormalTexturePass() { renderPassEvent = RenderPassEvent.AfterRenderingOpaques };
+            m_Normal = new NormalTexturePass();
         }
 
         protected override void Dispose(bool _disposing)
@@ -57,10 +47,10 @@ namespace Rendering.Pipeline
         {
             _renderer.EnqueuePass(m_GlobalParameters);
             
-            if (m_Data.m_Features.IsFlagEnable(EPipeLineExtensionFeature.Normal))
-                _renderer.EnqueuePass(m_Normal);
+            if (m_Features.IsFlagEnable(EPipeLineExtensionFeature.Normal))
+                _renderer.EnqueuePass(m_Normal.Setup(m_NormalTextureData));
 
-            if (m_Data.m_Features.IsFlagEnable(EPipeLineExtensionFeature.MotionVector))
+            if (m_Features.IsFlagEnable(EPipeLineExtensionFeature.MotionVector))
                 _renderer.EnqueuePass(m_MotionVectorTexture);
         }
     }

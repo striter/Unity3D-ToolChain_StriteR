@@ -106,8 +106,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
-  m_Data:
-    m_Features: -1
+  m_Features: 1
+  m_NormalTextureData:
+    mode: 0
+    downSample: 1
 --- !u!114 &3068563560998926471
 MonoBehaviour:
   m_ObjectHideFlags: 0
