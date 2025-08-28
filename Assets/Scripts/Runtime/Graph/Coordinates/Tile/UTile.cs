@@ -25,6 +25,7 @@ namespace Procedural.Tile
         public static Coord ToCoord(this Int2 _coord) => new Coord(){x=_coord.x,y=_coord.y};
         public static int ToIndex(this Int2 axis, int width) => axis.x + axis.y * width;
         public static int ToIndex(this int2 _axis, int _width) => _axis.x + _axis.y * _width;
+        public static int2 ToTileIndex(this int _index, int _width) => new int2(_index % _width, _index / _width);
     }
     
     public static partial class UTile       //Deprecated

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Rendering.Pipeline;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -63,7 +64,13 @@ namespace Rendering
         }
 
         public static bool IsEnabled(this CameraOverrideOption _override,bool _default)=>_override == CameraOverrideOption.On || (_override == CameraOverrideOption.UsePipelineSettings && _default);
-        public static Vector4 GetTexelSize(this RenderTextureDescriptor _descriptor) => new Vector4(1f/_descriptor.width,1f/_descriptor.height,_descriptor.width,_descriptor.height);
+
+        public static float4 GetTexelSize(this RenderTextureDescriptor _descriptor, int _downSample = 1)
+        {
+            var size = new float2(_descriptor.width, _descriptor.height);
+            size /= _downSample;
+            return new float4(1f/size,size);
+        }
 
 
         public static void ClearRenderTextureWithComputeShader(RenderTexture _texture,Color _clearColor = default)

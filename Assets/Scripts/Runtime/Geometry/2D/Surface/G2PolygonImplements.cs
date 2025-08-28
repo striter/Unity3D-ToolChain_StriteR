@@ -58,16 +58,12 @@ namespace Runtime.Geometry
         IEnumerator IEnumerable.GetEnumerator()=> GetEnumerator();
         public void DrawGizmos()
         {
-            if (positions == null || positions.Count == 0)
-                return;
-            UGizmos.DrawLinesConcat(positions.Select(p=>p.to3xz()));
+            this.GetEdges().Traversal(p=>p.DrawGizmos());
         }
         
         public void DrawGizmosXY()
         {
-            if (positions == null || positions.Count == 0)
-                return;
-            UGizmos.DrawLinesConcat(positions.Select(p=>p.to3xy()));
+            this.GetEdges().Traversal(p=>p.DrawGizmosXY());
         }
 
         public void DrawGizmosSolidTriangle()

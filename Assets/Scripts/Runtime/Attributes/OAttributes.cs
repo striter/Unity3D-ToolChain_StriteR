@@ -50,6 +50,21 @@ public class IntEnumAttribute : PropertyAttribute
     }
 }
 
+[AttributeUsage(AttributeTargets.Field)]
+public class ShowEnumAttribute : PropertyAttribute
+{
+    public readonly object[] m_Values;
+    public ShowEnumAttribute(params object[] _values)
+    {
+        m_Values = _values;
+        #if UNITY_EDITOR
+            var targetType = _values[0].GetType();
+            if (m_Values.Any(p => p.GetType() != targetType))
+                throw new Exception("Type Must All Equals");
+        #endif 
+    }
+}
+
 
 [AttributeUsage(AttributeTargets.Field)]
 public class InspectorExtensionAttribute : PropertyAttribute { }

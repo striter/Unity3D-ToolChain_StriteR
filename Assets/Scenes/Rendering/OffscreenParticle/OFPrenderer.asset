@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_Data:
+    blendShader: {fileID: 4800000, guid: 8a07bc90b55722e4fb4052d3e8652699, type: 3}
     layerMask:
       value: 192
-    downSample: 4
+    downSample: 8
     maxDepth: 1
-    blendShader: {fileID: 4800000, guid: 8a07bc90b55722e4fb4052d3e8652699, type: 3}
+    varianceDepthMaps: 1
 --- !u!114 &-6691445836900065267
 MonoBehaviour:
   m_ObjectHideFlags: 0

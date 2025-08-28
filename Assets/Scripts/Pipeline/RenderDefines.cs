@@ -3,14 +3,6 @@ using UnityEngine.Rendering;
 
 namespace Rendering.Pipeline
 {
-    public enum EDownSample
-    {
-        None = 1,
-        Half = 2,
-        Quarter = 4,
-        Eighth = 8
-    }
-
     public enum EShadowMapResolution
     {
         _64 = 64,
@@ -43,6 +35,7 @@ namespace Rendering.Pipeline
     public static class KShaderProperties
     {
         public static readonly int kMainTex = Shader.PropertyToID("_MainTex");
+        public static readonly int kMainTexTexelSize = Shader.PropertyToID("_Main_TexelSize");
         public static readonly int kWorldSpaceCameraPos = Shader.PropertyToID("_WorldSpaceCameraPos");
         public static readonly int kShadowBias = Shader.PropertyToID("_ShadowBias");
         public static readonly int kLightDirection = Shader.PropertyToID("_LightDirection");
@@ -50,7 +43,9 @@ namespace Rendering.Pipeline
         public static readonly int kShadowmapSize = Shader.PropertyToID("_MainLightShadowmapSize");
         public static readonly int kShadowParams = Shader.PropertyToID("_ShadowParams");
         public static readonly int kWorldToShadow = Shader.PropertyToID("_WorldToShadow");
-    
+        
+        public static readonly int kOutputTexelSize = Shader.PropertyToID("_Output_TexelSize");
+        
         public static readonly int kColor = Shader.PropertyToID("_Color");
         public static readonly int kEmissionColor = Shader.PropertyToID("_EmissionColor");
         public static readonly int kAlpha = Shader.PropertyToID("_Alpha");

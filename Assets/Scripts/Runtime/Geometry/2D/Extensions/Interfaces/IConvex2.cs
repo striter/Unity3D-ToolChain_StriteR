@@ -12,8 +12,8 @@ namespace Runtime.Geometry.Extension
         {
             kPoints.Clear();
             kPoints.AddRange(_convex);
-            for (var i = 0; i < kPoints.Count - 1; i++)
-                yield return new G2Line(kPoints[i], kPoints[i + 1]);
+            for (var i = 0; i < kPoints.Count; i++)
+                yield return new G2Line(kPoints[i], kPoints[(i + 1)%kPoints.Count]);
         }
 
         public static bool Contains(this IConvex2 _convex, float2 _point)

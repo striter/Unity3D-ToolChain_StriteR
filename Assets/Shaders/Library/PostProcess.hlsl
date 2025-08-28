@@ -3,6 +3,7 @@
 TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
 float4 _MainTex_ST;
 float4 _MainTex_TexelSize;
+float4 _Output_TexelSize;
 
 float4 _CameraDepthTexture_TexelSize;
 #define _MainTex_TexelRight float2(1,0)*_MainTex_TexelSize.xy

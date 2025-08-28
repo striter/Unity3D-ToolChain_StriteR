@@ -1,6 +1,8 @@
 ﻿#define kDeg2Rad 0.017453292519943f //PI / 180
 #define kRad2Deg 57.295779513082f //180f / PI
-    
+
+#define kSQRT2 1.41421356237f
+
 //PI
 #define kPI 3.14159265359f
 #define kPIHalf 1.57079632679f

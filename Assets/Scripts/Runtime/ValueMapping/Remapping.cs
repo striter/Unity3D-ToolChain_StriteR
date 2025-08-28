@@ -18,6 +18,8 @@ public partial class umath
     public static float max(this float3 _value) => math.max(_value.x, math.max(_value.y, _value.z));
     public static float max(this float4 _value) => math.max(_value.x, math.max(_value.y, math.max(_value.z, _value.w)));
     
+    public static int2 min(int2 _a,int2 _b) => new int2(math.min(_a.x, _b.x), math.min(_a.y, _b.y));
+    public static int2 max(int2 _a,int2 _b) => new int2(math.max(_a.x, _b.x), math.max(_a.y, _b.y));
     public static int max(int a, int b, int c) => math.max(a, math.max(b, c));
     public static float max(float a, float b, float c) => math.max(a, math.max(b, c));
     

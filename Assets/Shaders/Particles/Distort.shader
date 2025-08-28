@@ -52,7 +52,7 @@
 			{
 				float2 baseUV= i.screenPos.xy/i.screenPos.w;
 				float2 distort = (SAMPLE_TEXTURE2D(_DistortTex,sampler_DistortTex,i.uv).rg*2-1) * _DistortStrength;
-				return  SAMPLE_TEXTURE2D(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, baseUV + distort);
+				return  float4(SAMPLE_TEXTURE2D(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, baseUV + distort).rgb,1);
 			}
 			ENDHLSL
 		}

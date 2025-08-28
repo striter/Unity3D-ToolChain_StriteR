@@ -10,6 +10,7 @@ namespace Runtime.Geometry
         public G2Line Clip(G2Box _box) => _box.Clip(this,out var _clipped) ? _clipped : this;
         public float2 Origin => start;
         public void DrawGizmos() => Gizmos.DrawLine(start.to3xz(),end.to3xz());
+        public void DrawGizmosXY() => Gizmos.DrawLine(start.to3xy(), end.to3xy());
 
         public float SDF(float2 _position)
         {

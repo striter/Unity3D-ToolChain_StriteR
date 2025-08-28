@@ -27,7 +27,7 @@ namespace Runtime.Geometry
             return new G2Box(min, max - min);
         }
         public G2Box Resize(float _factor) => Minmax(center - extent * _factor, center + extent * _factor);
-
+        public G2Box Resize(float2 newSize) => new G2Box(center, newSize / 2);
         public G2Box Collapse(float2 _factor, float2 _center = default) => new(center + _center * size, extent * _factor);
         public G2Box Move(float2 _deltaPosition)=> new G2Box(center + _deltaPosition, extent);
         

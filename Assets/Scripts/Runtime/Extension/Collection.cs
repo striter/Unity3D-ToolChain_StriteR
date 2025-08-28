@@ -857,6 +857,9 @@ namespace System.Linq.Extensions
             var dstArray = new T[_length];
             if (_srcArray.Length == 0)
                 return dstArray;
+
+            if (_srcArray.Length == _length)
+                return _srcArray;
             
             for (var i = 0; i < dstArray.Length; i++)
             {
