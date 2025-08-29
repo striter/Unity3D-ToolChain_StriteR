@@ -5,13 +5,14 @@ using Runtime.Optimize.GPUAnimation;
 
 namespace Examples.Rendering.GPUAnimationInstance
 {
+    [ExecuteInEditMode]
     public class GPUAnimationInstanceSample : MonoBehaviour
     {
         public int m_X=32,m_Y=32;
         public GPUAnimationData m_Data;
         public Material m_Material;
         AnimationTicker[] m_Timers;
-        Matrix4x4[] m_Matrixs;
+        Matrix4x4[] m_Matrices;
         MaterialPropertyBlock m_Blocks;
         float[] curFrames;
         float[] nextFrames;
@@ -19,7 +20,7 @@ namespace Examples.Rendering.GPUAnimationInstance
         protected void Awake()
         {
             int totalCount = m_Y * m_X;
-            m_Matrixs = new Matrix4x4[totalCount];
+            m_Matrices = new Matrix4x4[totalCount];
             m_Timers = new AnimationTicker[totalCount];
             curFrames = new float[totalCount];
             nextFrames = new float[totalCount];
@@ -30,7 +31,7 @@ namespace Examples.Rendering.GPUAnimationInstance
                 for(int j=0;j<m_Y;j++)
                 {
                     int index = i * m_Y + j;
-                    m_Matrixs[index] = Matrix4x4.TRS(transform.position+new Vector3(i * 10, 0, j * 10),transform.rotation,Vector3.one*(.8f+URandom.RandomUnit()*.2f));
+                    m_Matrices[index] = Matrix4x4.TRS(transform.position+new Vector3(i * 10, 0, j * 10),transform.rotation,Vector3.one*(.8f+URandom.RandomUnit()*.2f));
                     m_Timers[index] = new AnimationTicker();
                     m_Timers[index].Setup(m_Data.m_AnimationClips);
                     m_Timers[index].SetAnimation(m_Data.m_AnimationClips.RandomIndex());
@@ -42,7 +43,7 @@ namespace Examples.Rendering.GPUAnimationInstance
 
         private void Update()
         {
-            float _deltaTime = Time.deltaTime;
+            float _deltaTime = UTime.deltaTime;
             for (int i = 0; i < m_X; i++)
             {
                 for (int j = 0; j < m_Y; j++)
@@ -60,7 +61,7 @@ namespace Examples.Rendering.GPUAnimationInstance
             m_Blocks.SetFloatArray("_AnimFrameBegin",curFrames);
             m_Blocks.SetFloatArray("_AnimFrameEnd",nextFrames);
             m_Blocks.SetFloatArray("_AnimFrameInterpolate",interpolates);
-            Graphics.DrawMeshInstanced(m_Data.m_BakedMesh, 0, m_Material, m_Matrixs,m_Matrixs.Length, m_Blocks, UnityEngine.Rendering.ShadowCastingMode.On,true);
+            Graphics.DrawMeshInstanced(m_Data.m_BakedMesh, 0, m_Material, m_Matrices,m_Matrices.Length, m_Blocks, UnityEngine.Rendering.ShadowCastingMode.On,true);
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Examples.Rendering.Navigation
             m_Visualizer.Update(m_Character.m_WayPoints);
             
             var touches =  TouchTracker.Execute(Time.deltaTime);
-            var clicks = touches.ResolveClicks();
+            var clicks = touches.ResolveClicks(100f,0.3f,false);
             if (clicks.Any() && Physics.Raycast(m_Camera.ScreenPointToRay(clicks.First()),out var hitInfo))
                 m_Character.Navigate(hitInfo.point);
         }

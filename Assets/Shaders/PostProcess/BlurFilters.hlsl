@@ -1,23 +1,25 @@
-half _FocalStart;
-half _FocalEnd;
+half2 _FocalDistances;
 half _Encode;
 half _Decode;
+float4 _TiltShiftParameters; //focal center , fade start radius , fade end radius
 TEXTURE2D(_CameraFocalMaskTexture); SAMPLER(sampler_CameraFocalMaskTexture);
 TEXTURE2D(_BlurTex);SAMPLER(sampler_BlurTex);
 float4 _BlurTex_TexelSize;
 half4 SampleBlurTex(TEXTURE2D_PARAM(_tex,_sampler),float2 uv,float2 offset)
 {
-    #if _DOF_DISTANCE
-        float2 sampleUV = uv + offset * .5f;
-        float rawDepth=SampleRawDepth(sampleUV);
-        half focal=saturate(invlerp(_FocalStart,_FocalEnd,RawToDistance(rawDepth,sampleUV)));
-        offset*=focal;
+    float2 sampleUV = uv + offset * .5f;
+    float depth=RawToDistance(SampleRawDepth(sampleUV),sampleUV);
+    #if _DOF || _DOF_MASK
+        offset *= saturate(invlerp(_FocalDistances.x,_FocalDistances.y,depth));
+    #elif _TILT_SHIFT
+        offset *=  saturate(invlerp(_TiltShiftParameters.y,_TiltShiftParameters.z, abs(depth - _TiltShiftParameters.x)));
     #endif
 
-    #if _DOF_MASK
+    #if _MASK || _DOF_MASK
         offset *= (1-max(SAMPLE_TEXTURE2D(_CameraFocalMaskTexture,sampler_CameraFocalMaskTexture,uv+offset).r,SAMPLE_TEXTURE2D(_CameraFocalMaskTexture,sampler_CameraFocalMaskTexture,uv).r));
     #endif
 
+    
     half4 color = SAMPLE_TEXTURE2D(_tex,_sampler,uv+offset);
 
     if(_Decode <= .9)

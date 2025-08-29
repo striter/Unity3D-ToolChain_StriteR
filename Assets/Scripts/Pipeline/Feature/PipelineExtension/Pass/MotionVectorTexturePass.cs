@@ -37,8 +37,7 @@ namespace Rendering.Pipeline
             var view = _renderingData.cameraData.camera.worldToCameraMatrix;
             var vp = projection * view;
 
-            if (!m_PreViewProjectionMatrixes.ContainsKey(cameraID))
-                m_PreViewProjectionMatrixes.Add(cameraID,vp);
+            m_PreViewProjectionMatrixes.TryAdd(cameraID, vp);
 
             var cmd = CommandBufferPool.Get(kSampling);
             cmd.BeginSample(kSampling);
@@ -47,6 +46,9 @@ namespace Rendering.Pipeline
             cmd.DrawProcedural(Matrix4x4.identity,m_CameraMaterial,0,MeshTopology.Triangles,3,1);
             _context.ExecuteCommandBuffer(cmd);
 
+            cmd.Clear();
+            cmd.SetViewProjectionMatrices(_renderingData.cameraData.camera.worldToCameraMatrix,_renderingData.cameraData.camera.projectionMatrix);
+            _context.ExecuteCommandBuffer(cmd);
             var drawingSettings = UPipeline.CreateDrawingSettings(true, _renderingData.cameraData.camera);
             drawingSettings.overrideMaterial = m_ObjectMaterial;
             drawingSettings.perObjectData = PerObjectData.MotionVectors;

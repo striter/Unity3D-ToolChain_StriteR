@@ -8,7 +8,7 @@ namespace Rendering.Pipeline
     {
         public DAntiAliasing m_AntiAliasing = DAntiAliasing.kDefault;
         private PostProcess_AntiAliasing m_AntiAliasingPostProcess;
-        private SRP_TAASetupPass m_TAASetup;
+        private TAASetupPass m_TAASetup;
         private PostProcessPass m_OpaquePostProcess;
         private PostProcessPass m_ScreenPostProcess;
         
@@ -17,7 +17,7 @@ namespace Rendering.Pipeline
         private readonly List<IPostProcessBehaviour> m_ScreenProcessing = new();
         public override void Create()
         {
-            m_TAASetup = new SRP_TAASetupPass() { renderPassEvent = RenderPassEvent.BeforeRenderingPrePasses };
+            m_TAASetup = new TAASetupPass() { renderPassEvent = RenderPassEvent.BeforeRenderingPrePasses };
             m_OpaquePostProcess = new PostProcessPass() { renderPassEvent = RenderPassEvent.AfterRenderingSkybox + 3 };
             m_ScreenPostProcess = new PostProcessPass() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
             m_AntiAliasingPostProcess = new PostProcess_AntiAliasing(m_AntiAliasing, m_TAASetup);

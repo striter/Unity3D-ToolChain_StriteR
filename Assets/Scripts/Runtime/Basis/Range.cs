@@ -1,5 +1,6 @@
 ﻿using System;
 using Unity.Mathematics;
+using UnityEngine;
 
 [Serializable]
 public struct RangeFloat
@@ -20,6 +21,7 @@ public struct RangeFloat
     public float Evaluate(float _normalized) => start + length * _normalized;
     public static RangeFloat Minmax(float _min, float _max) => new(_min, _max - _min);
     public static RangeFloat operator*(RangeFloat _src, float _scale) => new (_src.start * _scale, _src.length * _scale);
+    public static RangeFloat operator +(RangeFloat _src, float _value) => new(_src.start + _value, _src.length);
 }
 
 [Serializable]

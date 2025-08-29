@@ -1897,36 +1897,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Data:
-    m_LUTTex: {fileID: 0}
-    m_64LUT: 0
-    m_LUTWeight: 1
+    LUTTex: {fileID: 0}
+    LUT64: 0
+    LUTWeight: 0
     m_BSC: 0
-    m_Brightness: 1
-    m_Saturation: 1
-    m_Contrast: 1
-    m_ChannelMix: 0
-    m_MixRed: {x: 0, y: 0, z: 0}
-    m_MixGreen: {x: 0, y: 0, z: 0}
-    m_MixBlue: {x: 0, y: 0, z: 0}
-    m_Bloom: 1
-    m_BloomData:
+    brightness: 0
+    saturation: 0
+    contrast: 0
+    channelMix: 0
+    mixRed: {x: 0, y: 0, z: 0}
+    mixGreen: {x: 0, y: 0, z: 0}
+    mixBlue: {x: 0, y: 0, z: 0}
+    toneMapping: 0
+    bloom: 0
+    bloomData:
       m_SampleMode: 0
-      m_Threshold: 2
+      m_Threshold: 0
       m_MaskData:
         mode: 0
         renderMask: 0
         overrideMaterial: {fileID: 0}
         overrideShader: {fileID: 0}
         inheritDepth: 0
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
+      m_Color: {r: 0, g: 0, b: 0, a: 0}
       m_Blur:
-        m_BlurType: 8
-        m_BlurSize: 0.319
-        m_Iteration: 7
-        m_DownSample: 2
-        m_Angle: 0
-        m_Vector: {x: 0.5, y: 0.5}
-        m_Attenuation: 0.9
+        blurType: 0
+        blurSize: 0
+        iteration: 0
+        downSample: 0
+        angle: 0
+        attenuation: 0
       m_BloomDebug: 0
     motionBlur: 0
     iteration: 2
@@ -2158,7 +2158,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: abb107912b26dec45a53a1307877f64b, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 87dac382f289b524fab7283e1b6c2cbf, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &830317145
 GameObject:

@@ -106,7 +106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   m_Resources: {fileID: 11400000, guid: e19e258be3c66f84c8ab42d7489caa86, type: 2}
-  m_Features: 1
+  m_Features: -1
   m_NormalTextureData:
     mode: 0
     downSample: 1
@@ -146,4 +146,4 @@ MonoBehaviour:
     contrastSkip: 0.1
     relativeSkip: 0.2
     subPixelBlend: 1
-    blend: 0.065
+    blend: 0.1

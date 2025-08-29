@@ -48,12 +48,13 @@ namespace Rendering.PostProcess
         NextGen_UpSampleFinal,
     }
 
-    public enum enum_Focal
+    public enum EFocal
     {
         None = 0,
-        _DOF_DISTANCE,
+        _DOF,
+        _MASK,
         _DOF_MASK,
-        _DOF_DISTANCE_MASK,
+        _TILT_SHIFT,
     }
     
     [Serializable]
@@ -97,25 +98,29 @@ namespace Rendering.PostProcess
         public override bool OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.DepthOfField;
 
-        public enum_Focal m_Focal;
-        [Foldout(nameof(m_Focal),enum_Focal._DOF_DISTANCE,enum_Focal._DOF_DISTANCE_MASK)] public RangeFloat m_FocalData;
-        [Foldout(nameof(m_Focal),enum_Focal._DOF_MASK,enum_Focal._DOF_DISTANCE_MASK)] public MaskTextureData m_FocalMaskData;
-
-        private static readonly int kIDFocalBegin = Shader.PropertyToID("_FocalStart");
-        private static readonly int kIDFocalEnd = Shader.PropertyToID("_FocalEnd");
-        public static readonly int kFocalMaskID = Shader.PropertyToID("_CameraFocalMaskTexture");
-        public static readonly string kDOF_Distance = "_DOF_DISTANCE";
-        public static readonly string kDOF_Mask = "_DOF_MASK";
+        public EFocal m_Focal;
+        public bool m_AnchorBasedFocal;
+        [Foldout(nameof(m_AnchorBasedFocal),true,nameof(m_Focal),new []{EFocal._DOF,EFocal._DOF_MASK,EFocal._TILT_SHIFT})] public float3 m_FocalAnchor;
+        [Foldout(nameof(m_Focal),EFocal._DOF,EFocal._DOF_MASK,EFocal._TILT_SHIFT)] public RangeFloat m_FocalData;
+        [Foldout(nameof(m_Focal),EFocal._MASK,EFocal._DOF_MASK)] public MaskTextureData m_FocalMaskData;
+        [Foldout(nameof(m_Focal), EFocal._TILT_SHIFT),Min(0)] public float m_TiltShiftDistance;
+        private static readonly int kFocalParamID = Shader.PropertyToID("_FocalDistances");
+        private static readonly int kFocalMaskID = Shader.PropertyToID("_CameraFocalMaskTexture");
+        private static readonly int kTiltShiftFadeDistanceID = Shader.PropertyToID("_TiltShiftParameters");
         public static readonly RenderTargetIdentifier kFocalMaskRT = new RenderTargetIdentifier(kFocalMaskID);
         public override bool Validate(ref RenderingData _renderingData)
         {
             var material = m_Effect.m_Material;
-            if (material.EnableKeyword(kDOF_Distance, m_Focal is enum_Focal._DOF_DISTANCE or enum_Focal._DOF_DISTANCE_MASK))
+            material.EnableKeywords(m_Focal);
+            var distances = m_FocalData;
+            if (m_AnchorBasedFocal)
             {
-                material.SetFloat(kIDFocalBegin, m_FocalData.start);
-                material.SetFloat(kIDFocalEnd, m_FocalData.end);
+                var cameraPos = (float3)_renderingData.cameraData.camera.transform.position;
+                distances += math.length(cameraPos - m_FocalAnchor);
             }
-            material.EnableKeyword(kDOF_Mask, m_Focal is enum_Focal._DOF_MASK or enum_Focal._DOF_DISTANCE_MASK);
+            
+            material.SetVector(kFocalParamID, new Vector4(distances.start,distances.end));
+            material.SetVector(kTiltShiftFadeDistanceID,new float4(distances.start,distances.length, distances.length + m_TiltShiftDistance,0));
             return base.Validate(ref _renderingData);
         }
         
@@ -124,31 +129,45 @@ namespace Rendering.PostProcess
             base.Configure(_buffer, _descriptor);
             switch (m_Focal)
             {
-                case enum_Focal._DOF_MASK:
-                case enum_Focal._DOF_DISTANCE_MASK:
+                case EFocal._MASK:
+                case EFocal._DOF_MASK:
                 {
                     _descriptor.colorFormat = RenderTextureFormat.R8;
                     _descriptor.depthBufferBits = 0;
                     _buffer.GetTemporaryRT(kFocalMaskID, _descriptor);
-                    
                 }
                     break;
             }
         }
-
+        
+        public override void FrameCleanUp(CommandBuffer _buffer)
+        {
+            base.FrameCleanUp(_buffer);
+            switch (m_Focal)
+            {
+                case EFocal._MASK:
+                case EFocal._DOF_MASK:
+                {
+                    _buffer.ReleaseTemporaryRT(kFocalMaskID);
+                }
+                    break;
+            }
+        }
+        
         public override void Execute(CommandBuffer _buffer, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,
             RenderTextureDescriptor _executeData,  ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
             switch (m_Focal)
             {
-                case enum_Focal.None:
-                case enum_Focal._DOF_DISTANCE:
+                case EFocal.None:
+                case EFocal._DOF:
+                case EFocal._TILT_SHIFT:
                 {
                     base.Execute(_buffer, _src, _dst, _executeData, _context, ref _renderingData);
                 }
                     break;
-                case enum_Focal._DOF_MASK:
-                case enum_Focal._DOF_DISTANCE_MASK:
+                case EFocal._MASK:
+                case EFocal._DOF_MASK:
                 {
                     MaskTexturePass.DrawMask(_buffer,kFocalMaskRT,_context,ref _renderingData,m_FocalMaskData);
                     base.Execute(_buffer, _src, _dst, _executeData, _context, ref _renderingData);
@@ -158,20 +177,6 @@ namespace Rendering.PostProcess
                 {
                     Debug.LogError($"Unknown Focal {m_Focal}");
                     _buffer.Blit(_src, _dst);
-                }
-                    break;
-            }
-        }
-
-        public override void FrameCleanUp(CommandBuffer _buffer)
-        {
-            base.FrameCleanUp(_buffer);
-            switch (m_Focal)
-            {
-                case enum_Focal._DOF_MASK:
-                case enum_Focal._DOF_DISTANCE_MASK:
-                {
-                    _buffer.ReleaseTemporaryRT(kFocalMaskID);
                 }
                     break;
             }

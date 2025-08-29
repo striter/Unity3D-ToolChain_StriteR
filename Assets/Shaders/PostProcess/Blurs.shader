@@ -9,8 +9,7 @@
     #pragma target 3.5
     #include "Assets/Shaders/Library/PostProcess.hlsl"
     
-    #pragma multi_compile_local_fragment _ _DOF_DISTANCE
-    #pragma multi_compile_local_fragment _ _DOF_MASK
+    #pragma multi_compile_local_fragment _ _DOF _MASK _DOF_MASK _TILT_SHIFT
 	#include "BlurFilters.hlsl"
     
 	half _BlurSize;

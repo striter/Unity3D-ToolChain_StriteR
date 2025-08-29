@@ -33,7 +33,7 @@ Shader "Hidden/MotionVectorObject"
                 v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-                
+
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 
                 #if defined(UNITY_REVERSED_Z)

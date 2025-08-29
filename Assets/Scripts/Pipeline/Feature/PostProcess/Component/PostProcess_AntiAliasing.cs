@@ -19,7 +19,7 @@ namespace Rendering.PostProcess
         private DAntiAliasing m_AliasingData;
         private DAntiAliasingCore m_AntiAliasingPassCore;
 
-        public PostProcess_AntiAliasing(DAntiAliasing _data,SRP_TAASetupPass _taaPass)
+        public PostProcess_AntiAliasing(DAntiAliasing _data,TAASetupPass _taaPass)
         {
             m_AliasingData = _data;
             m_AntiAliasingPassCore = new DAntiAliasingCore(_taaPass);
@@ -81,13 +81,13 @@ namespace Rendering.PostProcess
     }
 #endregion
 
-    public class SRP_TAASetupPass : ScriptableRenderPass
+    public class TAASetupPass : ScriptableRenderPass
     {
         private const int kJitterAmount = 16;
         private uint jitterIndex = 0;
 
         private static readonly int kHistoryBufferID = Shader.PropertyToID("_HistoryBuffer");
-        private static readonly float2[] kJitters = new float2[kJitterAmount].Remake((i,p)=>(ULowDiscrepancySequences.Halton2D((uint)i) - .5f) * .5f);
+        private static readonly float2[] kJitters = new float2[kJitterAmount].Remake((i,p)=>(ULowDiscrepancySequences.Halton2D((uint)i) - .5f) );
         private static readonly Dictionary<int, TAAHistoryBuffer> m_Buffers = new();
         private Matrix4x4 m_ViewMatrix,m_ProjectionMatrix;
         private Camera m_Camera;
@@ -117,7 +117,7 @@ namespace Rendering.PostProcess
             public void Dispose()=> RenderTexture.ReleaseTemporary(renderTexture);
         }
 
-        public SRP_TAASetupPass Setup(ref RenderingData _renderingData)
+        public TAASetupPass Setup(ref RenderingData _renderingData)
         {
             m_Camera = _renderingData.cameraData.camera;
             
@@ -126,17 +126,16 @@ namespace Rendering.PostProcess
             var projectionMatrix =  m_Camera.projectionMatrix;
             var viewMatrix = m_Camera.worldToCameraMatrix;
             m_ViewMatrix = viewMatrix;
-            projectionMatrix.m02 += jitter.x / _renderingData.cameraData.cameraTargetDescriptor.width;
-            projectionMatrix.m12 += jitter.y / _renderingData.cameraData.cameraTargetDescriptor.height;
-            m_ProjectionMatrix = projectionMatrix;
-            m_Camera.projectionMatrix = projectionMatrix;
+            var translate = Matrix4x4.Translate(new Vector3(
+                jitter.x / _renderingData.cameraData.cameraTargetDescriptor.width,
+                jitter.y / _renderingData.cameraData.cameraTargetDescriptor.height, 0));
+            m_ProjectionMatrix = translate * projectionMatrix;
+            // m_Camera.projectionMatrix = projectionMatrix;
             return this;
         }
         
         public void Dispose()
         {
-            if(m_Camera != null)
-                m_Camera.ResetProjectionMatrix();
             foreach (var buffer in m_Buffers.Values)
                 buffer.Dispose();
             m_Buffers.Clear();
@@ -180,7 +179,6 @@ namespace Rendering.PostProcess
             _cmd.SetGlobalFloat("_Blend",_data.blend);
             _cmd.Blit(_src,_dst,_material,1);
             _cmd.Blit(_dst,historyBuffer.renderTexture);
-            m_Camera.ResetProjectionMatrix();
         }
     }
     
@@ -194,8 +192,8 @@ namespace Rendering.PostProcess
         readonly int kRelativeSkip = Shader.PropertyToID("_FXAARelativeSkip");
         readonly int kBlendStrength = Shader.PropertyToID("_FXAABlendStrength");
 
-        private SRP_TAASetupPass m_TAAPass;
-        public DAntiAliasingCore(SRP_TAASetupPass _taaPass)
+        private TAASetupPass m_TAAPass;
+        public DAntiAliasingCore(TAASetupPass _taaPass)
         {
             m_TAAPass = _taaPass;
         }
@@ -226,7 +224,6 @@ namespace Rendering.PostProcess
                 case EAntiAliasing.FXAA:base.Execute(_descriptor, ref _data, _buffer, _src, _dst, _context, ref _renderingData);break;
                 case EAntiAliasing.TAA:m_TAAPass.ExecuteResolve(_buffer,_src,_dst,_descriptor,ref _data,m_Material,ref _renderingData);break;
             }
-
         }
     }
 

@@ -30,7 +30,7 @@ namespace Rendering.Pipeline
         {
             Instance = this;
             m_GlobalParameters = new GlobalParametersPass() { renderPassEvent = RenderPassEvent.BeforeRendering };
-            m_MotionVectorTexture = new MotionVectorTexturePass() { renderPassEvent = RenderPassEvent.BeforeRenderingOpaques - 1 };
+            m_MotionVectorTexture = new MotionVectorTexturePass() { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
             m_Normal = new NormalTexturePass();
         }
 

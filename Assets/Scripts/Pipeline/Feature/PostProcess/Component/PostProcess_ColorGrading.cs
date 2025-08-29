@@ -59,7 +59,7 @@ namespace Rendering.PostProcess
         [Title] public bool motionBlur;
         [Foldout(nameof(motionBlur), true)] [Clamp(1,8)]public int iteration;
         [Foldout(nameof(motionBlur), true)] [Range(-5,5)] public float intensity;
-        public bool Validate() => motionBlur || LUTTex != null || m_BSC || channelMix || (bloom && bloomData.Validate());
+        public bool Validate() => motionBlur || LUTTex != null || m_BSC || channelMix || toneMapping != EToneMapping.NONE || (bloom && bloomData.Validate());
         
         public static readonly DColorGrading kDefault = new DColorGrading()
         {
