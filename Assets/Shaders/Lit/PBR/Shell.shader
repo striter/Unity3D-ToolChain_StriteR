@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/PBR/Shell"
+﻿Shader "Runtime/Lit/PBR/Shell"
 {
 	Properties
 	{
@@ -154,7 +154,7 @@
 			
 			ENDHLSL
 		}
-		USEPASS "Game/Additive/ShadowCaster/MAIN"
-		USEPASS "Game/Additive/DepthOnly/MAIN"
+		USEPASS "Runtime/Additive/ShadowCaster/MAIN"
+		USEPASS "Runtime/Additive/DepthOnly/MAIN"
 	}
 }

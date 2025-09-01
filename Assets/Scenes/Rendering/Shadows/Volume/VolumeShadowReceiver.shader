@@ -65,6 +65,6 @@ Shader "Hidden/VolumeShadowReceiver"
 			#pragma fragment ForwardFragment
 			ENDHLSL
 		}
-        USEPASS "Game/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
     }
 }

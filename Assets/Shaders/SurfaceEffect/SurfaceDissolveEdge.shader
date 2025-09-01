@@ -1,4 +1,4 @@
-Shader "Game/Surface/DissolveStencilEdge"
+Shader "Runtime/Surface/DissolveStencilEdge"
 {
     Properties
     {

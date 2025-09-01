@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Depth/Caustic"
+﻿Shader "Runtime/Effects/Depth/Caustic"
 {
 	Properties
 	{

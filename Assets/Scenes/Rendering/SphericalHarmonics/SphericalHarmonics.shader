@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/SphericalHarmonicsL2"
+Shader "Runtime/Unfinished/SphericalHarmonicsL2"
 {
     SubShader
     {

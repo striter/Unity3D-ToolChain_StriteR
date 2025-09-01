@@ -796,8 +796,8 @@ MonoBehaviour:
   renderSettingsRTPVExport: 1
   renderSettingsRTPVSceneView: 1
   renderSettingsRTPVHDR: 0
-  renderSettingsRTPVWidth: 1000
-  renderSettingsRTPVHeight: 327
+  renderSettingsRTPVWidth: 1077
+  renderSettingsRTPVHeight: 422
   lastBakeTime: 0
   enlightenWarningShown: 0
   enlightenWarningShown2: 0
@@ -3674,7 +3674,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Mask:
-    value: -1
+    value: -2147482625
   m_Collection: {fileID: 11400000, guid: b03119d3548961c4db60e49a811352e2, type: 2}
   m_Playing: []
 --- !u!1 &1002178115

@@ -1,4 +1,4 @@
-﻿Shader "Game/Particles/Dissolve"
+﻿Shader "Runtime/Particles/Dissolve"
 {
     Properties
     {

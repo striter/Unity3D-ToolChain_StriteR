@@ -1,4 +1,4 @@
-Shader "Game/Additive/StencilOnly"
+Shader "Runtime/Additive/StencilOnly"
 {
     Properties
     {

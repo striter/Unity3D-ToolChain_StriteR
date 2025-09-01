@@ -1,4 +1,4 @@
-Shader "Game/Unlit/CubeSample"
+Shader "Runtime/Unlit/CubeSample"
 {
     Properties
     {

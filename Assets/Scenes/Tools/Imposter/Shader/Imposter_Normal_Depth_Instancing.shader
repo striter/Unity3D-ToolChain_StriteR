@@ -1,4 +1,4 @@
-Shader "Game/Optimize/Imposter/Normal_Depth_Instancing"
+Shader "Runtime/Optimize/Imposter/Normal_Depth_Instancing"
 {
     Properties
     {

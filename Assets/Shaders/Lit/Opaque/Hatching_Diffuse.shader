@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/Opaque/Hatching_Diffuse"
+﻿Shader "Runtime/Lit/Opaque/Hatching_Diffuse"
 {
 	Properties
 	{
@@ -161,7 +161,7 @@
 			ENDHLSL
 		}
 
-		USEPASS "Game/Additive/ShadowCaster/MAIN"
-		USEPASS "Game/Additive/DepthOnly/MAIN"
+		USEPASS "Runtime/Additive/ShadowCaster/MAIN"
+		USEPASS "Runtime/Additive/DepthOnly/MAIN"
 	}
 }

@@ -1,4 +1,4 @@
-Shader "Game/Surface/AlphaBlend"
+Shader "Runtime/Surface/AlphaBlend"
 {
     Properties
     {

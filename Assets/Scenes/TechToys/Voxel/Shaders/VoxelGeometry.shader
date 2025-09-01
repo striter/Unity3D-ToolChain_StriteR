@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/VoxelGeometry"
+Shader "Runtime/Unfinished/VoxelGeometry"
 {
     Properties
     {
@@ -44,7 +44,7 @@ Shader "Game/Unfinished/VoxelGeometry"
 			ENDHLSL
         }
         
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

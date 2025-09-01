@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/EnergyShield"
+﻿Shader "Runtime/Effects/EnergyShield"
 {
 	Properties
 	{

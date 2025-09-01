@@ -24,7 +24,7 @@ namespace Rendering.Pipeline
     public class NormalTexturePass : ScriptableRenderPass
     {
         private PassiveInstance<Material> m_NormalFromDepthMaterial = new(()=>new Material( RenderResources.FindInclude("Hidden/NormalsFromDepth"))  {hideFlags = HideFlags.HideAndDontSave},GameObject.DestroyImmediate);
-        private PassiveInstance<Shader> m_NormalShader = new(()=>RenderResources.FindInclude("Game/Additive/DepthNormals"));
+        private PassiveInstance<Shader> m_NormalShader = new(()=>RenderResources.FindInclude("Runtime/Additive/DepthNormals"));
         
         private NormalTexturePassData m_Data;
         private static readonly string kTitle = nameof(NormalTexturePass);

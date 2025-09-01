@@ -1,4 +1,4 @@
-﻿Shader "Game/Additive/SceneSelectionPass"
+﻿Shader "Runtime/Additive/SceneSelectionPass"
 {
     SubShader
     {

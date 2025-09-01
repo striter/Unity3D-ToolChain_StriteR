@@ -69,6 +69,6 @@ Shader "Hidden/ProceduralNoise"
 			#pragma fragment ForwardFragment
 			ENDHLSL
 		}
-        USEPASS "Game/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
     }
 }

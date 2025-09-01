@@ -1,4 +1,4 @@
-Shader "Game/Lit/CustomGI"
+Shader "Runtime/Lit/CustomGI"
 {
     Properties
 	{

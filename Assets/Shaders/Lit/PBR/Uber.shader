@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/PBR/Uber"
+﻿Shader "Runtime/Lit/PBR/Uber"
 {
 	Properties
 	{

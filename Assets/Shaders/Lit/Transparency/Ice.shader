@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/Transparency/Ice"
+﻿Shader "Runtime/Lit/Transparency/Ice"
 {
     Properties
     {

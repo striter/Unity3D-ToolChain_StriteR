@@ -1,4 +1,4 @@
-Shader "Game/Lit/Toon/Ocean"
+Shader "Runtime/Lit/Toon/Ocean"
 {
     Properties
     {

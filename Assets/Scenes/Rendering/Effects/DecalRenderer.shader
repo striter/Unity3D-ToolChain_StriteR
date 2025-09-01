@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/Decals"
+Shader "Runtime/Unfinished/Decals"
 {
     Properties
     {

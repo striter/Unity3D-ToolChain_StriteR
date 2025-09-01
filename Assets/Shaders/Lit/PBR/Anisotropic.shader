@@ -1,4 +1,4 @@
-Shader "Game/Lit/PBR/Anisotropic"
+Shader "Runtime/Lit/PBR/Anisotropic"
 {
     Properties
 	{
@@ -216,7 +216,7 @@ Shader "Game/Lit/PBR/Anisotropic"
             #include "Assets/Shaders/Library/Passes/MetaPBR.hlsl"
             ENDHLSL
 		}
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

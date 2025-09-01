@@ -1,4 +1,4 @@
-Shader "Game/Lit/Transparecy/Glass"
+Shader "Runtime/Lit/Transparecy/Glass"
 {
     Properties
     {

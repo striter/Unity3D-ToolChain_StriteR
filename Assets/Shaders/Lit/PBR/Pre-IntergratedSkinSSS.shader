@@ -1,4 +1,4 @@
-Shader "Game/Lit/PBR/Pre-IntergratedSkinSSS"
+Shader "Runtime/Lit/PBR/Pre-IntergratedSkinSSS"
 {
     Properties
 	{
@@ -134,7 +134,7 @@ Shader "Game/Lit/PBR/Pre-IntergratedSkinSSS"
             #include "Assets/Shaders/Library/Passes/MetaPBR.hlsl"
             ENDHLSL
 		}
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

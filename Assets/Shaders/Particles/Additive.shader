@@ -1,4 +1,4 @@
-Shader "Game/Particles/Additive"
+Shader "Runtime/Particles/Additive"
 {
     Properties
     {

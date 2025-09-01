@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Depth/LightVolume"
+﻿Shader "Runtime/Effects/Depth/LightVolume"
 {
     Properties
     {

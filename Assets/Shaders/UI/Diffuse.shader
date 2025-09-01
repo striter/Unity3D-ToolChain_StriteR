@@ -1,4 +1,4 @@
-Shader "Game/UI/Diffuse"
+Shader "Runtime/UI/Diffuse"
 {
     Properties
     {

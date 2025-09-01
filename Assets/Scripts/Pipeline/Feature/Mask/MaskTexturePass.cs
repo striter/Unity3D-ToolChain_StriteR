@@ -11,7 +11,7 @@ namespace Rendering.Pipeline.Mask
     public class MaskTexturePass : ScriptableRenderPass
     {
         private MaskTextureData m_Data;
-        private static readonly PassiveInstance<Shader> m_MaskShader = new(() => RenderResources.FindInclude("Game/Unlit/Color"));
+        private static readonly PassiveInstance<Shader> m_MaskShader = new(() => RenderResources.FindInclude("Runtime/Unlit/Color"));
         private static readonly PassiveInstance<Material> m_MaskMaterial = new(() => {
             var renderMaterial = new Material(m_MaskShader) { hideFlags = HideFlags.HideAndDontSave };
             renderMaterial.SetInt(KShaderProperties.kCull,(int)CullMode.Off);

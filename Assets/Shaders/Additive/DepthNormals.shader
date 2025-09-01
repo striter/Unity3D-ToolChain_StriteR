@@ -1,4 +1,4 @@
-﻿Shader "Game/Additive/DepthNormals"
+﻿Shader "Runtime/Additive/DepthNormals"
 {
     SubShader
     {

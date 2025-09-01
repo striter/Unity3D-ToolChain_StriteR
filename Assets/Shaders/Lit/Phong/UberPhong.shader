@@ -1,4 +1,4 @@
-Shader "Game/Lit/UberPhong"
+Shader "Runtime/Lit/UberPhong"
 {
     Properties
     {
@@ -120,7 +120,7 @@ Shader "Game/Lit/UberPhong"
             ENDHLSL
         }
         
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

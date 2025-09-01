@@ -1,4 +1,4 @@
-Shader "Game/Skybox/AtomsphericScattering"
+Shader "Runtime/Skybox/AtomsphericScattering"
 {
     Properties
     {

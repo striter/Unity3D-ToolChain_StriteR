@@ -1,4 +1,4 @@
-Shader "Game/Additive/ExteriorAO"
+Shader "Runtime/Additive/ExteriorAO"
 {
     Properties
     {

@@ -1,4 +1,4 @@
-﻿Shader "Game/UI/UberSprite"
+﻿Shader "Runtime/UI/UberSprite"
 {   
 	Properties
 	{

@@ -1,4 +1,4 @@
-Shader "Game/Lit/PBR/ClearCoat"
+Shader "Runtime/Lit/PBR/ClearCoat"
 {
     Properties
 	{
@@ -180,7 +180,7 @@ Shader "Game/Lit/PBR/ClearCoat"
             #include "Assets/Shaders/Library/Passes/MetaPBR.hlsl"
             ENDHLSL
 		}
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

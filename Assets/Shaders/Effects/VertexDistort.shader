@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/VertexDistort"
+﻿Shader "Runtime/Effects/VertexDistort"
 {
 	Properties
 	{

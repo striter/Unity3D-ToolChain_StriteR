@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/GeometryOcclusion"
+Shader "Runtime/Unfinished/GeometryOcclusion"
 {
     Properties
     {

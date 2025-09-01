@@ -1,4 +1,4 @@
-﻿Shader "Game/Unlit/DualPassTransparent"
+﻿Shader "Runtime/Unlit/DualPassTransparent"
 {
 	Properties
 	{

@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/TextureMapping"
+Shader "Runtime/Unfinished/TextureMapping"
 {
     Properties
     {
@@ -70,7 +70,7 @@ Shader "Game/Unfinished/TextureMapping"
             ENDHLSL
         }
         
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

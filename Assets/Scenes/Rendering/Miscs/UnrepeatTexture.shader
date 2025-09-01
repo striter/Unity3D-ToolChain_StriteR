@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/UnrepeatTexture"
+Shader "Runtime/Unfinished/UnrepeatTexture"
 {
     Properties
     {
@@ -54,7 +54,7 @@ Shader "Game/Unfinished/UnrepeatTexture"
             ENDHLSL
         }
         
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

@@ -1,4 +1,4 @@
-﻿Shader "Game/Additive/Shadow"
+﻿Shader "Runtime/Additive/Shadow"
 {
     Properties
     {

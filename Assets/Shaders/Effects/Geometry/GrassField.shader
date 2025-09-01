@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Geometry/GrassField"
+﻿Shader "Runtime/Effects/Geometry/GrassField"
 {
     Properties
     {

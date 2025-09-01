@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Depth/ParallaxCloud"
+﻿Shader "Runtime/Effects/Depth/ParallaxCloud"
 {
     Properties
     {
@@ -86,6 +86,6 @@
             }
             ENDHLSL
         }
-        USEPASS "Game/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
     }
 }

@@ -1,4 +1,4 @@
-Shader "Game/Surface/DitherTransparent"
+Shader "Runtime/Surface/DitherTransparent"
 {
     Properties
     {

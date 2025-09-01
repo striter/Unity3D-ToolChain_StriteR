@@ -1,4 +1,4 @@
-Shader "Game/Surface/Rim"
+Shader "Runtime/Surface/Rim"
 {
     Properties
     {

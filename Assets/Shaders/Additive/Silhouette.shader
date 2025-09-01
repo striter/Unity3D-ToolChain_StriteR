@@ -1,4 +1,4 @@
-Shader "Game/Additive/Silhouette"
+Shader "Runtime/Additive/Silhouette"
 {
     Properties
     {
@@ -84,7 +84,7 @@ Shader "Game/Additive/Silhouette"
             ENDHLSL
         }
         
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

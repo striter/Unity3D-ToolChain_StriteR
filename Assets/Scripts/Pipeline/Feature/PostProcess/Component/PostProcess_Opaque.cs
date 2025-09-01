@@ -105,11 +105,11 @@ namespace Rendering.PostProcess
         public FOpaqueCore()
         {
             m_HighlightBlur = new FBlursCore();
-            m_RenderBackDepth = new Material(RenderResources.FindInclude("Game/Additive/DepthOnly")){hideFlags = HideFlags.HideAndDontSave};
+            m_RenderBackDepth = new Material(RenderResources.FindInclude("Runtime/Additive/DepthOnly")){hideFlags = HideFlags.HideAndDontSave};
             m_RenderBackDepth.SetInt(KShaderProperties.kColorMask,(int)ColorWriteMask.Red);
             m_RenderBackDepth.SetInt(KShaderProperties.kZTest,(int)CompareFunction.Greater);
             m_RenderBackDepth.SetInt(KShaderProperties.kCull,(int)CullMode.Front);
-            m_RenderFrontDepth = new Material(RenderResources.FindInclude("Game/Additive/DepthOnly")) { hideFlags = HideFlags.HideAndDontSave };
+            m_RenderFrontDepth = new Material(RenderResources.FindInclude("Runtime/Additive/DepthOnly")) { hideFlags = HideFlags.HideAndDontSave };
             m_RenderFrontDepth.SetInt(KShaderProperties.kColorMask,(int)ColorWriteMask.Green);
             m_RenderFrontDepth.SetInt(KShaderProperties.kZTest,(int)CompareFunction.Less);
             m_RenderFrontDepth.SetInt(KShaderProperties.kCull,(int)CullMode.Back);

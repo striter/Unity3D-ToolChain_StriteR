@@ -1,4 +1,4 @@
-﻿Shader "Game/Particles/ChromaticAberration"
+﻿Shader "Runtime/Particles/ChromaticAberration"
 {
 	Properties
 	{

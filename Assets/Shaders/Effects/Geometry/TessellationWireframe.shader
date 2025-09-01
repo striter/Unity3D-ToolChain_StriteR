@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Geometry/TessellationWireframe"
+﻿Shader "Runtime/Effects/Geometry/TessellationWireframe"
 {
     Properties
     {

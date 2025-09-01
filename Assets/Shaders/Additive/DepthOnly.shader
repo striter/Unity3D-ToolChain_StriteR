@@ -1,4 +1,4 @@
-﻿Shader "Game/Additive/DepthOnly"
+﻿Shader "Runtime/Additive/DepthOnly"
 {
     SubShader
     {

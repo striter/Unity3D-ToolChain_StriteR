@@ -68,7 +68,7 @@ Shader "Hidden/Shadowmap"
 			#pragma fragment ForwardFragment
 			ENDHLSL
 		}
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        UsePass "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        UsePass "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

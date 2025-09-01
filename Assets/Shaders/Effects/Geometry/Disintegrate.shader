@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Geometry/Disintegrate"
+﻿Shader "Runtime/Effects/Geometry/Disintegrate"
 {
     Properties
     {

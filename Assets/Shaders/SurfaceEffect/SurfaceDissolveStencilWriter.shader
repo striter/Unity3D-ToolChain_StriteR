@@ -1,4 +1,4 @@
-Shader "Game/Surface/DissolveStencilWriter"
+Shader "Runtime/Surface/DissolveStencilWriter"
 {
     Properties
     {

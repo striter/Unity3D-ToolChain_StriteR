@@ -1,4 +1,4 @@
-Shader "Game/Lit/Toon/Foam"
+Shader "Runtime/Lit/Toon/Foam"
 {
     Properties
     {
@@ -78,7 +78,7 @@ Shader "Game/Lit/Toon/Foam"
             ENDHLSL
         }
         
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

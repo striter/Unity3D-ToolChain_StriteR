@@ -1,4 +1,4 @@
-﻿Shader "Game/Unlit/Color"
+﻿Shader "Runtime/Unlit/Color"
 {
 	Properties
 	{

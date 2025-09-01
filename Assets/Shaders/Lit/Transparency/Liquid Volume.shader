@@ -1,4 +1,4 @@
-Shader "Game/Lit/Transparency/LiquidVolume"
+Shader "Runtime/Lit/Transparency/LiquidVolume"
 {
     Properties
     {

@@ -1,4 +1,4 @@
-Shader "Game/UI/GrabTexture"
+Shader "Runtime/UI/GrabTexture"
 {   
 	Properties
 	{

@@ -125,7 +125,7 @@ Shader "Hidden/Unfinished/Shadows"
 			#pragma fragment ForwardFragment
 			ENDHLSL
 		}
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

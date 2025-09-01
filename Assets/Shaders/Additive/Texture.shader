@@ -1,4 +1,4 @@
-﻿Shader "Game/Additive/Texture"
+﻿Shader "Runtime/Additive/Texture"
 {
     Properties
     {

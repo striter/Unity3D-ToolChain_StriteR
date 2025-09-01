@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Depth/GeometryFog"
+﻿Shader "Runtime/Effects/Depth/GeometryFog"
 {
     Properties
     {

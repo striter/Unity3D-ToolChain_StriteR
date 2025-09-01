@@ -1,4 +1,4 @@
-Shader "Game/UI/SpriteDissolve"
+Shader "Runtime/UI/SpriteDissolve"
 {   
 	Properties
 	{

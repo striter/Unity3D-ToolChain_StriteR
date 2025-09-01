@@ -1,4 +1,4 @@
-﻿Shader "Game/Lit/Opaque/Ramp_Specular"
+﻿Shader "Runtime/Lit/Opaque/Ramp_Specular"
 {
 	Properties
 	{
@@ -132,7 +132,7 @@
 			ENDHLSL
 		}
 
-		USEPASS "Game/Additive/ShadowCaster/MAIN"
-		USEPASS "Game/Additive/DepthOnly/MAIN"
+		USEPASS "Runtime/Additive/ShadowCaster/MAIN"
+		USEPASS "Runtime/Additive/DepthOnly/MAIN"
 	}
 }

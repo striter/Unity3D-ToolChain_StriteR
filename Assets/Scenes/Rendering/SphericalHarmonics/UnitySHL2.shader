@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/UnitySHL2"
+Shader "Runtime/Unfinished/UnitySHL2"
 {
     SubShader
     {

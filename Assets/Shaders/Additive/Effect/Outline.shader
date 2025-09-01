@@ -1,4 +1,4 @@
-﻿Shader "Game/Additive/Outline"
+﻿Shader "Runtime/Additive/Outline"
 {
 	Properties
 	{

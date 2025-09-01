@@ -1,4 +1,4 @@
-﻿Shader "Game/Effects/Depth/Decal"
+﻿Shader "Runtime/Effects/Depth/Decal"
 {
 	Properties
 	{

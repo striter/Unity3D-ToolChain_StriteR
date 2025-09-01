@@ -1,4 +1,4 @@
-Shader "Game/Particles/AlphaBlend"
+Shader "Runtime/Particles/AlphaBlend"
 {
     Properties
     {

@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/Lambert_BlinnPhong"
+Shader "Runtime/Unfinished/Lambert_BlinnPhong"
 {
     Properties
     {
@@ -84,7 +84,7 @@ Shader "Game/Unfinished/Lambert_BlinnPhong"
             ENDHLSL
         }
         
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

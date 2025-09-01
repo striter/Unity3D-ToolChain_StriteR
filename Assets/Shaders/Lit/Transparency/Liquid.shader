@@ -1,4 +1,4 @@
-Shader "Game/Lit/Transparency/Liquid"
+Shader "Runtime/Lit/Transparency/Liquid"
 {
     Properties
     {
@@ -84,7 +84,7 @@ Shader "Game/Lit/Transparency/Liquid"
             ENDHLSL
         }
         
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

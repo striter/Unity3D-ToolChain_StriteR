@@ -1,4 +1,4 @@
-Shader "Game/Lit/Vegetation"
+Shader "Runtime/Lit/Vegetation"
 {
     Properties
     {

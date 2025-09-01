@@ -1,4 +1,4 @@
-Shader "Game/Unfinished/SpectralVisualize"
+Shader "Runtime/Unfinished/SpectralVisualize"
 {
     Properties
     {
@@ -65,7 +65,7 @@ Shader "Game/Unfinished/SpectralVisualize"
             ENDHLSL
         }
         
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }

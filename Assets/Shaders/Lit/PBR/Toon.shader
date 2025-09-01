@@ -1,4 +1,4 @@
-Shader "Game/Lit/PBR/Toon"
+Shader "Runtime/Lit/PBR/Toon"
 {
     Properties
 	{
@@ -118,7 +118,7 @@ Shader "Game/Lit/PBR/Toon"
             #include "Assets/Shaders/Library/Passes/MetaPBR.hlsl"
             ENDHLSL
 		}
-        USEPASS "Game/Additive/DepthOnly/MAIN"
-        USEPASS "Game/Additive/ShadowCaster/MAIN"
+        USEPASS "Runtime/Additive/DepthOnly/MAIN"
+        USEPASS "Runtime/Additive/ShadowCaster/MAIN"
     }
 }
