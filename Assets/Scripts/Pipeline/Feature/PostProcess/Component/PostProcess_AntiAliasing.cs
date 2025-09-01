@@ -89,7 +89,6 @@ namespace Rendering.PostProcess
         private static readonly int kHistoryBufferID = Shader.PropertyToID("_HistoryBuffer");
         private static readonly float2[] kJitters = new float2[kJitterAmount].Remake((i,p)=>(ULowDiscrepancySequences.Halton2D((uint)i) - .5f) );
         private static readonly Dictionary<int, TAAHistoryBuffer> m_Buffers = new();
-        private Matrix4x4 m_ViewMatrix,m_ProjectionMatrix;
         private Camera m_Camera;
         class TAAHistoryBuffer
         {
@@ -124,16 +123,20 @@ namespace Rendering.PostProcess
             var jitter = kJitters[jitterIndex];
             jitterIndex = (jitterIndex + 1) % kJitterAmount;
             var projectionMatrix =  m_Camera.projectionMatrix;
-            var viewMatrix = m_Camera.worldToCameraMatrix;
-            m_ViewMatrix = viewMatrix;
-            var translate = Matrix4x4.Translate(new Vector3(
+            var jitterTranslation = Matrix4x4.Translate(new Vector3(
                 jitter.x / _renderingData.cameraData.cameraTargetDescriptor.width,
                 jitter.y / _renderingData.cameraData.cameraTargetDescriptor.height, 0));
-            m_ProjectionMatrix = translate * projectionMatrix;
-            // m_Camera.projectionMatrix = projectionMatrix;
+            m_Camera.projectionMatrix = jitterTranslation * projectionMatrix;
+            m_Camera.nonJitteredProjectionMatrix = projectionMatrix;
             return this;
         }
-        
+
+        public override void FrameCleanup(CommandBuffer cmd)
+        {
+            base.FrameCleanup(cmd);
+            m_Camera.ResetProjectionMatrix();
+        }
+
         public void Dispose()
         {
             foreach (var buffer in m_Buffers.Values)
@@ -161,12 +164,9 @@ namespace Rendering.PostProcess
             m_FirstExecution = true;
             return m_CurrentBuffer;
         }
+        
         public override void Execute(ScriptableRenderContext _context, ref RenderingData _renderingData)
         {
-            var cmd = CommandBufferPool.Get("TAA PrePass");
-            cmd.SetViewProjectionMatrices(m_ViewMatrix, m_ProjectionMatrix);
-            _context.ExecuteCommandBuffer(cmd);
-            CommandBufferPool.Release(cmd);
         }
 
         public void ExecuteResolve(CommandBuffer _cmd, RenderTargetIdentifier _src, RenderTargetIdentifier _dst,RenderTextureDescriptor _descriptor,

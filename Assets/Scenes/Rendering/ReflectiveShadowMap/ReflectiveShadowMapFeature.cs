@@ -191,10 +191,8 @@ namespace Rendering.Pipeline
             buffer.Clear();
             var worldToShadowProjection = UShadow.CalculateWorldToShadowMatrix(projMatrix,viewMatrix);
             buffer.SetGlobalMatrix(KShaderProperties.kWorldToShadow,worldToShadowProjection);
-            viewMatrix = _renderingData.cameraData.camera.worldToCameraMatrix;
-            projMatrix = _renderingData.cameraData.camera.nonJitteredProjectionMatrix;
             
-            buffer.SetViewProjectionMatrices(viewMatrix,projMatrix);
+            buffer.SetViewProjectionMatrices(_renderingData.cameraData.camera.worldToCameraMatrix,_renderingData.cameraData.camera.nonJitteredProjectionMatrix);
             if(m_Data.debug)
                 buffer.SetRenderTarget(_renderingData.cameraData.renderer.cameraColorTargetHandle);
             else
