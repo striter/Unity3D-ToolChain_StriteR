@@ -13,12 +13,11 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
-  - _NDF_COOKTORRANCE
-  - _NORMALMAP
-  - _PARALLAX
-  - _VF_GGX
+  - _CULLBACK
+  - _DECALCLIP_SPHERE
+  - _DECALTYPE__SPHERE
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -36,7 +35,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CausticTex:
-        m_Texture: {fileID: 2800000, guid: 8df9a015bafb352478b0caed4a958783, type: 3}
+        m_Texture: {fileID: 2800000, guid: 037e92c87ea3cf340af3836e9715dea9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DepthTex:
@@ -68,7 +67,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 51a26c44afc442f44bceec5eac2978a3, type: 3}
+        m_Texture: {fileID: 2800000, guid: eec618cb356b9594e91e7778126bb5dc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Matcap:
@@ -119,7 +118,7 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _Chromatic: 1
+    - _Chromatic: 1.64
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 0
@@ -134,13 +133,13 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _GlossMapScale: 0
-    - _Glossiness: 0
-    - _GlossyReflections: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
     - _Metallic: 0
     - _NDF: 1
     - _OcclusionStrength: 1
-    - _Parallax: 0.005
+    - _Parallax: 0.02
     - _ParallaxCount: 16
     - _QueueOffset: 0
     - _ReceiveShadows: 1
@@ -154,17 +153,18 @@ Material:
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
-    - _Strength: 1
+    - _Strength: 5
     - _Surface: 0
     - _VF: 1
+    - _VerticalFadeDistance: 0.27
     - _WorkflowMode: 1
     - _ZTest: 2
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _CausticFlowST1: {r: 0.1, g: 0.1, b: 0.1, a: 0.1}
-    - _CausticFlowST2: {r: 0.1, g: 0.1, b: 0.1, a: 0.1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CausticFlowST1: {r: 0.3, g: 0.5, b: 0.01, a: -0.05}
+    - _CausticFlowST2: {r: 0.6, g: 0.6, b: -0.01, a: -0.01}
+    - _Color: {r: 1, g: 1, b: 1, a: 0.43137255}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

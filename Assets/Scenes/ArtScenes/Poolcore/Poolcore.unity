@@ -760,6 +760,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Poolcore_Corridor
       objectReference: {fileID: 0}
+    - target: {fileID: 5804910090832887940, guid: eb3e911724ae0ab4eabcc806e0eeb998,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 427f642e516dd894a97b05ba25001581, type: 2}
+    - target: {fileID: 6234184001707008695, guid: eb3e911724ae0ab4eabcc806e0eeb998,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234184001707008695, guid: eb3e911724ae0ab4eabcc806e0eeb998,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234184001707008695, guid: eb3e911724ae0ab4eabcc806e0eeb998,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234184001707008695, guid: eb3e911724ae0ab4eabcc806e0eeb998,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234184001707008695, guid: eb3e911724ae0ab4eabcc806e0eeb998,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8040383604771858503, guid: eb3e911724ae0ab4eabcc806e0eeb998,
         type: 3}
       propertyPath: m_LocalPosition.x
