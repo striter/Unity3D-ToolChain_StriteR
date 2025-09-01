@@ -796,7 +796,7 @@ MonoBehaviour:
   renderSettingsRTPVExport: 1
   renderSettingsRTPVSceneView: 1
   renderSettingsRTPVHDR: 0
-  renderSettingsRTPVWidth: 1077
+  renderSettingsRTPVWidth: 1043
   renderSettingsRTPVHeight: 422
   lastBakeTime: 0
   enlightenWarningShown: 0

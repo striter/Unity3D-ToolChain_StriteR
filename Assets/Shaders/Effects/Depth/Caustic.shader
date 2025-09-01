@@ -5,7 +5,8 @@
     	[NoScaleOffset]_CausticTex("Caustic Tex",2D)="black"{}
     	[Vector4]_CausticFlowST1("Flow ST 1",Vector)=(.1,.1,.1,.1)
     	[Vector4]_CausticFlowST2("Flow ST 2",Vector)=(.1,.1,.1,.1)
-    	_Strength("Caustic Strength",Range(0.1,5))=1
+		_VerticalFadeDistance("Vertical Fade Distance",Range(0,3))=0.1
+    	_Strength("Caustic Strength",Range(0.1,10))=1
     	_Chromatic("Chromatic",Range(0,5))=1
 	}
 	SubShader
@@ -14,7 +15,7 @@
 		Pass
 		{
 			Blend One One
-			Cull Front
+			Cull Back
 			ZWrite Off
 			ZTest LEqual
 
@@ -23,7 +24,7 @@
 			#pragma fragment frag
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
-
+			
 			struct v2f
 			{
 				half4 positionCS:SV_POSITION;
@@ -39,6 +40,7 @@
 				INSTANCING_PROP(float4,_CausticFlowST1)
 				INSTANCING_PROP(float4,_CausticFlowST2)
 				INSTANCING_PROP(float,_Chromatic)
+				INSTANCING_PROP(float,_VerticalFadeDistance)
 			CBUFFER_END
 			v2f vert(half3 positionOS:POSITION)
 			{
@@ -82,9 +84,7 @@
             	float2 causticBackward=TransformTex_Flow(causticUV,_CausticFlowST2);
 
             	float3 caustic = min(SampleCausticChromatic(causticForward),SampleCausticChromatic(causticBackward));
-				caustic *= saturate(verticalDistance);
-				// half atten=MainLightRealtimeShadow(TransformWorldToShadowCoord(positionWSDepth));
-				// caustic*=atten;
+				caustic *= saturate(invlerp(0,INSTANCE(_VerticalFadeDistance),verticalDistance));
 				return float4(caustic * _Strength,1);
 			}
 			ENDHLSL

@@ -259,7 +259,6 @@
             	
             	half3 indirectDiffuse = IndirectDiffuse_SH(normalWS);
             	half3 indirectSpecular = IndirectCubeSpecular(reflectDirWS,1,INSTANCE(_ReflectionOffset));
-            	
             	float3 deepSurfaceColor = SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,deepSurfaceUV).rgb*indirectDiffuse;
 
             	#if _CAUSTIC
