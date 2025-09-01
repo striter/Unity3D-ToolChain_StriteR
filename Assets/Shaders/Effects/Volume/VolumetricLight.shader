@@ -4,7 +4,7 @@ Shader "Unlit/VolumetricLight"
     {
         [ColorUsage(false,true)]_Color("Color",Color) = (1,1,1,1)
         _Pow("LightPow",Range(0.1,5)) = 1
-        [Enum(_16,16,_32,32,_64,64,_128,128,_256,256)]_MarchTimes("MarchTimes",int)=64
+        [Enum(_4,4,_8,8,_16,16,_32,32,_64,64,_128,128,_256,256)]_MarchTimes("MarchTimes",int)=32
         [Toggle(_DITHER)]_DITHER("Dither",int) = 0
         
     }
