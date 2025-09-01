@@ -48,17 +48,17 @@ public abstract class ConditionAttribute : PropertyAttribute
 public class FoldoutAttribute : ConditionAttribute
 {
     public override EConditionAction Condition => EConditionAction.AllEquals;
-    public FoldoutAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
-    public FoldoutAttribute(string _foldoutFieldName1, object _refValue1, string _foldoutFieldName2, object _refValue2) : base(new KeyValuePair<string, object[]>(_foldoutFieldName1, new [] { _refValue1 }), new KeyValuePair<string, object[]>(_foldoutFieldName2, new [] { _refValue2 })) { }
-    public FoldoutAttribute(string _foldoutFieldName1, object _refValue1, string _foldoutFieldName2, object[] _refValue2) : base(new KeyValuePair<string, object[]>(_foldoutFieldName1, new [] { _refValue1 }), new KeyValuePair<string, object[]>(_foldoutFieldName2,  _refValue2 )) { }
+    public FoldoutAttribute(string _fieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_fieldName, _refValues)) { }
+    public FoldoutAttribute(string _fieldName1, object _refValue1, string _fieldName2, object _refValue2) : base(new KeyValuePair<string, object[]>(_fieldName1, new [] { _refValue1 }), new KeyValuePair<string, object[]>(_fieldName2, new [] { _refValue2 })) { }
+    public FoldoutAttribute(string _fieldName1, object _refValue, string _fieldName2, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_fieldName1, new [] { _refValue }), new KeyValuePair<string, object[]>(_fieldName2,  _refValues )) { }
 }
 
 [AttributeUsage(AttributeTargets.Field)]
 public class FoldAttribute : ConditionAttribute
 {
     public override EConditionAction Condition => EConditionAction.NonAnyEquals;
-    public FoldAttribute(string _foldoutFieldName) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, null)) { }
-    public FoldAttribute(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+    public FoldAttribute(string _fieldName) : base(new KeyValuePair<string, object[]>(_fieldName, null)) { }
+    public FoldAttribute(string _fieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_fieldName, _refValues)) { }
 }
 
 [AttributeUsage(AttributeTargets.Method)]
@@ -75,14 +75,14 @@ public class InspectorButtonAttribute : ConditionAttribute
 public class InspectorButtonFoldout : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.AllEquals;
-    public InspectorButtonFoldout(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+    public InspectorButtonFoldout(string _fieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_fieldName, _refValues)) { }
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class InspectorButtonFold : InspectorButtonAttribute
 {
     public override EConditionAction Condition => EConditionAction.NonAnyEquals;
-    public InspectorButtonFold(string _foldoutFieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_foldoutFieldName, _refValues)) { }
+    public InspectorButtonFold(string _fieldName, params object[] _refValues) : base(new KeyValuePair<string, object[]>(_fieldName, _refValues)) { }
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]

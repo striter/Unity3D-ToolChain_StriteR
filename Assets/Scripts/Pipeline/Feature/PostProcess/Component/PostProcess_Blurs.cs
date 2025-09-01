@@ -33,7 +33,6 @@ namespace Rendering.PostProcess
         DualFiltering_UpSample,
         Grainy,
         
-        
         //Shaped
         Bokeh,
         Hexagon_Vertical,
@@ -58,7 +57,7 @@ namespace Rendering.PostProcess
     }
     
     [Serializable]
-    public struct DBlurs:IPostProcessParameter
+    public struct DBlurs : IPostProcessParameter
     {
         public EBlurType blurType;
         [Fold(nameof(blurType), EBlurType.None)]
@@ -74,7 +73,7 @@ namespace Rendering.PostProcess
         
         public bool Validate() => blurType != EBlurType.None && blurSize > 0 && iteration > 0 && downSample > 0;
         
-        public static readonly DBlurs kDefault = new DBlurs() {
+        public static readonly DBlurs kDefault = new() {
             blurSize = 1.3f,
             downSample = 2,
             iteration = 7,
@@ -98,9 +97,9 @@ namespace Rendering.PostProcess
         public override bool OpaqueProcess => false;
         public override EPostProcess Event => EPostProcess.DepthOfField;
 
-        public EFocal m_Focal;
-        public bool m_AnchorBasedFocal;
-        [Foldout(nameof(m_AnchorBasedFocal),true,nameof(m_Focal),new []{EFocal._DOF,EFocal._DOF_MASK,EFocal._TILT_SHIFT})] public float3 m_FocalAnchor;
+        [Title] public EFocal m_Focal;
+        [Foldout(nameof(m_Focal),EFocal._DOF,EFocal._DOF_MASK,EFocal._TILT_SHIFT)] public bool m_AnchorBasedFocal;
+        [Foldout(nameof(m_AnchorBasedFocal),true,nameof(m_Focal), EFocal._DOF, EFocal._DOF_MASK, EFocal._TILT_SHIFT)] public float3 m_FocalAnchor;
         [Foldout(nameof(m_Focal),EFocal._DOF,EFocal._DOF_MASK,EFocal._TILT_SHIFT)] public RangeFloat m_FocalData;
         [Foldout(nameof(m_Focal),EFocal._MASK,EFocal._DOF_MASK)] public MaskTextureData m_FocalMaskData;
         [Foldout(nameof(m_Focal), EFocal._TILT_SHIFT),Min(0)] public float m_TiltShiftDistance;

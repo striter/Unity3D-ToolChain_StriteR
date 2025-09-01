@@ -48,10 +48,10 @@
             half4 frag(v2f i) : SV_Target
             {
                 float2 screenUV = TransformHClipToNDC(i.positionHCS);
-                float rawDepth=SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r;
+                float rawDepth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,sampler_CameraDepthTexture,screenUV).r;
                 float3 positionOS = TransformWorldToObject( TransformNDCToWorld(screenUV,rawDepth));
                 float dst = length(positionOS);
-                float pointLightStrength = (pow3(1-dst*2))*step(dst,.5);
+                float pointLightStrength = pow3(1-dst*2)*step(dst,.5);
                 return float4(pointLightStrength * _Color.rgb*_Color.a,1);
             }
             ENDHLSL

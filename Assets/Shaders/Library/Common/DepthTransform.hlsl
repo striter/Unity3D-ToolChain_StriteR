@@ -107,8 +107,6 @@ float EyeToRawDepth(float _eyeDepth)
         return EyeToRawDepthPerspective(_eyeDepth,_ZBufferParams);
 }
 
-//TL TR BR BL
-float4 _FrustumCornersScaling;
 float RawToDistance(float _rawDepth,float2 _uv)
 {
     float eyeDepth=RawToEyeDepth(_rawDepth);
