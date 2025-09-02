@@ -9,8 +9,11 @@
     	[HideInInspector]_RotationMatrix("",Vector)=(0,0,0,0)
     	
     	[Header(Flow)]
-    	_FlowST1("Flow ST 1",Vector)=(1,1,1,1)
-    	_FlowST2("Flow ST 2",Vector)=(1,1,1,1)
+    	
+    	[TexFlowAdditional(_Flow2)]_Flow1("Caustic Flow",Vector)=(1,.1,1,0)
+		[HideInInspector]_Flow2("Caustic Flow 2",Vector)=(1,1,1,0)
+		[HideInInspector]_Flow1_ST("",Vector)=(1,1,.1,0)
+		[HideInInspector]_Flow2_ST("",Vector)=(1,1,.1,0)
     	
     	[Toggle(_WAVE)]_Wave("Vertex Wave",int)=0
     	[Header(Wave 1)]
@@ -27,7 +30,7 @@
     	_SpecularStrength("Specular Strength",Range(0,10))=1
     	
     	[Header(_Reflection)]
-    	_ReflectionColor("Color",Color)=(1,1,1,1)
+    	[ColorUsage(false,true)]_ReflectionColor("Color",Color)=(1,1,1,1)
     	_ReflectionOffset("Indirect Specular Offset",Range(-7,7)) = 8
     	_ReflectionDistort("Distort",Range(0,1))=0.1	
     	
@@ -91,6 +94,7 @@
             
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
+			#include "Assets/Shaders/Library/Lighting/ScreenSpacePlanarReflection.hlsl"
 
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
             TEXTURE2D(_CausticTex);SAMPLER(sampler_CausticTex);
@@ -101,8 +105,8 @@
 				INSTANCING_PROP(float4,_Color)
 				INSTANCING_PROP(float,_NormalStrength)
 				INSTANCING_PROP(float4,_RotationMatrix)
-				INSTANCING_PROP(float4,_FlowST1)
-				INSTANCING_PROP(float4,_FlowST2)
+				INSTANCING_PROP(float4,_Flow1_ST)
+				INSTANCING_PROP(float4,_Flow2_ST)
 
 				INSTANCING_PROP(float4,_WaveST1)
 				INSTANCING_PROP(float,_WaveAmplitude1)
@@ -117,7 +121,7 @@
 				INSTANCING_PROP(float,_RefractionDistance)
 				INSTANCING_PROP(float,_RefractionAmount)
             
-				INSTANCING_PROP(float4,_ReflectionColor)
+				INSTANCING_PROP(float3,_ReflectionColor)
 				INSTANCING_PROP(int,_ReflectionOffset)
 				INSTANCING_PROP(float,_ReflectionDistort)
             
@@ -228,8 +232,8 @@
             	float3 albedo=INSTANCE(_Color).rgb;
             	float2 screenUV=TransformHClipToNDC(i.positionHCS);
             	float2 uv = mul(rotation, positionWS.xz);
-            	float2 uv1= TransformTex_Flow(uv,INSTANCE(_FlowST1));
-            	float2 uv2=TransformTex_Flow(uv,INSTANCE(_FlowST2));
+            	float2 uv1= TransformTex_Flow(uv,INSTANCE(_Flow1_ST));
+            	float2 uv2=TransformTex_Flow(uv,INSTANCE(_Flow2_ST));
 				float normalDelta = 1;
             	#if _NORMALTEX
             		float3 normalTS1 = DecodeNormalMap(SAMPLE_TEXTURE2D(_NormalTex,sampler_NormalTex,uv1));
@@ -240,7 +244,6 @@
 					normalWS = lerp(normalWS,normalize(mul(transpose(TBNWS), normalTS)),INSTANCE(_NormalStrength));
             	#endif
 
-            	float3 reflectDirWS = normalize(reflect(cameraDirWS,lerp(srcNormalWS,normalWS,INSTANCE(_ReflectionDistort))));
             	float3 lightPositionWS = i.positionWS+float3(normalWS.x,0,normalWS.z)*INSTANCE(_RefractionAmount);
             	Light light = GetMainLight(TransformWorldToShadowCoord(lightPositionWS),lightPositionWS,unity_ProbesOcclusion);
 				half3 lightDirWS=normalize(light.direction);
@@ -258,7 +261,11 @@
             	#endif
             	
             	half3 indirectDiffuse = IndirectDiffuse_SH(normalWS);
+            	float3 reflectDirWS = normalize(reflect(cameraDirWS,lerp(srcNormalWS,normalWS,INSTANCE(_ReflectionDistort))));
             	half3 indirectSpecular = IndirectCubeSpecular(reflectDirWS,1,INSTANCE(_ReflectionOffset));
+            	float4 reflectionSample = IndirectSSRSpecular(screenUV,eyeDepthSurface,normalTS,INSTANCE(_ReflectionDistort));
+            	indirectSpecular = lerp(indirectSpecular,reflectionSample.rgb,reflectionSample.a);
+            	
             	float3 deepSurfaceColor = SAMPLE_TEXTURE2D(_CameraOpaqueTexture,sampler_CameraOpaqueTexture,deepSurfaceUV).rgb*indirectDiffuse;
 
             	#if _CAUSTIC
@@ -281,13 +288,7 @@
             	#endif
 
             	
-            	float3 aboveSurfaceColor=albedo*indirectDiffuse+indirectSpecular;
-            	
-            	float4 reflectionSample = IndirectSSRSpecular(screenUV,eyeDepthSurface,normalTS);
-            	float4 reflectionColor =  INSTANCE(_ReflectionColor);
-
-            	float reflectionAmount = max(step(0.01,reflectionSample.r),(1-light.shadowAttenuation));
-				aboveSurfaceColor = lerp(aboveSurfaceColor,aboveSurfaceColor * reflectionColor.rgb,reflectionAmount*_ReflectionColor.a);
+            	float3 aboveSurfaceColor=albedo*indirectDiffuse+indirectSpecular * INSTANCE(_ReflectionColor).rgb;
             	
             	float specular=pow(max(0,dot(normalWS,normalize(lightDirWS+viewDirWS))),INSTANCE(_SpecularAmount)*40);
             	specular*=INSTANCE(_SpecularStrength);

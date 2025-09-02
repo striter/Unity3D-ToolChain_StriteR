@@ -236,12 +236,13 @@
 			#endif
 				return mainLight;
 			}
-			#define GET_MAINLIGHT(i) GetMainLight(i.positionWS,i.normalWS) 
+			#define GET_MAINLIGHT(i) GetMainLight(i.positionWS,i.normalWS)
+			#include "Assets/Shaders/Library/Lighting/ScreenSpacePlanarReflection.hlsl"
 			float3 GetGlobalIllumination(v2ff i,BRDFSurface surface,Light mainLight)
 			{
 				half3 indirectDiffuse = IndirectDiffuse(mainLight,i,surface.normal);
 			    half3 specular = IndirectCubeSpecular(surface.reflectDir, surface.perceptualRoughness,0);
-			    half4 indirectSpecular = IndirectSSRSpecular(surface.positionNDC,RawToEyeDepth(i.positionHCS.z / max(FLT_EPS,i.positionHCS.w)), surface.normalTS);
+			    half4 indirectSpecular = IndirectSSRSpecular(surface.positionNDC,RawToEyeDepth(i.positionHCS.z / max(FLT_EPS,i.positionHCS.w)), surface.normalTS,.1);
 			    specular = lerp(specular,indirectSpecular.rgb,indirectSpecular.a);
 			    return BRDFGlobalIllumination(surface,indirectDiffuse,specular);
 			}

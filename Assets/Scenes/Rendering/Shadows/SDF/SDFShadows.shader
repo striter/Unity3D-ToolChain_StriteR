@@ -56,14 +56,10 @@ Shader "Hidden/Unfinished/Shadows"
 			float4 _SDFParameters1[MAX_SDF_COUNT];
 			float4 _SDFParameters2[MAX_SDF_COUNT];
 			
-			SDFOutput SDF(GRay _ray,float3 _positionWS)
+			float SDF(GRay _ray,float3 _positionWS)
 			{
-				SDFOutput output;
-				output.distance = FLT_MAX;
-				output.color = 0;
+				float output = FLT_MAX;
 
-				SDFInput input = SDFInput_Ctor(_positionWS,0);
-				
 				int elementIndex = 0;
 				for(int i=0;i<_SDFVolumeCount;i++)
 				{
@@ -71,7 +67,7 @@ Shader "Hidden/Unfinished/Shadows"
 					GSphere sphere = GSphere_Ctor(sphereParam.xyz,sphereParam.w);
 					int elementStartIndex = elementIndex;
 					elementIndex = elementIndex + _SDFVolumeIndexes[i];
-					// output = SDFUnion(output,GSphere_SDF(sphere,input));
+					// output = min(output,sphere.SDF(_positionWS));
 					if(sum(Distance(sphere,_ray)) > 0)
 					{
 						for(int j=elementStartIndex;j<elementIndex;j++)
@@ -79,7 +75,7 @@ Shader "Hidden/Unfinished/Shadows"
 							float4 parameters1 = _SDFParameters1[j];
 							float4 parameters2 = _SDFParameters2[j];
 							GCapsule capsule = GCapsule_Ctor(parameters1.xyz,parameters1.w,parameters2.xyz,parameters2.w);
-							output = SDFUnion(output,GCapsule_SDF(capsule,input));
+							output = min(output,capsule.SDF(_positionWS));
 						}
 					}
 				}
@@ -97,7 +93,7 @@ Shader "Hidden/Unfinished/Shadows"
 			    float t = _bias;
 			    for( int i=0; i<_maxSteps && t<maxMarchLength; i++ )
 			    {
-			        float h = SDF(shadowRay,shadowRay.GetPoint(t)).distance;
+			        float h = SDF(shadowRay,shadowRay.GetPoint(t));
 			        res = min( res, h/(_softConstant*t) );
 			        t += clamp(h, 0.005, 0.50);
 			        if( res<-1.0 || t>maxMarchLength ) break;

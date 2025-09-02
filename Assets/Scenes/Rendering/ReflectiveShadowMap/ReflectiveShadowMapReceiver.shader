@@ -77,7 +77,7 @@ Shader "Hidden/ReflectiveShadowMapReceiver"
 			#if _RSM
 				indirectDiffuse += SAMPLE_TEXTURE2D(_RSMSample,sampler_RSMSample,surface.positionNDC) * _RSMParams.x;
 			#endif
-				half3 indirectSpecular = IndirectSpecular(surface.reflectDir,surface.perceptualRoughness,1000);
+				half3 indirectSpecular = IndirectCubeSpecular(surface.reflectDir,surface.perceptualRoughness,1000);
 				return BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 			}
 			

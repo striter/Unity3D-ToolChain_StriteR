@@ -68,43 +68,6 @@ half3 IndirectCubeSpecular(half3 reflectDir, float perceptualRoughness,int offse
     return SampleCubeSpecular(TEXTURECUBE_ARGS(unity_SpecCube0,samplerunity_SpecCube0),unity_SpecCube0_HDR,reflectDir,perceptualRoughness,offset);
 }
 
-//Indirect Specular
-sampler2D _CameraReflectionTexture0;
-sampler2D _CameraReflectionTexture1;
-sampler2D _CameraReflectionTexture2;
-sampler2D _CameraReflectionTexture3;
-
-UNITY_INSTANCING_BUFFER_START(UnityPerMaterial_PlanarReflection)
-    INSTANCING_PROP(uint, _CameraReflectionTextureOn)
-    INSTANCING_PROP(uint, _CameraReflectionTextureIndex)
-    INSTANCING_PROP(half, _CameraReflectionNormalDistort)
-UNITY_INSTANCING_BUFFER_END(UnityPerMaterial_PlanarReflection)
-
-sampler2D _ScreenSpaceReflectionTexture;
-
-half4 IndirectSSRSpecular(float2 screenUV,float eyeDepth, half3 normalTS)
-{
-    [branch]
-    if (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureOn) == 1)
-    {
-        screenUV += normalTS.xy * UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionNormalDistort)*rcp(eyeDepth);
-        [branch]
-        switch (UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_PlanarReflection, _CameraReflectionTextureIndex))
-        {
-            default:return 0;
-            case 0:return tex2D(_CameraReflectionTexture0, screenUV);
-            case 1:return tex2D(_CameraReflectionTexture1, screenUV);
-            case 2:return tex2D(_CameraReflectionTexture2, screenUV);
-            case 3:return tex2D(_CameraReflectionTexture3, screenUV);
-        }
-    }
-    else    //Avoid warning
-    {
-        return 0;//tex2D(_ScreenSpaceReflectionTexture,screenUV);
-    }
-}
-
-
 #if !defined(LIGHTMAP_ST)
     #define LIGHTMAP_ST unity_LightmapST
 #endif
@@ -120,4 +83,3 @@ half4 IndirectSSRSpecular(float2 screenUV,float eyeDepth, half3 normalTS)
     #define LIGHTMAP_TRANSFER(v,o)
     #define IndirectDiffuse(mainLight,i,normalWS) IndirectDiffuse_SH(normalWS)
 #endif
-#define IndirectSpecular(reflectDir,perceptualRoughness,offset) IndirectCubeSpecular(reflectDir, perceptualRoughness,offset)

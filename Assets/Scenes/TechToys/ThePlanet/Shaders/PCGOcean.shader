@@ -81,6 +81,7 @@
 			#include "Assets/Shaders/Library/Common.hlsl"
 			#include "Assets/Shaders/Library/Lighting.hlsl"
 			#include "Assets/Shaders/Library/Geometry.hlsl"
+			#include "Assets/Shaders/Library/Lighting/ScreenSpacePlanarReflection.hlsl"
 
 			TEXTURE2D(_NormalTex); SAMPLER(sampler_NormalTex);
             TEXTURE2D(_FlowTex);SAMPLER(sampler_FlowTex);
@@ -244,7 +245,7 @@
             	
             	float3 aboveSurfaceColor=albedo*indirectDiffuse+indirectSpecular;
             	
-            	float4 reflectionSample = IndirectSSRSpecular(screenUV,eyeDepthSurface,normalTS);
+            	float4 reflectionSample = IndirectSSRSpecular(screenUV,eyeDepthSurface,normalTS,INSTANCE(_ReflectionDistort));
             	float4 reflectionColor =  INSTANCE(_ReflectionColor);
 
             	float reflectionAmount = max(step(0.01,reflectionSample.r),(1-light.shadowAttenuation));

@@ -11,7 +11,7 @@ Shader "Unlit/VolumetricLight"
     SubShader
     {
         Tags {"RenderType" = "Transparent" "Queue" = "Transparent"}
-        Blend One One
+        Blend One One , Zero One
         ZWrite Off
         ZTest Always
         Cull Front

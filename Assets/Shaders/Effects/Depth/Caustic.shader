@@ -3,8 +3,10 @@
 	Properties
 	{
     	[NoScaleOffset]_CausticTex("Caustic Tex",2D)="black"{}
-    	[Vector4]_CausticFlowST1("Flow ST 1",Vector)=(.1,.1,.1,.1)
-    	[Vector4]_CausticFlowST2("Flow ST 2",Vector)=(.1,.1,.1,.1)
+    	[TexFlowAdditional(_CausticFlow2)]_CausticFlow1("Caustic Flow",Vector)=(1,.1,1,0)
+		[HideInInspector]_CausticFlow2("Caustic Flow 2",Vector)=(1,1,1,0)
+		[HideInInspector]_CausticFlow1_ST("",Vector)=(1,1,0,0)
+		[HideInInspector]_CausticFlow2_ST("",Vector)=(1,1,0,0)
 		_VerticalFadeDistance("Vertical Fade Distance",Range(0,3))=0.1
     	_Strength("Caustic Strength",Range(0.1,10))=1
     	_Chromatic("Chromatic",Range(0,5))=1
@@ -37,8 +39,8 @@
 			CBUFFER_START(UnityPerMaterial)
 				INSTANCING_PROP(float,_Strength)
 				INSTANCING_PROP(float4,_CausticTex_TexelSize)
-				INSTANCING_PROP(float4,_CausticFlowST1)
-				INSTANCING_PROP(float4,_CausticFlowST2)
+				INSTANCING_PROP(float4,_CausticFlow1_ST)
+				INSTANCING_PROP(float4,_CausticFlow2_ST)
 				INSTANCING_PROP(float,_Chromatic)
 				INSTANCING_PROP(float,_VerticalFadeDistance)
 			CBUFFER_END
@@ -80,8 +82,8 @@
             	float3 causticPositionWS=positionWSDepth+lightDirWS*verticalDistance* rcp(dot(float3(0,-1,0),lightDirWS));
 				
 				half2 causticUV = causticPositionWS.xz;
-            	float2 causticForward=TransformTex_Flow(causticUV,_CausticFlowST1);
-            	float2 causticBackward=TransformTex_Flow(causticUV,_CausticFlowST2);
+            	float2 causticForward=TransformTex_Flow(causticUV,_CausticFlow1_ST);
+            	float2 causticBackward=TransformTex_Flow(causticUV,_CausticFlow2_ST);
 
             	float3 caustic = min(SampleCausticChromatic(causticForward),SampleCausticChromatic(causticBackward));
 				caustic *= saturate(invlerp(0,INSTANCE(_VerticalFadeDistance),verticalDistance));

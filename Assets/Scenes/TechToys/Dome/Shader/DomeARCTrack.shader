@@ -99,7 +99,7 @@ Shader "Dome/Lit_ARCTrack"
 			// #define GET_GEOMETRYSHADOW(surface,lightSurface) GetGeometryShadow(surface,lightSurface)
 	        #define GET_NORMALDISTRIBUTION(surface,input) GetNormalDistribution(surface,input)
 			#define GET_ALBEDO(i) GetAlbedoOverride(i);
-			// #define GET_GI(i,(surface) IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
+			// #define GET_GI(i,(surface) IndirectCubeSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
             #define BRDF_SURFACE_ADDITIONAL_TRANSFER(input,surface) SurfaceOverride(input,surface)
 			#include "Assets/Shaders/Library/Passes/ForwardPBR.hlsl"
 			

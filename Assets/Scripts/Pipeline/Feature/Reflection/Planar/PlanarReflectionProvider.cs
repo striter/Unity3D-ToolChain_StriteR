@@ -46,7 +46,6 @@ namespace Rendering.Pipeline
 
         static readonly int kReflectionTextureOn = Shader.PropertyToID("_CameraReflectionTextureOn");
         static readonly int kReflectionTextureIndex = Shader.PropertyToID("_CameraReflectionTextureIndex");
-        static readonly int kReflectionNormalDistort = Shader.PropertyToID("_CameraReflectionNormalDistort");
         public void ApplyIndex(int _reflectionIndex)
         {
             if (m_Index == _reflectionIndex) 
@@ -62,7 +61,6 @@ namespace Rendering.Pipeline
             m_PropertyBlock??= new MaterialPropertyBlock();
             m_PropertyBlock.SetInt(kReflectionTextureOn, m_Index != -1 ? 1 : 0);
             m_PropertyBlock.SetInt(kReflectionTextureIndex,m_Index);
-            m_PropertyBlock.SetFloat(kReflectionNormalDistort, m_NormalDistort);
             m_MeshRenderer.SetPropertyBlock(m_PropertyBlock);
         }
 

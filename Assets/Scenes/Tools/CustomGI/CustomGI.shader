@@ -104,7 +104,7 @@ Shader "Hidden/CustomGI"
 
 				//Custom Lightmap Goes here
 				indirectDiffuse = SHL2Sample(normal,);
-				indirectSpecular = indirectDiffuse;//IndirectSpecular(surface.reflectDir,surface.perceptualRoughness,1000);
+				indirectSpecular = indirectDiffuse;//IndirectCubeSpecular(surface.reflectDir,surface.perceptualRoughness,1000);
 			#if LIGHTMAP_ON
 				#if LIGHTMAP_LOCAL
 					half3 lightmap = SampleLightmapSubtractive(TEXTURE2D_LIGHTMAP_ARGS(_Lightmap,sampler_Lightmap), i.lightmapUV);

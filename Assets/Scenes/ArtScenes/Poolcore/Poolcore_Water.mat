@@ -12,7 +12,6 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _DEPTH
   - _DEPTHREFRACTION
   - _FOAM
   - _FRESNEL
@@ -130,12 +129,12 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _Depth: 1
+    - _Depth: 0
     - _DepthBuffer: 1
     - _DepthBufferScale: 1
     - _DepthOffset: 0.42
     - _DepthRange: 0.01
-    - _DepthRangeEnd: 2.2655804
+    - _DepthRangeEnd: 2.265581
     - _DepthRefraction: 1
     - _DepthScale: 1
     - _DetailAlbedoMapScale: 1
@@ -145,27 +144,27 @@ Material:
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _Foam: 1
-    - _FoamDistort: 0.07
-    - _FoamNormalRange: 0.9452737
-    - _FoamNormalRangeEnd: 0.9875622
-    - _FoamRange: 0.024875624
-    - _FoamRangeEnd: 0.07373569
+    - _FoamDistort: 0.102
+    - _FoamNormalRange: 0.8143746
+    - _FoamNormalRangeEnd: 0.8691009
+    - _FoamRange: 0
+    - _FoamRangeEnd: 0.048860118
     - _Fresnel: 1
-    - _FresnelRange: 0.056307614
-    - _FresnelRangeEnd: 0.31592032
+    - _FresnelRange: 0.13681594
+    - _FresnelRangeEnd: 0.39642832
     - _GlossMapScale: 0
     - _Glossiness: 1
     - _GlossyReflections: 0
     - _Metallic: 0.48
     - _NDF: 1
-    - _NormalStrength: 0.06
+    - _NormalStrength: 1
     - _OcclusionStrength: 0
     - _Parallax: 0.005
     - _ParallaxCount: 16
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ReflectionDistort: 1
-    - _ReflectionOffset: -2.1
+    - _ReflectionDistort: 0.05
+    - _ReflectionOffset: 0
     - _RefractionAmount: 0.09
     - _RefractionDistance: 2.75
     - _Rotation: 0
@@ -195,14 +194,18 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _CausticFlowST1: {r: 1.25, g: 1.25, b: -0.03, a: 0.03}
     - _CausticFlowST2: {r: 0.75, g: 0.75, b: 0, a: -0.02}
-    - _Color: {r: 1, g: 1, b: 1, a: 0}
-    - _DepthColor: {r: 0.9716981, g: 0.9716981, b: 0.9716981, a: 0.5647059}
+    - _Color: {r: 0.91224635, g: 0.94149, b: 0.9433962, a: 0.29803923}
+    - _DepthColor: {r: 0, g: 0.24636889, b: 1, a: 0.5647059}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Flow1: {r: 6, g: 0.05, b: 2, a: 45}
+    - _Flow1_ST: {r: 0.16666667, g: 0.33333334, b: 0.0058925566, a: 0.011785113}
+    - _Flow2: {r: 0.8, g: 0.5, b: 1, a: 180}
+    - _Flow2_ST: {r: 0.20833333, g: 0.41666666, b: -0.003682848, a: -0.0073656947}
     - _FlowST1: {r: 0.5, g: 0.5, b: 0.01, a: 0.01}
     - _FlowST2: {r: 0.25, g: 0.25, b: -0.01, a: -0.01}
     - _FoamColor: {r: 5.8511653, g: 5.9921575, b: 4.4647446, a: 0.7411765}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ReflectionColor: {r: 1, g: 1, b: 1, a: 0.21960784}
+    - _ReflectionColor: {r: 1, g: 1, b: 1, a: 1}
     - _RotationMatrix: {r: 1, g: -0, b: -0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _WaveST1: {r: 1, g: 1, b: 1, a: -1}

@@ -51,10 +51,6 @@ BRDFSurface InitializeFragmentSurface(v2ff i)
 	SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv)*INSTANCE(_Color);
 #endif
 
-#ifndef _ALPHATEST_ON
-	albedoAlpha.a = 1.0h;
-#endif
-	
 	float3 normalTS = float3(0,0,1);
 	float3 normalWS = i.normalWS;
 #if !defined (_NORMALOFF)
@@ -143,7 +139,7 @@ half3 PBRGlobalIllumination(v2ff i,BRDFSurface surface,Light mainLight)
 		return GET_GI(i,surface,mainLight)
 	#else
 		half3 indirectDiffuse = IndirectDiffuse(mainLight, i, surface.normal);
-		half3 indirectSpecular = IndirectSpecular(surface.reflectDir, surface.perceptualRoughness, 0);
+		half3 indirectSpecular = IndirectCubeSpecular(surface.reflectDir, surface.perceptualRoughness, 0);
 		return BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 	#endif
 }
@@ -182,7 +178,6 @@ f2of ForwardFragment(v2ff i)
 
 	AlphaClip(surface.alpha);
 	o.result = float4(finalCol,surface.alpha);
-	
 	#if defined(F2O_TRANSFER)
 		F2O_TRANSFER(i,surface,o)
 	#endif

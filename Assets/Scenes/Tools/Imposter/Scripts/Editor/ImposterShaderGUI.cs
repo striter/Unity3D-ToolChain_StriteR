@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Runtime.Optimize.Imposter
 {
-    public class ImposterShaderGUI : ShaderGUIExtension
+    public class ImposterShaderGUI : AShaderGUIExtension
     {
         [Readonly] public ImposterInput m_Input = ImposterInput.kDefault;
         [Readonly] public GSphere m_BoundingSphere;

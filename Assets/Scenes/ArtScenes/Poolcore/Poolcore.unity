@@ -227,10 +227,10 @@ MonoBehaviour:
   renderSettingsCompressVolumes: 0
   renderSettingsSector: {fileID: 0}
   renderSettingsRTPVExport: 1
-  renderSettingsRTPVSceneView: 1
+  renderSettingsRTPVSceneView: 0
   renderSettingsRTPVHDR: 0
-  renderSettingsRTPVWidth: 1043
-  renderSettingsRTPVHeight: 422
+  renderSettingsRTPVWidth: 640
+  renderSettingsRTPVHeight: 360
   lastBakeTime: 7
   enlightenWarningShown: 0
   enlightenWarningShown2: 0
@@ -576,58 +576,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 7496661822760431788}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1449301429 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3412561266975050019, guid: eb3e911724ae0ab4eabcc806e0eeb998,
-    type: 3}
-  m_PrefabInstance: {fileID: 7496661822760431788}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1449301431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1449301429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 722adbbf9364b0d4486814a6aa0f7031, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Diffuse:
-    directional: 0
-    lightmaps:
-    - color: {fileID: 2800000, guid: f150aada091d50a488a5a10973b067ee, type: 3}
-      directional: {fileID: 0}
-      shadowMask: {fileID: 0}
-    parameters:
-    - index: 0
-      scaleOffset: {x: 1.0096616, y: 1.0096205, z: -0.0037840938, w: -0.003783453}
-    - index: -1
-      scaleOffset: {x: 1, y: 1, z: 0, w: 0}
-    - index: -1
-      scaleOffset: {x: 1, y: 1, z: 0, w: 0}
-    - index: -1
-      scaleOffset: {x: 1, y: 1, z: 0, w: 0}
-    - index: -1
-      scaleOffset: {x: 1, y: 1, z: 0, w: 0}
-    - index: -1
-      scaleOffset: {x: 1, y: 1, z: 0, w: 0}
-    - index: -1
-      scaleOffset: {x: 1, y: 1, z: 0, w: 0}
-    bakingOutput:
-    - isBaked: 0
-      probeOcclusionLightIndex: -1
-      occlusionMaskChannel: 0
-      lightmapBakeType: 4
-      mixedLightingMode: 0
-    - isBaked: 0
-      probeOcclusionLightIndex: -1
-      occlusionMaskChannel: 0
-      lightmapBakeType: 4
-      mixedLightingMode: 0
-    reflectionProbes:
-    - {fileID: 8900000, guid: ddc3200a7150fbd49aec71575432dc29, type: 3}
 --- !u!114 &1451565761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -755,39 +703,19 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1588127688388508999, guid: eb3e911724ae0ab4eabcc806e0eeb998,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.38
+      objectReference: {fileID: 0}
     - target: {fileID: 3412561266975050019, guid: eb3e911724ae0ab4eabcc806e0eeb998,
         type: 3}
       propertyPath: m_Name
       value: Poolcore_Corridor
       objectReference: {fileID: 0}
-    - target: {fileID: 5804910090832887940, guid: eb3e911724ae0ab4eabcc806e0eeb998,
+    - target: {fileID: 5120983784782673026, guid: eb3e911724ae0ab4eabcc806e0eeb998,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 427f642e516dd894a97b05ba25001581, type: 2}
-    - target: {fileID: 6234184001707008695, guid: eb3e911724ae0ab4eabcc806e0eeb998,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6234184001707008695, guid: eb3e911724ae0ab4eabcc806e0eeb998,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6234184001707008695, guid: eb3e911724ae0ab4eabcc806e0eeb998,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6234184001707008695, guid: eb3e911724ae0ab4eabcc806e0eeb998,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6234184001707008695, guid: eb3e911724ae0ab4eabcc806e0eeb998,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8040383604771858503, guid: eb3e911724ae0ab4eabcc806e0eeb998,
@@ -843,11 +771,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3412561266975050019, guid: eb3e911724ae0ab4eabcc806e0eeb998,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1449301431}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb3e911724ae0ab4eabcc806e0eeb998, type: 3}
 --- !u!23 &7944801143993086404 stripped
 MeshRenderer:

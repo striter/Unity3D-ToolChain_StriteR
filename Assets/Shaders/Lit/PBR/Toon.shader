@@ -94,7 +94,7 @@ Shader "Runtime/Lit/PBR/Toon"
 			float3 GetGlobalIllumination(v2ff i,BRDFSurface surface,Light light)
 			{
 				float3 indirectDiffuse = IndirectDiffuse(light,i,surface.normal);
-				float3 indirectSpecular = IndirectSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
+				float3 indirectSpecular = IndirectCubeSpecular(surface.reflectDir, surface.perceptualRoughness,INSTANCE(_IndirectSpecularOffset));
 				return BRDFGlobalIllumination(surface,indirectDiffuse,indirectSpecular);
 			}
 			#define GET_GI(i,surface,mainLight) GetGlobalIllumination(i,surface,mainLight);

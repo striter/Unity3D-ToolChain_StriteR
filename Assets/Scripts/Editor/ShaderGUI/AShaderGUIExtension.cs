@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UnityEditor.Extensions
 {
-    public class ShaderGUIExtension : ShaderGUI
+    public abstract class AShaderGUIExtension : ShaderGUI
     {
         protected Component m_Renderer { get; private set; }
         private FieldInfo rendererCompField = typeof(MaterialEditor).GetField("m_MeshRendererComp", BindingFlags.NonPublic | BindingFlags.Instance);

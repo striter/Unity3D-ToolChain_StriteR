@@ -12,7 +12,7 @@
         Tags{"Queue"="Transparent" }
         Pass
         {
-            Blend One One
+            Blend SrcAlpha OneMinusSrcAlpha,Zero OneMinusSrcAlpha
             ZWrite Off
             Cull Front
             ZTest Always
@@ -101,8 +101,8 @@
                 density=pow(density,_Pow);
                 density*=_Density;
 
-                float3 lightCol = _Color.rgb*_Color.a;
-                return float4(lightCol*density,1);
+                float3 lightCol = _Color.rgb;
+                return float4(lightCol,density*_Color.a);
             }
             ENDHLSL
         }

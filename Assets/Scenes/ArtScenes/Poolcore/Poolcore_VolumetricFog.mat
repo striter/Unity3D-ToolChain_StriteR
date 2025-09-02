@@ -7,13 +7,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Poolcore_VolumetricLight
-  m_Shader: {fileID: 4800000, guid: d985f28c9acdbfe4c993d1e90e67ea7f, type: 3}
+  m_Name: Poolcore_VolumetricFog
+  m_Shader: {fileID: 4800000, guid: aaa57f15e19449d44ac3ea3c8d4894e1, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _DITHER
+  - _TYPE_CUBE
   m_InvalidKeywords:
+  - _DITHER
   - _NDF_COOKTORRANCE
   - _NORMALMAP
   - _PARALLAX
@@ -125,6 +126,7 @@ Material:
     - _Cull: 0
     - _Cutoff: 0.5
     - _DITHER: 1
+    - _Density: 0.6
     - _DepthBuffer: 0
     - _DepthBufferScale: 0
     - _DepthOffset: 0
@@ -145,7 +147,7 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _ParallaxCount: 16
-    - _Pow: 2.59
+    - _Pow: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Rotation: 0
@@ -160,13 +162,14 @@ Material:
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     - _Surface: 0
+    - _Type: 1
     - _VF: 1
     - _WorkflowMode: 1
     - _ZTest: 2
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 0.62352943}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
