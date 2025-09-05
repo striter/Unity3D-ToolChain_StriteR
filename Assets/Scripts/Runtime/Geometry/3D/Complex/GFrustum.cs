@@ -10,10 +10,10 @@ namespace Runtime.Geometry
     {
         public float3 origin;
         public quaternion rotation;
-        [Clamp(0)]public float fov;
+        [Clamp(0)] public float fov;
         public float aspect;
-        [Clamp(0)]public float zNear;
-        [Clamp(0)]public float zFar;
+        [Clamp(0)] public float zNear;
+        [Clamp(0)] public float zFar;
 
         [NonSerialized] public GFrustumPlanes planes;
         [NonSerialized] public GFrustumRays rays;

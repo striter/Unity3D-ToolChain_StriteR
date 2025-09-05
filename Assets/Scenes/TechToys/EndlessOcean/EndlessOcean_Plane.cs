@@ -58,7 +58,7 @@ namespace EndlessOcean
             m_Chunk.Construct(m_Boundary);
         }
 
-        protected override void PopulateMesh(Mesh _mesh,Transform _viewTransform)
+        protected override void PopulateMesh(Mesh _mesh,Camera _viewCamera)
         {
             if (!m_CullingCamera)
                 return;
@@ -70,12 +70,12 @@ namespace EndlessOcean
             var tangents = PoolList<Vector4>.Empty(kListQuery);
             var positions = ULowDiscrepancySequences.PoissonDisk2D(m_CellDivision);
 
-            var frustumPlanes = new GFrustum(m_CullingCamera).planes;
+            var frustum = new GFrustum(m_CullingCamera);
             foreach (var node in m_Chunk.GetLeafs())
             {
                 var boundary = node.boundary;
                 var boundary3D = node.boundary.To3XZ();
-                if(!frustumPlanes.AABBIntersection(boundary3D))
+                if(!frustum.Intersect(boundary3D))
                     continue;
                 
                 vertices.AddRange(positions.Select(p => boundary.GetPoint(p)));
@@ -126,7 +126,7 @@ namespace EndlessOcean
             // UMeshFragment.Combine(meshFragments,_mesh,null,out var embedMaterials,EVertexAttribute.None);
         }
 
-        public override void DrawGizmos(Transform _viewTransform)
+        public override void DrawGizmos(Camera _camera)
         {
             Gizmos.matrix = transform.localToWorldMatrix;
             foreach (var (index, parent) in m_Chunk.GetLeafs().WithIndex())

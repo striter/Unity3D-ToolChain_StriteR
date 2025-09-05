@@ -15,6 +15,7 @@ namespace Examples.Algorithm.GeometryVisualize
         public bool m_DrawBounding;
 
         public GBox[] m_IntersectionAABBs;
+        public GSphere[] m_IntersectBSs = { GSphere.kDefault };
 #if UNITY_EDITOR
         private float time;
         private void OnDrawGizmos()
@@ -55,8 +56,14 @@ namespace Examples.Algorithm.GeometryVisualize
             {
                 var deltaPosition = math.cos(time * 2 * math.PI * Noise.Value.Unit1f1((float)index++/m_IntersectionAABBs.Length)) * .5f;
                 var deltaAABB= aabb.Move(deltaPosition) ;
-                Gizmos.color = frustumPlanes.AABBIntersection(deltaAABB,frustumPoints) ? Color.green : Color.red;
+                Gizmos.color = m_Frustum.Intersect(deltaAABB) ? Color.green : Color.red;
                 deltaAABB.DrawGizmos();
+            }
+
+            foreach (var bs in m_IntersectBSs)
+            {
+                Gizmos.color = m_Frustum.Intersect(bs) ? Color.green : Color.red;
+                bs.DrawGizmos();
             }
             if (m_DrawBounding)
             {

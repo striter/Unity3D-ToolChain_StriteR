@@ -2012,6 +2012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9348aed9be69c7a4f9dde9b9a6623ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_DrawGizmos: 0
   m_Width: 0.1
   m_Billboard: 1
   m_JointSubdivision: 0
@@ -2972,6 +2973,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3167c09818c490e4f8b8775cf3b80918, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_DrawGizmos: 0
   m_Layer: 2147483647
   m_Bounding:
     center:
@@ -3231,6 +3233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cf8b3436b9041943b3fd7ad0991341c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_DrawGizmos: 0
   m_Width: 1
   m_Height: 1
   m_Rotate: 0
@@ -5269,6 +5272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b29fb390adb5e84d9438b25cb0ae40e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_DrawGizmos: 0
   m_Width: 0.28
   m_Billboard: 1
   m_JointSubdivision: 1
@@ -8062,6 +8066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb654666463e9764f83733676a3e9163, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_DrawGizmos: 0
   m_Radius: 2
   m_AngleRange:
     start: -60

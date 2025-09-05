@@ -27,6 +27,7 @@ namespace Examples.Algorithm.SamplePatternVisualize
     {
         Flat,
         Sphere,
+        Circle,
     }
     
     public class LowDiscrepancySequenceVisualize : MonoBehaviour
@@ -95,11 +96,24 @@ namespace Examples.Algorithm.SamplePatternVisualize
                     {
                         var pattern = patterns[k].xy;
                         var uv = pattern + .5f;
-                        Gizmos.color = Color.red * uv.x + Color.green * uv.y;
+                        Gizmos.color = (Color.red * uv.x + Color.green * uv.y).SetA(1f);
                         Gizmos.DrawSphere(ESphereMapping.ConcentricOctahedral.UVToSphere( uv) * .5f,gizmosRadius);
                     }
                     Gizmos.color = Color.white;
                     Gizmos.DrawWireSphere(Vector3.zero,.5f);
+                }
+                    break;
+                case EVisualMode.Circle:
+                {
+                    for (var k = 0; k < size; k++)
+                    {
+                        var pattern = patterns[k].xz;
+                        var uv = pattern + .5f;
+                        Gizmos.color = (Color.red * uv.x + Color.green * uv.y).SetA(1f);
+                        Gizmos.DrawSphere(UCoordinates.Polar.ToCartesian_ShirleyChiu(uv).to3xz(),gizmosRadius);
+                    }
+                    Gizmos.color = Color.white;
+                    new GDisk(0f,kfloat3.up,.5f).DrawGizmos();
                 }
                     break;
                 default:

@@ -24,6 +24,7 @@ namespace Runtime.Geometry
             center = quad.Average();
         }
         public G2Quad(float2 _index0, float2 _index1, float2 _index2, float2 _index3):this(new Quad<float2>(_index0,_index1,_index2,_index3)){}
+        public static readonly G2Quad kDefault = new G2Quad(new float2(-.5f,-.5f),new float2(-.5f,.5f),new float2(.5f,.5f),new float2(.5f,-.5f));
         public static readonly G2Quad kDefaultUV = new G2Quad(new float2(0,0),new float2(0,1),new float2(1,1),new float2(1,0));
     }
 

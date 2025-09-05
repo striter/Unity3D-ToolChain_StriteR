@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Runtime.Pool;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Runtime
@@ -35,13 +36,13 @@ namespace Runtime
         public enum EUVMode
         {
             Repeat,
-            Normalized,
+            Polar,
             PerFrame,
             Quad,
         }
         
         private static GCoordinates kCoordinates = GCoordinates.kDefault;
-        protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
+        protected override void PopulateMesh(Mesh _mesh, Camera _viewCamera)
         {
             PoolList<Vector3>.ISpawn(out var vertices);
             PoolList<Vector3>.ISpawn(out var normals);
@@ -74,7 +75,7 @@ namespace Runtime
 
                 switch (m_UVMode)
                 {
-                    case EUVMode.Normalized:
+                    case EUVMode.Polar:
                     {
                         uvs.Add(new Vector2(curX, 0f));
                         uvs.Add(new Vector2(curX, 1f));
@@ -103,7 +104,7 @@ namespace Runtime
                         break;
                     case EUVMode.Quad:
                     {
-                        var boundingBox = GBox.kOne * m_Radius;
+                        var boundingBox = GBox.kDefault * m_Radius * 2;
                         uvs.Add(boundingBox.GetUVW(curLine.start).xz);
                         uvs.Add(boundingBox.GetUVW(curLine.end).xz);
                         uvs.Add(boundingBox.GetUVW(nextLine.end).xz);
@@ -155,9 +156,9 @@ namespace Runtime
             PoolList<int>.IDespawn(indexes);
         }
 
-        public override void DrawGizmos(Transform _viewTransform)
+        public override void DrawGizmos(Camera _camera)
         {
-            base.DrawGizmos(_viewTransform);
+            base.DrawGizmos(_camera);
             Gizmos.matrix = transform.localToWorldMatrix;
             kCoordinates.DrawGizmos();
             Gizmos.color = Color.white.SetA(.3f);
@@ -171,6 +172,8 @@ namespace Runtime
                 var diskEdge = new GLine(kCoordinates.origin,kCoordinates.origin + (m_Radius * forward.rotateCW(kCoordinates.up, kmath.kPI2 * curX * (m_AngleRange.length / 360f)))).Trim(m_DiskTrim);
                 diskEdge.DrawGizmos();
             }
+            var boundingBox = GBox.kDefault * m_Radius * 2;
+            boundingBox.DrawGizmos();
         }
 
         // [InspectorButton(true)]

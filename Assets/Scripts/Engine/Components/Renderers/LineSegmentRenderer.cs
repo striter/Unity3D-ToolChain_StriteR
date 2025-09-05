@@ -51,9 +51,9 @@ namespace Runtime
         {
         }
 
-        public override void DrawGizmos(Transform _viewTransform)
+        public override void DrawGizmos(Camera _camera)
         {
-            base.DrawGizmos(_viewTransform);
+            base.DrawGizmos(_camera);
             UGizmos.DrawLines(m_FinalVertices,p=>p);
         }
         

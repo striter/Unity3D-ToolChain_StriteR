@@ -9,11 +9,6 @@ namespace Runtime
     {
         bool ViewSpaceRequired { get; }
     }
-
-    public interface IRendererLightSpace
-    {
-        bool LightSpaceRequired { get; }
-    }
     
     [ExecuteInEditMode,RequireComponent(typeof(MeshFilter)),DisallowMultipleComponent]
     public abstract class ARendererBase : MonoBehaviour
@@ -22,7 +17,7 @@ namespace Runtime
         private Dictionary<Type,int> kInstanceID = new Dictionary<Type, int>();
         private Mesh m_Mesh;
         private MeshFilter m_Filter;
-        private void Awake()
+        protected virtual void Awake()
         {
             var type = GetType();
             if(!kInstanceID.TryGetValue(type,out var count))
@@ -44,7 +39,7 @@ namespace Runtime
             Tick(Time.deltaTime);
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             m_Filter.mesh = null;
             GameObject.DestroyImmediate(m_Mesh);
@@ -71,7 +66,7 @@ namespace Runtime
             m_Dirty = false;
             
             m_Mesh.Clear();
-            PopulateMesh(m_Mesh,_camera.transform);
+            PopulateMesh(m_Mesh,_camera);
         }
 
         public void OnValidate()
@@ -80,20 +75,19 @@ namespace Runtime
             SetDirty();
         }
 
-        protected abstract void PopulateMesh(Mesh _mesh,Transform _viewTransform);
+        protected abstract void PopulateMesh(Mesh _mesh,Camera _viewCamera);
         protected virtual void OnInitialize(){}
         protected virtual void OnDispose(){}
         protected virtual void Tick(float _deltaTime){}
         protected virtual void Validate() {}
         
-        private bool m_DrawGizmos;
-        [InspectorButtonFoldout(nameof(m_DrawGizmos),false)] public void DrawGizmos() => m_DrawGizmos = !m_DrawGizmos;
+        public bool m_DrawGizmos;
         private void OnDrawGizmos()
         {
             if (!m_DrawGizmos) return;
-            DrawGizmos(Camera.current.transform);
+            DrawGizmos(Camera.current);
         }
-        public virtual void DrawGizmos(Transform _viewTransform){}
+        public virtual void DrawGizmos(Camera _camera){}
 
     }
 }

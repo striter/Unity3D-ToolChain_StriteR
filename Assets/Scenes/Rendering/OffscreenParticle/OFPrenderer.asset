@@ -17,7 +17,7 @@ MonoBehaviour:
     blendShader: {fileID: 4800000, guid: 8a07bc90b55722e4fb4052d3e8652699, type: 3}
     layerMask:
       value: 192
-    downSample: 8
+    downSample: 4
     maxDepth: 1
     varianceDepthMaps: 1
 --- !u!114 &-6691445836900065267

@@ -18,7 +18,7 @@ namespace Runtime
 
         protected abstract void PopulatePositions(List<Vector3> _vertices, List<Vector3> _tangents);
 
-        private void PopulatePositions_Internal(List<Vector3> _positions, List<Vector3> _tangents,Transform _viewTransform)
+        private void PopulatePositions_Internal(List<Vector3> _positions, List<Vector3> _tangents,Transform _viewCamera)
         {
             PopulatePositions(_positions,_tangents);
             var count = _positions.Count;
@@ -84,7 +84,7 @@ namespace Runtime
                     }
                     
                     var position = _positions[i];
-                    var C = _viewTransform.position;
+                    var C = _viewCamera.position;
                     var Z = (C - position).normalized;
                     var T = ( _positions[i + 1] - position).normalized;
                     _tangents[i] = Vector3.Cross(Z,T);
@@ -92,12 +92,12 @@ namespace Runtime
             }
         }
         
-        protected sealed override void PopulateMesh(Mesh _mesh,Transform _viewTransform)
+        protected sealed override void PopulateMesh(Mesh _mesh,Camera _viewCamera)
         {
             Matrix4x4 worldToLocal = transform.worldToLocalMatrix;
             PoolList<Vector3>.ISpawn(out var positions);
             PoolList<Vector3>.ISpawn(out var tangents);
-            PopulatePositions_Internal(positions, tangents,_viewTransform);
+            PopulatePositions_Internal(positions, tangents,_viewCamera.transform);
             var count = positions.Count;
             if (count > 1)
             {

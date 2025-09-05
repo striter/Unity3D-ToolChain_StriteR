@@ -83,9 +83,9 @@ namespace Runtime
         }
 
 #if UNITY_EDITOR
-        public override void DrawGizmos(Transform _viewTransform)
+        public override void DrawGizmos(Camera _camera)
         {
-            base.DrawGizmos(_viewTransform);
+            base.DrawGizmos(_camera);
             CalculatePositions(transform,out Vector3 srcPosition,out Vector3 srcBiTangent,out Vector3 dstPosition,out Vector3 dstBiTangent,out Vector3 control);
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(m_ControlDamper.value.xyz,.2f);

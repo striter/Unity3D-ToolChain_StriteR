@@ -31,6 +31,7 @@ namespace Runtime.Geometry
     [Serializable]
     public partial struct GCoordinates : ISerializationCallbackReceiver , IRayIntersection , ISurface
     {
+        public GCoordinates(Transform _transform) : this(_transform.position, _transform.right, _transform.up){}
         public static GCoordinates ForwardBillboard(float3 origin,float3 forward)
         {
             var billboardRotation = Quaternion.LookRotation(forward, Vector3.up);

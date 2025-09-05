@@ -31,13 +31,13 @@ namespace Runtime.Optimize.Imposter
         private static List<int> kIndices = new List<int>();
         private static List<Vector4> kUVs = new List<Vector4>();
 
-        protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
+        protected override void PopulateMesh(Mesh _mesh, Camera _viewCamera)
         {
             if (!m_Data)
                 return;
 
             var center = transform.TransformPoint(m_Data.m_BoundingSphere.center);
-            var viewDirectionWS = (_viewTransform.position - center).normalized;
+            var viewDirectionWS = (_viewCamera.transform.position - center).normalized;
             var viewDirectionOS = transform.worldToLocalMatrix.rotation * viewDirectionWS;
 
             var weights = float4.zero;
@@ -100,19 +100,20 @@ namespace Runtime.Optimize.Imposter
 
         public bool m_DrawInput;
 
-        public override void DrawGizmos(Transform _viewTransform)
+        public override void DrawGizmos(Camera _camera)
         {
-            base.DrawGizmos( _viewTransform);
+            base.DrawGizmos( _camera);
             if (m_Data == null)
                 return;
 
+            var viewTransform = _camera.transform;
             var center = transform.TransformPoint(m_Data.m_BoundingSphere.center);
 
             Gizmos.matrix = Matrix4x4.TRS(center, Quaternion.identity,
                 transform.lossyScale * m_Data.m_BoundingSphere.radius);
-            var viewDirection = transform.worldToLocalMatrix.rotation * (_viewTransform.position - center).normalized;
+            var viewDirection = transform.worldToLocalMatrix.rotation * (viewTransform.position - center).normalized;
             if (m_DrawInput)
-                m_Data.m_Input.DrawGizmos(_viewTransform.position);
+                m_Data.m_Input.DrawGizmos(viewTransform.position);
 
             var output = m_Data.m_Input.GetImposterViews(viewDirection);
 

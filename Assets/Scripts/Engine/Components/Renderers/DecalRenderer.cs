@@ -17,7 +17,7 @@ namespace Runtime
         [Range(0,0.9999f)]public float m_Falloff = 0.5f;
         [InspectorButton]
         protected override void OnInitialize() => SetDirty();
-        protected override void PopulateMesh(Mesh _mesh,Transform _viewTransform)
+        protected override void PopulateMesh(Mesh _mesh,Camera _viewCamera)
         {
             var intersectBox = new GBox((float3)transform.position + m_Bounding.center    ,m_Bounding.extent);
             
@@ -111,9 +111,9 @@ namespace Runtime
             _mesh.bounds = m_Bounding;
         }
 
-        public override void DrawGizmos(Transform _viewTransform)
+        public override void DrawGizmos(Camera _camera)
         {
-            base.DrawGizmos(_viewTransform);
+            base.DrawGizmos(_camera);
             Gizmos.matrix = transform.localToWorldMatrix;
             m_Bounding.DrawGizmos();
         }

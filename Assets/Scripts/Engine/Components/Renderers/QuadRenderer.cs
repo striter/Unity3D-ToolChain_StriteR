@@ -8,7 +8,7 @@ namespace Runtime
     public class QuadRenderer : ARendererBase
     {
         public GQuad m_Quad = GQuad.kDefault;
-        protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
+        protected override void PopulateMesh(Mesh _mesh, Camera _viewCamera)
         {
             PoolList<Vector3>.ISpawn(out var vertices);
             PoolList<Vector3>.ISpawn(out var normals);

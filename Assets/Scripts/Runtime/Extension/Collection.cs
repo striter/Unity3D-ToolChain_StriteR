@@ -665,13 +665,19 @@ namespace System.Linq.Extensions
                 _src.Add(element);
         }
 
-        public static IList<T> Resize<T>(this IList<T> _src,int _newSize,Func<T> _onEachSpawn = null)
+        public static IList<T> Resize<T>(this IList<T> _src,int _newSize,Func<T> _onEachSpawn = null,Action<T> _onEachDespawn = null)
         {
+            if(_src == null)
+                throw new ArgumentNullException(nameof(_src));
+            
             for(var i=_src.Count;i<_newSize;i++)
                 _src.Add(_onEachSpawn != null ? _onEachSpawn() : default);
 
             for (var i = _src.Count - 1; i >= _newSize; i--)
+            {
+                _onEachDespawn?.Invoke(_src[i]);
                 _src.RemoveAt(i);
+            }
 
             return _src;
         }
@@ -852,8 +858,11 @@ namespace System.Linq.Extensions
             return dstArray;
         }
         
-        public static T[] Resize<T>(this T[] _srcArray,int _length,bool _fillWithLast=true)
+        public static T[] Resize<T>(this T[] _srcArray,int _length,bool _fillWithLast=true) where T:struct
         {
+            if (_srcArray.Length == _length)
+                return _srcArray;
+            
             var dstArray = new T[_length];
             if (_srcArray.Length == 0)
                 return dstArray;
@@ -866,6 +875,26 @@ namespace System.Linq.Extensions
                 if (i >= _srcArray.Length && !_fillWithLast)
                     break;
                 dstArray[i] = _srcArray[Mathf.Min(i, Mathf.Max(_srcArray.Length - 1))];
+            }
+            return dstArray;
+        }
+        
+        public static T[] Resize<T>(this T[] _srcArray,int _length,Func<T> _createFunc = null,Action<T> _disposeFunc = null) where T:class
+        {
+            if (_srcArray.Length == _length)
+                return _srcArray;
+            
+            if(_disposeFunc != null)
+                for (var i = _length; i < _srcArray.Length; i++)
+                    _disposeFunc(_srcArray[i]);
+            
+            var dstArray = new T[_length];
+            for (var i = 0; i < dstArray.Length; i++)
+            {
+                if (i >= _srcArray.Length)
+                    dstArray[i] = _createFunc == null ? default : _createFunc();
+                else
+                    dstArray[i] = _srcArray[i];
             }
             return dstArray;
         }

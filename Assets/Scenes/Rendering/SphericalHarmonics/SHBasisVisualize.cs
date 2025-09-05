@@ -37,7 +37,7 @@ namespace Examples.Rendering.SH
             public half2 texCoord0;
         }
         
-        protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
+        protected override void PopulateMesh(Mesh _mesh, Camera _viewCamera)
         {
             var meshDataArray = Mesh.AllocateWritableMeshData(1);
             var meshData = meshDataArray[0];

@@ -88,7 +88,7 @@ namespace UnityEditor.Extensions
             }
         }
         
-        public static T CreateAssetCombination<T>(string _assetPath, T _mainAsset, IEnumerable<UnityEngine.Object> _subAssets) where T : UnityEngine.Object
+        public static T CreateAssetCombination<T>(string _assetPath, T _mainAsset, IEnumerable<Object> _subAssets) where T : Object
         {
             T mainAsset = CreateOrReplaceMainAsset(_mainAsset, _assetPath);
             CreateOrReplaceSubAsset(_assetPath, _subAssets);
@@ -97,7 +97,7 @@ namespace UnityEditor.Extensions
         }
 
         private static List<FieldInfo> kSubAssetFields = new();
-        private static List<UnityEngine.Object> kSubAssets = new();
+        private static List<Object> kSubAssets = new();
         private static List<string> kSubAssetNames = new();
         public static T CreateAssetCombination<T>(string _assetPath, T _mainAsset) where T : ScriptableObject
         {
@@ -111,7 +111,7 @@ namespace UnityEditor.Extensions
             var mainAsset = CreateOrReplaceMainAsset(_mainAsset, _assetPath);
             var mainAssetPath = AssetDatabase.GetAssetPath(mainAsset);
             var subAssetFields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Collect(p=>p.FieldType.IsSubclassOf(typeof(UnityEngine.Object))).Where(p=>p!=null).FillList(kSubAssetFields);
-            var subAssets = subAssetFields.Select(p => p.GetValue(_mainAsset) as UnityEngine.Object).Where(p => p != null).FillList(kSubAssets);
+            var subAssets = subAssetFields.Select(p => p.GetValue(_mainAsset) as Object).Where(p => p != null).FillList(kSubAssets);
             var assetNames = subAssets.Select(p=>p.name).FillList(kSubAssetNames);
             
             CreateOrReplaceSubAsset(_assetPath, subAssets);

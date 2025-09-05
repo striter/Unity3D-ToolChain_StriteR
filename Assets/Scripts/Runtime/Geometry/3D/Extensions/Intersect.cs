@@ -8,7 +8,7 @@ namespace Runtime.Geometry.Extension
     {
         #region AABB
 
-        public static bool Intersect(GPlane _plane, GBox _box)
+        public static bool Intersect(this GPlane _plane, GBox _box)
         {
             var c = _box.center;
             var e = abs(_box.extent);
@@ -20,7 +20,12 @@ namespace Runtime.Geometry.Extension
             return s <= r;
         }
 
-        public static bool Intersect(GBox _src, GBox _dst)
+        public static bool Intersect(this GPlane _plane, GSphere _sphere)
+        {
+            return _plane.SDF(_sphere.center) <= _sphere.radius;
+        }
+        
+        public static bool Intersect(this GBox _src, GBox _dst)
         {
             return _src.min.x <= _dst.max.x && _src.max.x >= _dst.min.x &&
                    _src.min.y <= _dst.max.y && _src.max.y >= _dst.min.y &&
@@ -30,7 +35,6 @@ namespace Runtime.Geometry.Extension
         public static bool Intersect(this GSphere _sphere, GBox _box)
         {
             var sphereCenter = _sphere.center;
-            var sphereRadius = _sphere.radius;
             var boxMin = _box.min;
             var boxMax = _box.max;
 
@@ -55,49 +59,6 @@ namespace Runtime.Geometry.Extension
             return ray.Intersect(_triangle2,out _distance);
         }
 
-        public static bool Intersect(GFrustumPlanes _frustumPlanes, GBox _bounding)
-        {
-            for (var i = 0; i < _frustumPlanes.Length; i++)
-                if (!Intersect(_frustumPlanes[i], _bounding))
-                    return false;
-
-            return true;
-        }
-
-        public static bool Intersect(GFrustumPlanes _frustumPlanes, GBox _bounding, GFrustumPoints _frustumPoints)
-        {
-            if (!Intersect(_frustumPlanes, _bounding))
-                return false;
-
-            if (!Intersect(_frustumPoints.bounding, _bounding))
-            // if (!Intersect(_frustumPoints,_bounding)) //More expensive
-                return false;
-
-            return true;
-        }
-
-        public static bool Intersect(GFrustumPoints _frustumPoints, GBox _box)
-        {
-            var outside = true;
-            for (var i = 0; i < 8; i++) outside &= _frustumPoints[i].x > _box.max.x;
-            if (outside) return false;
-            outside = true;
-            for (var i = 0; i < 8; i++) outside &= _frustumPoints[i].x < _box.min.x;
-            if (outside) return false;
-            outside = true;
-            for (var i = 0; i < 8; i++) outside &= _frustumPoints[i].y > _box.max.y;
-            if (outside) return false;
-            outside = true;
-            for (var i = 0; i < 8; i++) outside &= _frustumPoints[i].y < _box.min.y;
-            if (outside) return false;
-            outside = true;
-            for (var i = 0; i < 8; i++) outside &= _frustumPoints[i].z > _box.max.z;
-            if (outside) return false;
-            outside = true;
-            for (var i = 0; i < 8; i++) outside &= _frustumPoints[i].z < _box.min.z;
-            if (outside) return false;
-            return true;
-        }
 
         #endregion
     }

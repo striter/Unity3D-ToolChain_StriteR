@@ -170,7 +170,7 @@ Material:
     - _ParallexScale: 0.017
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Scale: 306
+    - _Scale: 114
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

@@ -15,22 +15,23 @@ namespace Runtime
         public float m_Height = 1;
         [Range(0,360f)] public float m_Rotate = 0;
         public EBillboardType m_PositionMatching = EBillboardType.Position;
-        protected override void PopulateMesh(Mesh _mesh, Transform _viewTransform)
+        protected override void PopulateMesh(Mesh _mesh, Camera _viewCamera)
         {
-            var U = _viewTransform.up;
-            var R = _viewTransform.right;
+            var viewTransform = _viewCamera.transform;
+            var U = viewTransform.up;
+            var R = viewTransform.right;
             switch (m_PositionMatching)
             {
                 case EBillboardType.Position:
                 {
-                    var Z = (_viewTransform.position - transform.position).normalized;
+                    var Z = (viewTransform.position - transform.position).normalized;
                     U = math.cross(R,Z);
                     R = math.cross(Z,U);
                 }
                     break;
                 case EBillboardType.YConstrained:
                 {
-                    var Z = (_viewTransform.position - transform.position).normalized;
+                    var Z = (viewTransform.position - transform.position).normalized;
                     U = Vector3.up;
                     R = math.cross(Z,U).normalize();
                 }

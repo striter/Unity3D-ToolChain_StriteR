@@ -27,6 +27,29 @@ public static class UCoordinates
             var angle = _polar.y * kmath.kPI2;
             return new float2(radius * math.cos(angle), radius * math.sin(angle));
         }
+
+        //http://psgraphics.blogspot.com/2011/01/improved-code-for-concentric-map.html
+        public static float2 ToCartesian_ShirleyChiu(float2 _uv)
+        {
+            float theta, r;
+            var x = _uv.x;
+            var y = _uv.y;
+            var a = 2*x - 1;
+            var b = 2*y - 1;
+            if (a == 0 && b == 0) {
+                r = theta = 0;
+            }
+            else if (a*a> b*b) { 
+                r = a;
+                theta = (kmath.kPI/4)*(b/a);
+            } else {
+                r = b;
+                theta = (kmath.kPI/2) - (kmath.kPI/4)*(a/b);
+            }
+
+            r /= 2;
+            return new float2( r*math.cos(theta),r*math.sin(theta));
+        }
     }
     
     public static class Cylindrical

@@ -29,8 +29,8 @@ namespace Runtime.Geometry
             right = new GPlane(math.mul(rotation, new float3(aspectC, 0f, -s)), origin + math.mul(rotation, new float3(s, 0f, aspectC).normalize() * centerDistance));
             top = new GPlane(math.mul(rotation, new float3(0f, c, -s)), origin + math.mul(rotation, new float3(0f, s, c).normalize() * centerDistance));
             bottom = new GPlane(math.mul(rotation, new float3(0f, -c, -s)), origin + math.mul(rotation, new float3(0f, -s, c).normalize() * centerDistance));
-            near = new GPlane(-forward, -zNear);
-            far = new GPlane(forward, zFar);
+            near = new GPlane(-forward, _origin + forward *zNear);
+            far = new GPlane(forward, _origin + forward * zFar);
         }
         
         public IEnumerator<GPlane> GetEnumerator()

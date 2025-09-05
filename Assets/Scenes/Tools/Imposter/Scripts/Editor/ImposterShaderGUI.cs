@@ -51,11 +51,11 @@ namespace Runtime.Optimize.Imposter
                 return;
             
             var _transform = m_Renderer.transform;
-            var _viewTransform = sceneView.camera.transform;
+            var _viewCamera = sceneView.camera.transform;
             var center = _transform.TransformPoint(m_BoundingSphere.center);
 
             Handles.matrix = Matrix4x4.TRS(center,Quaternion.identity,_transform.lossyScale * m_BoundingSphere.radius);
-            var viewDirection = _transform.worldToLocalMatrix.rotation * (_viewTransform.position - center).normalized;
+            var viewDirection = _transform.worldToLocalMatrix.rotation * (_viewCamera.position - center).normalized;
             if(m_DrawInput)
                 m_Input.DrawHandles(viewDirection);
             

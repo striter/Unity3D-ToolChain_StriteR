@@ -17,7 +17,7 @@ namespace Runtime.Geometry
         public GSphere(float3 _center, float _radius) { center = _center; radius = _radius; }
         public GSphere(float4 _centerAndRadius) : this(_centerAndRadius.xyz, _centerAndRadius.w) { }
         public float3 Origin => center;
-        public static readonly GSphere kDefault = kOne;
+        public static readonly GSphere kDefault = new (float3.zero,.5f);
         public static readonly GSphere kOne = new(float3.zero, .5f);
         public static readonly GSphere kZero = new(0,0);
         public float3 GetSupportPoint(float3 _direction) => center + _direction.normalize() * radius;
