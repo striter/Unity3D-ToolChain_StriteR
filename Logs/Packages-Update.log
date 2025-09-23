@@ -136,3 +136,16 @@ The following packages were updated:
   com.unity.recorder from version 4.0.1 to 4.0.2
   com.unity.render-pipelines.universal from version 14.0.8 to 14.0.10
   com.unity.visualeffectgraph from version 14.0.8 to 14.0.10
+
+=== Sat Aug 30 18:07:28 2025
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.ai.navigation from version 1.1.5 to 1.1.6
+  com.unity.ide.rider from version 3.0.28 to 3.0.36
+  com.unity.recorder from version 4.0.2 to 4.0.3
+  com.unity.render-pipelines.universal from version 14.0.10 to 14.0.12
+  com.unity.textmeshpro from version 3.0.6 to 3.0.7
+  com.unity.visualeffectgraph from version 14.0.10 to 14.0.12

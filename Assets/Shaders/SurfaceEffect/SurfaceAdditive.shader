@@ -2,7 +2,7 @@ Shader "Runtime/Surface/Additive"
 {
     Properties
     {
-        _AdditiveTexture("Additive Texture",2D) = "black"{}
+        _AdditiveTexture("Additive Texture",2D) = "white"{}
         [HDR]_AdditiveColor("Color Tint",Color)=(1,1,1,1)
     }
     SubShader

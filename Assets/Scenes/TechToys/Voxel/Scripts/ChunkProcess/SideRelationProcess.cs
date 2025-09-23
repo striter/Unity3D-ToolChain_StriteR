@@ -63,7 +63,7 @@ namespace TheVoxel.ChunkProcess
             
             public void Execute(int _jobIndex)
             {
-                var length = values.Count;
+                var length = values.Count();
                 var renderFaces = 0;
                 var keys = values.GetKeyArray(Allocator.Temp);
                 for(var keyIndex=0;keyIndex<length;keyIndex++)

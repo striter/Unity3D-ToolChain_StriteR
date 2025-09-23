@@ -18,7 +18,7 @@ Shader "Runtime/Surface/DitherTransparent"
         {
             Blend Off
 		    ZWrite Off
-		    ZTest Less
+            ZTest LEqual
 		    Cull Back
             
             Stencil

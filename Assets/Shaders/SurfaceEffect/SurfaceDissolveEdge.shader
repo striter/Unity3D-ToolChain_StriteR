@@ -23,7 +23,7 @@ Shader "Runtime/Surface/DissolveStencilEdge"
         {
             Blend One One
 		    ZWrite Off
-		    ZTest Less
+            ZTest LEqual
 		    Cull [_Cull]
             
             Stencil

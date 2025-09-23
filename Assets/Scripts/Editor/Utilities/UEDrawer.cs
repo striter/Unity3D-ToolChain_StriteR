@@ -15,7 +15,7 @@ namespace UnityEditor.Extensions
 
             if (sourceType.IsSubclassOf(typeof(Attribute)))
             {
-                targetDrawerType = (Type)Type.GetType("UnityEditor.ScriptAttributeUtility,UnityEditor").GetMethod("GetDrawerTypeForType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { sourceType });
+                targetDrawerType = (Type)Type.GetType("UnityEditor.ScriptAttributeUtility,UnityEditor").GetMethod("GetDrawerTypeForType", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { sourceType,true });
             }
             else
             {

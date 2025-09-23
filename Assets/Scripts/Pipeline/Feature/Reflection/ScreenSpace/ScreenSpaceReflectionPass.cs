@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing.Drawing2D;
-using Rendering.PostProcess;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 

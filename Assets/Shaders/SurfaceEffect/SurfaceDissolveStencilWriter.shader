@@ -21,7 +21,7 @@ Shader "Runtime/Surface/DissolveStencilWriter"
         {
             Blend Off
 		    ZWrite Off
-		    ZTest Less
+            ZTest LEqual
 		    Cull [_Cull]
             
             Stencil
