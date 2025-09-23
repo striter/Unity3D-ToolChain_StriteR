@@ -89,7 +89,7 @@ Shader "Runtime/Surface/DissolveStencilEdge"
                 clip(dissolveComparer);
                 float dissolve = step(0,dissolveComparer) ;
                 float edge = step(dissolveComparer,dissolveWidth) * dissolve;
-                return edge;
+                return edge * INSTANCE(_DissolveEdgeColor);
             }
             ENDHLSL
         }

@@ -14,25 +14,20 @@ Shader "Runtime/Surface/DitherTransparent"
     SubShader
     {
 		Tags{"Queue" = "Geometry-1"}
-        Pass
+        Blend Off
+		ZWrite Off
+        ZTest LEqual
+		Cull Back
+        
+        Stencil
         {
-            Blend Off
-		    ZWrite Off
-            ZTest LEqual
-		    Cull Back
-            
-            Stencil
-            {
-                Ref [_Stencil]
-                Comp [_StencilComp]
-                Pass [_StencilOp]
-                ReadMask [_StencilReadMask]
-                WriteMask [_StencilWriteMask]
-            }
-            HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-
+            Ref [_Stencil]
+            Comp [_StencilComp]
+            Pass [_StencilOp]
+            ReadMask [_StencilReadMask]
+            WriteMask [_StencilWriteMask]
+        }
+		HLSLINCLUDE
             #include "Assets/Shaders/Library/Common.hlsl"
 
             struct a2v
@@ -62,6 +57,22 @@ Shader "Runtime/Surface/DitherTransparent"
                 clip(_Transparency-dither01(screenPos));
                 return 1;
             }
+		ENDHLSL
+        Pass
+        {
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
+            ENDHLSL
+        }
+        Pass
+        {
+            Tags {"LightMode" = "DepthOnly"}
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
             ENDHLSL
         }
     }

@@ -13,7 +13,7 @@ namespace Rendering.Pipeline
         {
             return _renderQueue switch
             {
-                < 2000 => RenderPassEvent.BeforeRenderingOpaques,
+                < 2000 => RenderPassEvent.BeforeRenderingPrePasses,
                 < 2500 => RenderPassEvent.AfterRenderingOpaques,
                 < 3000 => RenderPassEvent.AfterRenderingSkybox,
                 < 3500 => RenderPassEvent.AfterRenderingTransparents,

@@ -17,25 +17,22 @@ Shader "Runtime/Surface/DissolveStencilWriter"
     SubShader
     {
 		Tags{"Queue" = "Transparent+1"}
-        Pass
+        Blend Off
+		ZWrite Off
+        ZTest LEqual
+		Cull [_Cull]
+        
+        Stencil
         {
-            Blend Off
-		    ZWrite Off
-            ZTest LEqual
-		    Cull [_Cull]
-            
-            Stencil
-            {
-                Ref [_Stencil]
-                Comp [_StencilComp]
-                Pass [_StencilOp]
-                ReadMask [_StencilReadMask]
-                WriteMask [_StencilWriteMask]
-            }
+            Ref [_Stencil]
+            Comp [_StencilComp]
+            Pass [_StencilOp]
+            ReadMask [_StencilReadMask]
+            WriteMask [_StencilWriteMask]
+        }
 
-            HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+		HLSLINCLUDE
+
 
             #include "Assets/Shaders/Library/Common.hlsl"
 
@@ -83,6 +80,20 @@ Shader "Runtime/Surface/DissolveStencilWriter"
                 clip(dissolveComparer);
                 return 1;
             }
+        ENDHLSL
+        Pass
+        {
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            ENDHLSL
+        }
+        Pass
+        {
+            Tags {"LightMode" = "DepthOnly"}
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
             ENDHLSL
         }
     }
