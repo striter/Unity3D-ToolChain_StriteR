@@ -18,17 +18,6 @@ namespace Rendering.Pipeline.Component
 
     public static class ISurfaceEffect_Extension
     {
-        #if UNITY_EDITOR
-        static ISurfaceEffect_Extension()
-        {
-            UnityEditor.EditorApplication.playModeStateChanged += (state) =>
-            {
-                foreach (var effect in ISurfaceEffect.kBehaviours.ToArray())
-                    OnEffectDisable(effect);
-            };
-        }
-        #endif
-        
         public static void OnEffectEnable(this ISurfaceEffect _effect)
         {
             ISurfaceEffect.kBehaviours.Add(_effect);
