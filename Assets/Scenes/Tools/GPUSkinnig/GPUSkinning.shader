@@ -14,11 +14,11 @@ Shader "Hidden/GPUSkinning"
 		#define _PBROFF
 		#define _EMISSIONOFF
 		TEXTURE2D( _MainTex); SAMPLER(sampler_MainTex);
-        #define A2V_ADDITIONAL float4 bindIndexes : TEXCOORD1; float4 bindWeights : TEXCOORD2;
 		INSTANCING_BUFFER_START
 			INSTANCING_PROP(float4,_MainTex_ST)
 			INSTANCING_PROP(float4,_Color)
 		INSTANCING_BUFFER_END
+        #define A2V_ADDITIONAL float4 boneIndexes : TEXCOORD1; float4 boneWeights : TEXCOORD2;
         StructuredBuffer<float4x4> _BoneMatrices;
         float4x4 GetSkinningMatrix(uint4 indexes,float4 weights) {
                 return _BoneMatrices[indexes.x] * weights.x
@@ -27,15 +27,15 @@ Shader "Hidden/GPUSkinning"
                     + _BoneMatrices[indexes.w] * weights.w;
         }
 
-		void ApplicationToVertex(inout float3 positionOS,inout float3 normalOS,inout float4 tangentOS,float4 bindIndexes,float4 bindWeights)
+		void ApplicationToVertex(inout float3 positionOS,inout float3 normalOS,inout float4 tangentOS,float4 boneIndexes,float4 boneWeights)
 		{
             float3 positionBS = positionOS;
-            float4x4 skinningMatrix = GetSkinningMatrix(bindIndexes, bindWeights);
+            float4x4 skinningMatrix = GetSkinningMatrix(boneIndexes, boneWeights);
 			positionOS = mul(skinningMatrix, float4(positionBS,1)).xyz;
 			normalOS = mul(skinningMatrix, float4(normalOS,0)).xyz;
 			tangentOS.xyz = mul(skinningMatrix, float4(tangentOS.xyz,0)).xyz;
 		}
-		#define A2V_TRANSFER(v) ApplicationToVertex(v.positionOS,v.normalOS,v.tangentOS,v.bindIndexes,v.bindWeights);
+		#define A2V_TRANSFER(v) ApplicationToVertex(v.positionOS,v.normalOS,v.tangentOS,v.boneIndexes,v.boneWeights);
 		
         ENDHLSL
     
