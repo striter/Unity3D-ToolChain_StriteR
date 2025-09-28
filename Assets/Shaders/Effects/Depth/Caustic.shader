@@ -13,7 +13,7 @@
 	}
 	SubShader
 	{
-		Tags{"Queue" = "Geometry+1"  "IgnoreProjector" = "True" "DisableBatching"="True"  }
+		Tags{"Queue" = "Transparent-1"  "IgnoreProjector" = "True" "DisableBatching"="True"  }
 		Pass
 		{
 			Blend One One
