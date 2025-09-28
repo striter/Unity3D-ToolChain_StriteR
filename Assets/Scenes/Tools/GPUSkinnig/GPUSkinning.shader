@@ -43,7 +43,7 @@ Shader "Hidden/GPUSkinning"
 		{
 			NAME "Main"
 			Tags{"LightMode" = "UniversalForward"}
-			Cull Off
+			Cull Back
 			HLSLPROGRAM
 			#pragma vertex ForwardVertex
 			#pragma fragment ForwardFragment
@@ -58,7 +58,7 @@ Shader "Hidden/GPUSkinning"
 			Blend Off
 			ZWrite On
 			ZTest LEqual
-			Cull Off
+			Cull Back
 			
 			HLSLPROGRAM
 			
@@ -76,7 +76,7 @@ Shader "Hidden/GPUSkinning"
 			Blend Off
 			ZWrite On
 			ZTest LEqual
-			Cull Off
+			Cull Back
 			
 			HLSLPROGRAM
 			#pragma vertex DepthVertex

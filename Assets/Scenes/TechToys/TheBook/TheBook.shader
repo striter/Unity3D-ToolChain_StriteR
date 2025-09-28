@@ -178,7 +178,7 @@ Shader "Hidden/TheBook"
 			Blend Off
 			ZWrite On
 			ZTest LEqual
-			Cull Off
+			Cull Back
 			
 			HLSLPROGRAM
 			
@@ -196,7 +196,7 @@ Shader "Hidden/TheBook"
 			Blend Off
 			ZWrite On
 			ZTest LEqual
-			Cull Off
+			Cull Back
 			
 			HLSLPROGRAM
 			#pragma vertex DepthVertex
@@ -211,7 +211,7 @@ Shader "Hidden/TheBook"
 			Blend Off
 			ZWrite On
 			ZTest LEqual
-			Cull Off
+			Cull Back
 
             HLSLPROGRAM
             #pragma vertex VertexSceneSelection

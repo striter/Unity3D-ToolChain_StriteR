@@ -99,7 +99,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalTex:
-        m_Texture: {fileID: 2800000, guid: 85b949589b8d239489f8ddbcf3977730, type: 3}
+        m_Texture: {fileID: 2800000, guid: 39df1a16c8cca9341927a15673fe4afd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -216,6 +216,10 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 0.4745098}
     - _DepthColor: {r: 0.44093373, g: 0.62285984, b: 0.8396226, a: 0.38431373}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Flow1: {r: 1, g: 0.1, b: 1, a: 0}
+    - _Flow1_ST: {r: 1, g: 1, b: 0.1, a: 0}
+    - _Flow2: {r: 1, g: 1, b: 1, a: 0}
+    - _Flow2_ST: {r: 1, g: 1, b: 0.1, a: 0}
     - _FlowST1: {r: 0.05, g: 0.05, b: 0.005, a: 0}
     - _FlowST2: {r: 0.025, g: 0.025, b: 0, a: 0}
     - _FoamColor: {r: 2.2433405, g: 2.297397, b: 1.7117859, a: 1}
