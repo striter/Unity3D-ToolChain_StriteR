@@ -74,7 +74,7 @@ MonoBehaviour:
         r: -0.5
         poleMatching: 1
   m_DistanceDamper:
-    mode: 3
+    mode: 4
     constant: 0
     halfLife: 0.1
     stiffness: 200

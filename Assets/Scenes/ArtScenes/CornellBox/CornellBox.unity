@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1052,6 +1051,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f2b871276b447d5b3a48820fac025e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_DrawGizmos: 0
   m_Quad:
     quad:
       vB:
@@ -1201,12 +1201,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!23 &1043046638 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3176953584674516501, guid: fc6e43fab5e2bbd4ba7e56518919c27e,
@@ -1289,7 +1289,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1125260495}
   - component: {fileID: 1125260496}
-  - component: {fileID: 1125260497}
   m_Layer: 0
   m_Name: CornellBox
   m_TagString: Untagged
@@ -1336,19 +1335,7 @@ MonoBehaviour:
       x: 1
       y: 1
       z: 1
-  m_Controller: {fileID: 1125260497}
---- !u!114 &1125260497
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1125260494}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eccd6b324d794867bcba67673e7634a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Controller: {fileID: 0}
   m_Input:
     camera: {fileID: 969644686}
     controller: {fileID: 11400000, guid: a8da152b709144f4398283eabfdbfbb8, type: 2}
@@ -1381,10 +1368,10 @@ MonoBehaviour:
         z: 0
       fov: 0
       distance: 0
-      viewPort:
+      viewport:
         x: 0
         y: 0
-    m_AnchorDebugRecording: 1
+    m_AnchorDebugRecording: 0
     m_SerializedController: {fileID: 0}
     m_ScriptableController: {fileID: 0}
 --- !u!1 &1160526318
@@ -1541,12 +1528,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!20 &1226606929
 Camera:
   m_ObjectHideFlags: 0

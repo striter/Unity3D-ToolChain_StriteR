@@ -26,8 +26,7 @@ MonoBehaviour:
   m_Name: GrabTextureFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  kActiveComponentsDebug:
-  - {fileID: 0}
+  kActiveComponentsDebug: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,7 +94,7 @@ MonoBehaviour:
     zFailOperation: 0
   m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
-  m_DepthPrimingMode: 2
+  m_DepthPrimingMode: 0
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1

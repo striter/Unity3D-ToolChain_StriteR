@@ -4,6 +4,7 @@ using CameraController.Demo;
 using Runtime;
 using Runtime.Geometry;
 using Runtime.Pool;
+using Runtime.TouchTracker;
 using TPool;
 using UnityEngine;
 
@@ -15,6 +16,8 @@ namespace Examples.ArtScenes.CornellBox
         public GBox m_Bounding;
         public FCameraControllerSimple m_Controller;
         private GameObjectPool<CornellBoxView> m_Views;
+        public FCameraControllerSimple.Input m_Input;
+        [field : SerializeField] public FCameraControllerCore m_Core { get; private set; }= new ();
         #region Constants
         private static readonly string kViewModelRoot = "ViewModels";
         private static readonly string kViewsTemplateRoot = "Views/Template";
@@ -45,7 +48,13 @@ namespace Examples.ArtScenes.CornellBox
         // Update is called once per frame
         void LateUpdate()
         {
-            m_Views.Traversal(p=>p.Tick(m_Controller.m_Input.camera));
+            var deltaTime = Time.unscaledDeltaTime;
+            var tracks = TouchTracker.Execute(deltaTime);
+            m_Input.PlayerPinch += tracks.CombinedPinch();
+            m_Input.PlayerDrag += tracks.CombinedDrag();
+            m_Core.Tick(deltaTime, ref m_Input);
+            
+            m_Views.Traversal(p=>p.Tick(m_Input.camera));
         }
 
         private void OnDrawGizmos()
@@ -101,6 +110,7 @@ namespace Examples.ArtScenes.CornellBox
             var layerMask = 1 << layer;
             m_ViewRoot = _viewRoot;
             m_Camera = transform.GetComponentInChildren<Camera>(true);
+            m_Camera.name = $"Camera{_layerIndex}";
             m_ViewRoot.SetChildLayer(layer);
             m_RenderTexture = RenderTexture.GetTemporary(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
             m_Quad = _quad;
