@@ -42,9 +42,6 @@ namespace Rendering.Pipeline
 
         public override void OnCameraPreCull(ScriptableRenderer renderer, in CameraData cameraData)
         {
-            if (!m_Data.Valid)
-                return;
-
             base.OnCameraPreCull(renderer, in cameraData);
             m_Pass.OnPreCull(renderer, in cameraData);
         }
@@ -96,6 +93,9 @@ namespace Rendering.Pipeline
 
         public void OnPreCull(ScriptableRenderer renderer, in CameraData cameraData)
         {
+            if (!m_Data.Valid)
+                return;
+
             m_DrawTransparentsPass = (DrawObjectsPass)UDebug.GetFieldValue(renderer, "m_RenderTransparentForwardPass");
             m_SrcFilteringSettings = (FilteringSettings)UDebug.GetFieldValue(m_DrawTransparentsPass, "m_FilteringSettings");
             var filterSetting = m_SrcFilteringSettings;
