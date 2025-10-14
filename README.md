@@ -102,6 +102,10 @@ Effects.scene
 <img width="723" height="505" alt="image" src="https://github.com/user-attachments/assets/6bc27fad-3c5c-4bd4-a468-3f1523f8ccc2" />
 
 
+
+
+
+
 <或许会感兴趣的内容 POE>
 
 ColorPalette 参考IQ大佬文章做的拓展以及编辑器,可实现各种归一化数值颜色变化
