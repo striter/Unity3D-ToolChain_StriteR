@@ -1,10 +1,8 @@
 #Unity3D-ToolChain-StriteR
 
-关于作者StriteR.:
+关于作者:
 
-玩家水平过低
-
-野人流派,经常性造一些自己感兴趣的轮子 
+打野流派 & 造些自己感兴趣的轮子 & 玩家水平过低
 
 知乎 https://www.zhihu.com/people/striter
 
@@ -74,6 +72,11 @@ AudioAnalysis.scene 为学习(强行自搓)快速傅里叶变换的音频可视�
 Imposter.scene 参考网络文章独立实现的Impostor
 
 <img width="602" height="319" alt="image" src="https://github.com/user-attachments/assets/67fb433f-d3ef-436a-81b8-3e1d86106d33" />
+
+Pool.scene CPU端程序化Floating
+
+<img width="926" height="519" alt="image" src="https://github.com/user-attachments/assets/3635ebd5-c00f-42c8-9a78-82c53f50e29a" />
+
 
 Effects.scene 
 1. PBR Shader实现(拷贝) 并基于ShaderLab实现代码多态
