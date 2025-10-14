@@ -1,17 +1,26 @@
 #Unity3D-ToolChain-StriteR
 
 关于作者:
+
 个人知乎 https://www.zhihu.com/people/striter
+
 有库相关问题/技术咨询请联系 QQ:908666285
+
 *本库需要安装Bakery插件以正确显示场景GI细节.
 
-技术玩具/DEMO 场景/关键词 与 对应索引:
+
+
+<技术玩具/DEMO 场景/关键词 与 对应索引 Keywords>
 
 ThePlanet.scene : 对Townscaper部分技术的拙劣实现. https://www.bilibili.com/opus/776541417448144915
 ![Screenshot_20221127_155848](https://user-images.githubusercontent.com/32827196/204125050-15f36a1d-cbe2-4ae5-aa55-0092e7dfea60.png)
 
 Gargantua.scene 对ShaderToy-Gartantua的拙劣提炼与模仿,贴图采样暂未更新.
 <img width="915" height="507" alt="image" src="https://github.com/user-attachments/assets/72de809d-b6dc-4708-b50c-a5d7eff6da59" />
+
+DiningRoom.scene 移轴摄影模拟
+<img width="728" height="533" alt="image" src="https://github.com/user-attachments/assets/135246d8-90f9-4ecf-a2df-d77655630545" />
+
 
 PolyIsland.scene 卡通描边场景以及视差云海
 <img width="1014" height="572" alt="image" src="https://github.com/user-attachments/assets/453ee443-350d-4ff6-ba58-6d49d369054b" />
@@ -46,7 +55,7 @@ OffScreenParticle.scene: 离屏粒子实现 https://zhuanlan.zhihu.com/p/1959606
 ReflectiveShadowMap.scene: RSM实现
 <img width="926" height="523" alt="image" src="https://github.com/user-attachments/assets/fa326068-d856-4989-8c03-ecd9762e7e60" />
 
-PostProcess.scene 常用的后处理与管线实现
+PostProcess.scene 自搓的常用后处理与管线实现 (Bloom Focal VHS 等)
 <img width="935" height="524" alt="image" src="https://github.com/user-attachments/assets/a20d4aa0-ab96-4055-a76c-b819b7a1c8eb" />
 
 CustomGI.scene 基于Skyight ambience + 预烘焙的IndirectDiffuse * SH插值构建的动态GI
@@ -89,6 +98,7 @@ Effects.scene
 <img width="994" height="531" alt="image" src="https://github.com/user-attachments/assets/adfa32e4-f445-46e0-9eed-36baff023365" />
 <img width="880" height="307" alt="image" src="https://github.com/user-attachments/assets/14f12ba1-be7b-481f-b2b9-c68759b5b267" />
 
+<或许会感兴趣的内容 POE>
 
 ColorPalette 参考IQ大佬文章做的拓展以及编辑器,可实现各种归一化数值颜色变化
 
@@ -102,8 +112,16 @@ EditorExecutableProcess 编辑器可执行Bundle,用于编制离线处理流程 
 
 <img width="453" height="412" alt="image" src="https://github.com/user-attachments/assets/72969bcd-8224-43a0-8d46-17d57a1c78c6" />
 
-ConditionAttribute 用Attribute的形式制作编辑器,以替换原本繁琐的编辑器代码实现
+ConditionAttribute 用Attribute的形式制作编辑器,以替换原本繁琐的编辑器代码实现 (同时ShaderGUI也有对应的实现)
 
 <img width="743" height="445" alt="image" src="https://github.com/user-attachments/assets/6cce6fdc-30ad-4627-9fb6-63df41efa5af" />
+
+AssetProcess 用ScriptableObject关联文件夹并进行目录资源导入处理
+
+<img width="456" height="174" alt="image" src="https://github.com/user-attachments/assets/dda1f82f-d837-490c-bf47-b5ee1b263f9f" />
+
+TouchConsole 早年自搓的Runtime Debug工具
+<img width="1008" height="575" alt="image" src="https://github.com/user-attachments/assets/57ec2cff-f60b-4e21-ac58-1b0de33ca4ba" />
+
 
 以及更多内容.
