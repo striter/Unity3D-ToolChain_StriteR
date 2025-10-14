@@ -66,7 +66,7 @@ Shader "Dome/Lit"
 			    return toonSpecular;
 			}
 			
-			void SurfaceOverride(BRDFInitializeInput i,inout BRDFSurface surface)
+			void SurfaceOverride(v2ff i,inout BRDFSurface surface)
 			{
 				surface.ao = surface.ao*i.color.a;
 			}

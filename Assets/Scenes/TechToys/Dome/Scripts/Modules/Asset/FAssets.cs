@@ -66,7 +66,7 @@ namespace Dome
                 return null;
             }
             var poolHandler = modelPool.Spawn(out var _model);
-            kModelPoolIndexer.Add(_model.GetInstanceID(),poolHandler);
+            kModelPoolIndexer.Add(_model.gameObject.GetInstanceID(),poolHandler);
             if(_root!=null) _model.transform.SetParent(_root);
             _model.transform.SetLocalPositionAndRotation(Vector3.zero,Quaternion.identity);
             return _model.gameObject;

@@ -75,7 +75,7 @@ Shader "Runtime/Optimize/Imposter/Normal_Depth_Instancing"
             #define F2O_RESULT(i,imposterOutput,albedo) Output(albedo,imposterOutput,i.positionWS,i.forwardWS)
             #if _INTERPOLATE
 				#define V2F_IMPOSTER float4 uv01 : TEXCOORD0; float4 uv23 : TEXCOORD1; float4 uvWeights:TEXCOORD2; float3 positionWS : TEXCOORD3; float3 forwardWS : TEXCOORD4
-				#define V2F_IMPOSTER_TRANSFER(v,o) ImposterVertexEvaluate_Bilinear(v.uv,INSTANCE(_Parallax),o.fdorwardWS,o.positionWS,o.uv01,o.uv23,o.uvWeights);
+				#define V2F_IMPOSTER_TRANSFER(v,o) ImposterVertexEvaluate_Bilinear(v.uv,INSTANCE(_Parallax),o.forwardWS,o.positionWS,o.uv01,o.uv23,o.uvWeights);
             	ImposterFragmentOutput ImposterFragment(float4 uv01,float4 uv23, float4 uvWeights)
 				{
 					ImposterFragmentOutput o;

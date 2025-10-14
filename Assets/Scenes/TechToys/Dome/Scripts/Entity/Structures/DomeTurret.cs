@@ -38,7 +38,8 @@ namespace Dome.Entity
         public MeshRenderer[] meshRenderers { get; set; }
         public Material[] restoreMaterials { get; set; }
         public Dictionary<string, Transform> modelNodes { get; set; }
-        public Damper viewDamper { get; set; }
+        private Damper m_ViewDmaper;
+        public ref Damper viewDamper => ref m_ViewDmaper;
         public Transform pitchTransform { get; set; }
         public Transform yawTransform { get; set; }
         public ESelections selectionFlags { get; set; }
@@ -59,6 +60,7 @@ namespace Dome.Entity
         public int ownerId { get; set; }
         public Transform[] castNodes { get; set; }
         public int castIndex { get; set; }
-        public Counter projectileCastCooldown { get; set; }
+        private Counter m_ProjectileCastCooldown = Counter.kDefault;
+        public ref Counter projectileCastCooldown => ref m_ProjectileCastCooldown;
     }
 }

@@ -10,7 +10,7 @@ namespace Dome.Entity
         public FDomeEntityInput input { get; set; }
         public string kProjectileName { get; }
         public float kCastCooldown { get; }
-        public Counter projectileCastCooldown { get; set; }
+        public ref Counter projectileCastCooldown { get; }
     }
 
     public static class IProjectileCaster_Extension
@@ -32,7 +32,7 @@ namespace Dome.Entity
 
         public static void OnInitialize(this IProjectileCaster _caster, EntityInitializeParameters _initialize)
         {
-            _caster.projectileCastCooldown = new Counter(_caster.kCastCooldown,true);
+            _caster.projectileCastCooldown.Set(_caster.kCastCooldown);
         }
         
 

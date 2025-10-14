@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: TopDown
   m_EditorClassIdentifier: 
   m_InputProcessor: {fileID: 11400000, guid: 1990a60f4a620cd41a0fae7c563b40a4, type: 2}
+  m_Collision: {fileID: 0}
   m_Anchor:
     m_AnchorMode: 1
     m_OriginDamper:
       mode: 0
+      constant: 0
       halfLife: 0.1
       stiffness: 20
       damping: 4
@@ -27,7 +29,19 @@ MonoBehaviour:
         poleMatching: 1
     m_OriginExtraDamper:
       mode: 2
+      constant: 0
       halfLife: 0.3
+      stiffness: 20
+      damping: 4
+      secondOrderDynamics:
+        f: 5
+        z: 0.35
+        r: -0.5
+        poleMatching: 1
+    m_OriginExtraDamper2:
+      mode: 3
+      constant: 0
+      halfLife: 0.1
       stiffness: 20
       damping: 4
       secondOrderDynamics:
@@ -39,6 +53,7 @@ MonoBehaviour:
     m_RotationMode: 0
     m_PlayerInputDamper:
       mode: 0
+      constant: 0
       halfLife: 0.02
       stiffness: 20
       damping: 4
@@ -49,6 +64,7 @@ MonoBehaviour:
         poleMatching: 1
     m_RotationDamper:
       mode: 2
+      constant: 0
       halfLife: 0.1
       stiffness: 20
       damping: 4
@@ -57,14 +73,9 @@ MonoBehaviour:
         z: 0.35
         r: -0.5
         poleMatching: 1
-  m_Collision:
-    m_CollisionMin: 0.1
-    m_CollisionForward: 0.1
-    m_CullingMask: 0
-    m_ColliderRadius: 0.1
-    m_SceneMask: 15
   m_DistanceDamper:
     mode: 3
+    constant: 0
     halfLife: 0.5
     stiffness: 85.6
     damping: 15.4
@@ -75,6 +86,7 @@ MonoBehaviour:
       poleMatching: 1
   m_ViewportDamper:
     mode: 0
+    constant: 0
     halfLife: 0.1
     stiffness: 20
     damping: 4
@@ -85,20 +97,19 @@ MonoBehaviour:
       poleMatching: 1
   m_ChildAnchorName: Bip001 Spine1
   m_UseTransformPosition: 0
-  m_AnchorY: 0
   m_AnchorOffset:
     x: 0
     y: 0
     z: 0
   m_Pitch: 45
   m_Yaw: 0
-  m_CameraDistance: 12
+  m_CameraDistance: 30
   m_FOV: 45
   m_ViewportX: 0
   m_ViewportY: 0
   m_PinchDistanceRange:
     start: 0
-    length: 0
+    length: 10
   m_PinchFovRange:
     start: 0
-    length: 0
+    length: 20

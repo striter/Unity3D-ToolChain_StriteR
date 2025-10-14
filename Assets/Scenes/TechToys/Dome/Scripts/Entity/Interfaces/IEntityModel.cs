@@ -5,7 +5,7 @@ namespace Dome.Entity
 {
     public interface ITurretModel : IModel
     {
-        public Damper viewDamper { get; set; }
+        public ref Damper viewDamper { get; }
         public Transform pitchTransform { get; set; }
         public Transform yawTransform { get; set; }
         
@@ -22,14 +22,14 @@ namespace Dome.Entity
                _model.pitchTransform = _model.yawTransform;
            
            _model.viewDamper = _model.kViewDamperData;
-           _model.viewDamper.Initialize(0);
+           _model.viewDamper.Initialize(quaternion.identity);
         }
         
         public static void OnModelClear(this ITurretModel _model)
         {
             _model.yawTransform = null;
             _model.pitchTransform = null;
-        }
+        } 
         
         public static void Tick(this ITurretModel _model,float _deltaTime)
         {
@@ -38,8 +38,8 @@ namespace Dome.Entity
             var desiredRotationLS = float2.zero;
             if (_model is IAim target)
                 desiredRotationLS = target.desiredRotationLS;
-            
-            var rotation = _model.viewDamper.Tick(_deltaTime, desiredRotationLS);
+
+            var rotation = _model.viewDamper.TickAngle(_deltaTime, desiredRotationLS.to3xy());
             if (_model.pitchTransform == _model.yawTransform)
             {
                 _model.pitchTransform.localRotation = Quaternion.Euler(rotation.x, rotation.y, 0);

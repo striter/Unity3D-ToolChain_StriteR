@@ -6,6 +6,7 @@ using Dome.LocalPlayer;
 using Runtime.Geometry;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Dome
 {
@@ -13,11 +14,11 @@ namespace Dome
     public class FDomeCamera : ADomeController
     {
         public FControllerInput m_Input;
-        public FCameraControllerOutput m_Ouput;
+        public FCameraControllerOutput m_Output;
         public FControllerInterpolate m_Interpolate;
         public Camera m_Camera => m_Input.camera;
         
-        private FCameraControllerCore m_Controller = new FCameraControllerCore();
+        [SerializeField] private FCameraControllerCore m_Controller = new FCameraControllerCore();
         public override void OnInitialized()
         {
             m_Input.camera = transform.GetComponentInChildren<Camera>();

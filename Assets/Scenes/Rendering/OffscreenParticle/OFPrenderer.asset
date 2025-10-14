@@ -17,7 +17,7 @@ MonoBehaviour:
     blendShader: {fileID: 4800000, guid: 8a07bc90b55722e4fb4052d3e8652699, type: 3}
     layerMask:
       value: 192
-    downSample: 4
+    downSample: 32
     maxDepth: 1
     varianceDepthMaps: 1
 --- !u!114 &-6691445836900065267
@@ -80,6 +80,12 @@ MonoBehaviour:
     objectMotionVector: {fileID: 4800000, guid: 7b3ede40266cd49a395def176e1bc486,
       type: 3}
     dataDrivenLensFlare: {fileID: 4800000, guid: 6cda457ac28612740adb23da5d39ea92,
+      type: 3}
+    terrainDetailLitPS: {fileID: 4800000, guid: f6783ab646d374f94b199774402a5144,
+      type: 3}
+    terrainDetailGrassPS: {fileID: 4800000, guid: e507fdfead5ca47e8b9a768b51c291a1,
+      type: 3}
+    terrainDetailGrassBillboardPS: {fileID: 4800000, guid: 29868e73b638e48ca99a19ea58c48d90,
       type: 3}
   m_AssetVersion: 2
   m_OpaqueLayerMask:

@@ -5,6 +5,7 @@ using Dome.Model;
 using Runtime.Geometry;
 using Runtime.Geometry.Extension;
 using Unity.Mathematics;
+using UnityEditor.ShaderGraph.Drawing.Inspector;
 using UnityEngine;
 
 namespace Dome.LocalPlayer
@@ -38,6 +39,17 @@ namespace Dome.LocalPlayer
             base.Tick(_player,_deltaTime,_entity);
             var input = _player.Refer<FDomeInput>().playerInputs;
             var camera = _player.Refer<FDomeCamera>();
+            
+            camera.m_Input.pinch -= input.zoom*_deltaTime * 50f;
+            camera.m_Input.pinch = math.clamp(camera.m_Input.pinch, 0f, 1f);
+            if (input.leftAlt == EInputState.Press)
+            {
+                camera.m_Input.euler.x += input.rotate.y;
+                camera.m_Input.euler.y -= input.rotate.x;
+            }
+            
+            m_Entity.velocity = (input.entityInput.move.x * camera.m_Camera.transform.right.SetY(0f).normalized +
+                                 input.entityInput.move.y * camera.m_Camera.transform.forward.SetY(0f).normalized) * m_Entity.kStartSpeed;
             
             if (TickPlacement(_player,camera,input)) return;
             

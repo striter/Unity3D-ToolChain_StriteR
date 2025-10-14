@@ -133,7 +133,7 @@ namespace Dome
 
         public override void OnInitialized()
         {
-            m_Cells = new GameObjectPool<int, DomeCell>(transform.Find("Cell").GetComponent<DomeCell>());
+            m_Cells = new GameObjectPool<int, DomeCell>(new DomeCell(transform.Find("Cell")));
             PopulateMesh();
         }
 

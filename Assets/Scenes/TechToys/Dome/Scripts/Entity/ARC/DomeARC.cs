@@ -40,7 +40,10 @@ namespace Dome.Entity
         
         public string kProjectileName => "Missile";
         public float kCastCooldown => 1f;
-        
+
+        private Counter m_ProjectileCastCooldown = Counter.kDefault;
+        public ref Counter projectileCastCooldown => ref m_ProjectileCastCooldown;
+
         public string modelPath { get; set; }
         public ETeam team { get; set; }
         public FDomeEntityInput input { get; set; }
@@ -55,9 +58,9 @@ namespace Dome.Entity
         public float kMaxHealth { get; set; }
         public float maxHealth { get; set; }
         public IEntity desiredTarget { get; set; }
-        public float3 aimDirection { get; set; }
         public float2 desiredRotationLS { get; set; }
-        public Damper viewDamper { get; set; }
+        private Damper m_ViewDmaper;
+        public ref Damper viewDamper => ref m_ViewDmaper;
         public Transform pitchTransform { get; set; }
         public Transform yawTransform { get; set; }
         public ESelections selectionFlags { get; set; }
@@ -69,7 +72,6 @@ namespace Dome.Entity
         public Transform[] castNodes { get; set; }
         public int castIndex { get; set; }
         public Collider[] colliders { get; set; }
-        public Counter projectileCastCooldown { get; set; }
     }
 
 }

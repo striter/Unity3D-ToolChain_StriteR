@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Extensions;
-using System.Numerics;
-using Runtime.Geometry;
-using Runtime.Geometry.Curves.Spline;
 using Runtime.Pool;
 using Runtime.SignalProcessing;
 using TPool;

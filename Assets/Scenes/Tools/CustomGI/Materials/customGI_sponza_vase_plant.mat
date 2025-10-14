@@ -12,8 +12,9 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _ALPHACLIP
+  - _ALPHATEST_ON
   m_InvalidKeywords:
+  - _ALPHACLIP
   - _ALPHAPREMULTIPLY_ON
   - _GLOSSYREFLECTIONS_OFF
   - _NDF_COOKTORRANCE

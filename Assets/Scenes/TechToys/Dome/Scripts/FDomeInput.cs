@@ -63,7 +63,7 @@ namespace Dome
                     move= new float2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical")),
                     primary = GetState(KeyCode.Mouse0),
                 },
-                rotate = new float2(Input.GetAxis("Mouse X"),-Input.GetAxis("Mouse Y")),
+                rotate = new float2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y")),
                 zoom = Input.GetAxis("Mouse ScrollWheel"),
                 hoverPosition = Input.mousePosition.XY(),
                 

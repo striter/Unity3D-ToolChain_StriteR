@@ -26,14 +26,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5509032784305150112}
-  m_LocalRotation: {x: -0.4039711, y: -0.11209298, z: 0.26592332, w: 0.8680595}
-  m_LocalPosition: {x: -1.77, y: 4.64, z: 0.79}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -39.921, y: -32.269, z: 46.06}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &1612294910421351528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46,24 +46,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9348aed9be69c7a4f9dde9b9a6623ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshConstructor:
-    m_Width: 0.05
-    m_Billboard: 1
-    m_Extend: 5
-    m_RopePosition: 0
-    m_EndTransform: {fileID: 0}
-    m_EndPosition: {x: -115.682, y: 19.532, z: 4.511999}
-    m_EndBiTangent: {x: 0, y: 9.02, z: 0}
-    m_ControlDamper:
-      mode: 1
-      halfLife: 0.5
-      stiffness: 100
-      damping: 1
+  m_DrawGizmos: 0
+  m_Width: 0.1
+  m_Billboard: 1
+  m_JointSubdivision: 0
+  m_TolerangeInAngles: 10
+  m_DistanceDamper: 0.1
+  m_ExtraDivision: 0
+  m_Extend: 3
+  m_Resolution: 16
+  m_RopePosition: 0
+  m_EndTransform: {fileID: 0}
+  m_EndPosition: {x: 1, y: 0, z: 0}
+  m_EndBiTangent: {x: 0, y: 0, z: 1}
+  m_ControlDamper:
+    mode: 3
+    constant: 0
+    halfLife: 0.1
+    stiffness: 20
+    damping: 4
+    secondOrderDynamics:
       f: 5
       z: 0.35
       r: -0.5
-      poleMatching: 0
-  m_DrawGizmos: 0
+      poleMatching: 1
 --- !u!33 &2229165109190857512
 MeshFilter:
   m_ObjectHideFlags: 0
