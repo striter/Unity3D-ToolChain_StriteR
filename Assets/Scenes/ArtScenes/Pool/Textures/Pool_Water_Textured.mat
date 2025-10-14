@@ -144,7 +144,7 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _Caustic: 1
-    - _CausticStrength: 5
+    - _CausticStrength: 2
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
