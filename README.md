@@ -12,13 +12,17 @@
 
 <技术玩具/DEMO 场景/关键词 与 对应索引 Keywords>
 
+
 ThePlanet.scene : 对Townscaper部分技术的拙劣实现. https://www.bilibili.com/opus/776541417448144915
+
 ![Screenshot_20221127_155848](https://user-images.githubusercontent.com/32827196/204125050-15f36a1d-cbe2-4ae5-aa55-0092e7dfea60.png)
 
 Gargantua.scene 对ShaderToy-Gartantua的拙劣提炼与模仿,贴图采样暂未更新.
+
 <img width="915" height="507" alt="image" src="https://github.com/user-attachments/assets/72de809d-b6dc-4708-b50c-a5d7eff6da59" />
 
 DiningRoom.scene 移轴摄影模拟
+
 <img width="728" height="533" alt="image" src="https://github.com/user-attachments/assets/135246d8-90f9-4ecf-a2df-d77655630545" />
 
 
@@ -58,7 +62,7 @@ ReflectiveShadowMap.scene: RSM实现
 PostProcess.scene 自搓的常用后处理与管线实现 (Bloom Focal VHS 等)
 <img width="935" height="524" alt="image" src="https://github.com/user-attachments/assets/a20d4aa0-ab96-4055-a76c-b819b7a1c8eb" />
 
-CustomGI.scene 基于Skyight ambience + 预烘焙的IndirectDiffuse * SH插值构建的动态GI
+CustomGI.scene 基于预烘焙的Skyight ambience * Lightmap Dir * SH  + 多个IndirectDiffuse Intensity * Light Color 插值构建的半动态GI
 <img width="999" height="479" alt="image" src="https://github.com/user-attachments/assets/91792872-b9cb-469f-b3f5-dad7ebd9dbe0" />
 
 UGUIExtensions.cs: 基于UGUI实现的各种组件,如Line/Trail Renderer, 镂空等
