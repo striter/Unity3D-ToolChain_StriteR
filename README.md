@@ -63,7 +63,7 @@ ReflectiveShadowMap.scene: RSM实现
 PostProcess.scene 自搓的常用后处理与管线实现 (Bloom Focal VHS 等)
 <img width="935" height="524" alt="image" src="https://github.com/user-attachments/assets/a20d4aa0-ab96-4055-a76c-b819b7a1c8eb" />
 
-CustomGI.scene 基于预烘焙的Skyight ambience * Lightmap Dir * SH  + 多个IndirectDiffuse Intensity * Light Color 插值构建的半动态GI
+CustomGI.scene 基于预烘焙的Skyight intensity * Lightmap Dir * SH  + 多个IndirectDiffuse Intensity * Light Color 插值 制作的半动态GI
 <img width="999" height="479" alt="image" src="https://github.com/user-attachments/assets/91792872-b9cb-469f-b3f5-dad7ebd9dbe0" />
 
 AudioAnalysis.scene 为学习(强行自搓)快速傅里叶变换的音频可视化DEMO
@@ -141,6 +141,7 @@ NumericalAnalysis.scene Newton's method与Newton's fractal的CPU实现
 <img width="904" height="531" alt="image" src="https://github.com/user-attachments/assets/37f653ed-c98c-4113-b60c-c0a01d6df731" />
 
 Runtime.Geometry 个人长期使用与维护的几何库
+
 GeometryVisualize.scene: 几何库相关的可视化
 <img width="996" height="554" alt="image" src="https://github.com/user-attachments/assets/79ff3412-94d0-452d-ace0-f93006bfe9a7" />
 
