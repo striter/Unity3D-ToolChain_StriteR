@@ -1,7 +1,10 @@
 #Unity3D-ToolChain-StriteR
 
-关于作者:
-StriteR.(野人) 造一些自己感兴趣的轮子 
+关于作者StriteR.:
+
+玩家水平过低
+
+野人流派,经常性造一些自己感兴趣的轮子 
 
 知乎 https://www.zhihu.com/people/striter
 
