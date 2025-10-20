@@ -5,7 +5,8 @@ Shader "Hidden/Gargantua"
 		[Enum(_16,16,_32,32,_64,64,_128,128,_256,256)]_Iteration("Iteration",int)=16
         [Header(Gas Disc)]
         _DiskRadius("Disk Radius",Range(0,1))=0.1
-        _GasDiskTexture("Texture",2D)="black"{}
+        _GasDiskTextureXY("Texture XY",2D)="white"{}
+        _GasDiskTextureXZ("Texture XZ",2D)="white"{}
         [ColorUsage(false,true)]_GasDiskColor("Color",Color)=(1,1,1,1)
         
         [Header(Haze)]
@@ -50,7 +51,8 @@ Shader "Hidden/Gargantua"
 				UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            TEXTURE2D(_GasDiskTexture);SAMPLER(sampler_GasDiskTexture);
+            TEXTURE2D(_GasDiskTextureXY);SAMPLER(sampler_GasDiskTextureXY);
+            TEXTURE2D(_GasDiskTextureXZ);SAMPLER(sampler_GasDiskTextureXZ);
             INSTANCING_BUFFER_START
                 INSTANCING_PROP(int,_Iteration)
                 INSTANCING_PROP(float4,_Color)
@@ -63,7 +65,8 @@ Shader "Hidden/Gargantua"
 
                 INSTANCING_PROP(float,_DiskRadius)
                 INSTANCING_PROP(float3,_GasDiskColor)
-                INSTANCING_PROP(float4,_GasDiskTexture_ST)
+                INSTANCING_PROP(float4,_GasDiskTextureXY_ST)
+                INSTANCING_PROP(float4,_GasDiskTextureXZ_ST)
             INSTANCING_BUFFER_END
 
             float3 WarpSpace(GTorus torus,float3 direction,float3 position)
@@ -88,16 +91,26 @@ Shader "Hidden/Gargantua"
             {
                 GCylinderCapped cylinder = GCylinderCapped_Ctor(0, _TorusMajorRadius ,.001);
 
-                float2 coords = pos.xz - cylinder.cylinder.center.xz;
-                coords = CartesianToPolar(coords);
-                coords = TransformTex_Flow(coords,_GasDiskTexture_ST);
 
                 float cylinderSDF = cylinder.SDF(pos);
                 float coverage = saturate(invlerp(_DiskRadius,0,cylinderSDF));
-                coverage *= saturate(invlerp(.03,0,abs(cylinder.cylinder.center.y - pos.y)));
-                coverage *= step(0.04,cylinderSDF);
+                coverage *= saturate(invlerp(.01,0,abs(cylinder.cylinder.center.y - pos.y)));
+                coverage *= step(0.035,cylinderSDF);
                 coverage = pow(coverage,2);
-                return SAMPLE_TEXTURE2D(_GasDiskTexture,sampler_GasDiskTexture,coords) * coverage / _Iteration;
+                
+                float2 coordsXY = pos.xz - cylinder.cylinder.center.xz;
+                coordsXY /= _DiskRadius;
+                coordsXY = CartesianToPolar(coordsXY);
+                coordsXY = TransformTex_Flow(coordsXY,_GasDiskTextureXY_ST);
+
+                float2 coordsXZ = pos.xz - cylinder.cylinder.center.xz;
+                coordsXZ /= _DiskRadius;
+                coordsXZ = CartesianToPolar(coordsXZ);
+                coordsXZ = TransformTex_Flow(coordsXZ,_GasDiskTextureXZ_ST);
+
+                float3 sample = SAMPLE_TEXTURE2D(_GasDiskTextureXY,sampler_GasDiskTextureXY,coordsXY).rgb;
+                sample *= SAMPLE_TEXTURE2D(_GasDiskTextureXZ,sampler_GasDiskTextureXZ,coordsXZ).rgb;
+                return sample * coverage / _Iteration;
             }
             
             v2f vert (a2v v)

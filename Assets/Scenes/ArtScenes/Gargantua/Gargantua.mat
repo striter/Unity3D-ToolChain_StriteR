@@ -51,6 +51,14 @@ Material:
         m_Texture: {fileID: 2800000, guid: dac04e3e8e5590a4cb99d9e7943c640b, type: 3}
         m_Scale: {x: 55.07, y: 77.26}
         m_Offset: {x: 0, y: 0.02}
+    - _GasDiskTextureXY:
+        m_Texture: {fileID: 2800000, guid: 3a6957b8f8d8d6640bee8419665e3490, type: 3}
+        m_Scale: {x: 5, y: 5}
+        m_Offset: {x: 0, y: 0.01}
+    - _GasDiskTextureXZ:
+        m_Texture: {fileID: 2800000, guid: 41319cdb0b40d744ca89944302ffece5, type: 3}
+        m_Scale: {x: 5, y: 10}
+        m_Offset: {x: 0, y: 0.01}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -96,7 +104,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DiskRadius: 0.327
+    - _DiskRadius: 0.321
     - _DiskRadiusEnd: 0.14925377
     - _DstBlend: 0
     - _DstBlendAlpha: 0
@@ -106,10 +114,10 @@ Material:
     - _GlossyReflections: 0
     - _HazeOffset: 0
     - _HazePower: 1
-    - _HazeRange: -0.09236641
-    - _HazeRangeEnd: 0.05280739
+    - _HazeRange: -0.04035696
+    - _HazeRangeEnd: 0.03051762
     - _HazeZeroedRadius: 0.186
-    - _Iteration: 128
+    - _Iteration: 256
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -121,16 +129,16 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _TorusMajorRadius: 0.118
-    - _TorusMinorRadius: 0.026
-    - _WarpAmount: 0.065
+    - _TorusMajorRadius: 0.155
+    - _TorusMinorRadius: 0
+    - _WarpAmount: 0.095
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 9.849155, g: 8.920896, b: 5.9931183, a: 1}
+    - _Color: {r: 44.727036, g: 36.283672, b: 33.545273, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GasDiskColor: {r: 11.226599, g: 11.473139, b: 9.254277, a: 1}
+    - _GasDiskColor: {r: 41.73181, g: 23.187073, b: 18.306879, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &8284622358475449912
