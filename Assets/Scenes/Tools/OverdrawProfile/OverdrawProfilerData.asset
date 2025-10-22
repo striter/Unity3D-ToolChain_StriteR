@@ -19,3 +19,4 @@ MonoBehaviour:
     start: 2
     length: 2
   m_Color: {r: 0.8584906, g: 0.35348344, b: 0.26321647, a: 1}
+  m_OverdrawCompute: {fileID: 7200000, guid: 85887fa610f4866429507ed17975b8fc, type: 3}

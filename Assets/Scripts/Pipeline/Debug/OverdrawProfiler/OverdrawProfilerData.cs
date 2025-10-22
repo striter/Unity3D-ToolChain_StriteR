@@ -10,6 +10,7 @@ namespace Render.Debug
         public RenderPassEvent m_Event = RenderPassEvent.AfterRendering;
         public RangeInt m_Stack = new(3, 5);
         public Color m_Color = Color.red;
+        [DefaultAsset("Assets/Scripts/Pipeline/Debug/OverdrawProfiler/OverdrawCompute.compute")] public ComputeShader m_OverdrawCompute;
         
         [InspectorButton]
         public void Profile() => OverdrawProfiler.Switch(this);

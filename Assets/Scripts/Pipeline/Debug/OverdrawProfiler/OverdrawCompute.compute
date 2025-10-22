@@ -1,0 +1,29 @@
+#pragma kernel Clear
+#pragma kernel Compute
+
+RWStructuredBuffer<int> _Result;
+
+[numthreads(1, 1, 1)]
+void Clear(uint3 id : SV_DispatchThreadID)
+{
+    _Result[0] = 0;
+    _Result[1] = 0;
+}
+
+float _IncrementPerStack;
+Texture2D<float4> _OverDrawRT;
+[numthreads(8, 8, 1)]
+void Compute(uint3 id : SV_DispatchThreadID)
+{
+    float4 col = _OverDrawRT[id.xy];
+    float compare = col.r;
+    if (compare > 0)
+    {
+        InterlockedAdd(_Result[0], 1);
+        while (_IncrementPerStack > 0 && compare > 0)
+        {
+            InterlockedAdd(_Result[1], 1);
+            compare -= _IncrementPerStack;
+        }
+    }
+}

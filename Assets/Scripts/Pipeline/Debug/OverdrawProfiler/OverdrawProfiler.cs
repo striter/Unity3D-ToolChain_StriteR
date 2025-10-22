@@ -50,15 +50,25 @@ namespace Render.Debug
                 return;
             
             Handles.BeginGUI();
-            GUI.Label(new Rect(10, _sceneView.camera.pixelHeight - 50, 200, 20), $"{m_RenderPass.m_Data.name}");
-            if (GUI.Button(new Rect(10, _sceneView.camera.pixelHeight - 30, 200, 20), $"Disable"))
-                Switch(null);
 
-            if(Event.current.isKey && Event.current.keyCode == KeyCode.Escape)
-                Switch(null);
+            OnGUI(_sceneView.camera,new Rect(10, 10, 200, 50));
             
             Handles.EndGUI();
         }
 #endif
+        static void OnGUI(Camera _camera,Rect _rect)
+        {
+            GUI.Box(_rect, GUIContent.none);
+            GUILayout.BeginArea(_rect.Collapse(Vector2.one * .9f));
+            GUILayout.BeginVertical();
+            GUILayout.Label( $"{m_RenderPass.m_Data.name}:{m_RenderPass.QueryPixelDrawNormalize(_camera)}");
+            if (GUILayout.Button($"Disable"))
+                Switch(null);
+            GUILayout.EndVertical();
+            GUILayout.EndArea();
+
+            if(Event.current.isKey && Event.current.keyCode == KeyCode.Escape)
+                Switch(null);
+        }
     }
 }
