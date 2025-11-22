@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CM_Cold Night Equirect
+  m_Name: Skybox_Cold Night Equirect
   m_Shader: {fileID: 4800000, guid: 21cab88a4a87b1e4f96986f74a574981, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0

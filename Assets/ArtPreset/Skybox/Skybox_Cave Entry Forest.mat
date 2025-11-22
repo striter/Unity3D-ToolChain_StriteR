@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CM_Mondarrain 3
+  m_Name: Skybox_Cave Entry Forest
   m_Shader: {fileID: 4800000, guid: 21cab88a4a87b1e4f96986f74a574981, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -101,7 +101,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Tex:
-        m_Texture: {fileID: 8900000, guid: 2a3861a880ccd7c4baded49f3d48c15b, type: 3}
+        m_Texture: {fileID: 8900000, guid: 4eaa7aeb0cb156a418a747c4e7c468c5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _UpTex:

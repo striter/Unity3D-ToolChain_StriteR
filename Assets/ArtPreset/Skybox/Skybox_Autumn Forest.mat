@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CM_Corsica Beach
+  m_Name: Skybox_Autumn Forest
   m_Shader: {fileID: 4800000, guid: 21cab88a4a87b1e4f96986f74a574981, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -101,7 +101,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Tex:
-        m_Texture: {fileID: 8900000, guid: 220b8c6bc789ba64f91732a82d91abf7, type: 3}
+        m_Texture: {fileID: 8900000, guid: dd4d01067375bb84f865364b558a1a01, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _UpTex:
