@@ -43,6 +43,7 @@ namespace Runtime.Optimize.Voxelizer
         }
 
 
+        #if UNITY_EDITOR
         private static BoundingVolumeHierarchy<GBox,GTriangle,BoundaryTreeHelper.GBox_GTriangle> kVoxelizer = new(64,8);
         private static List<float> kIntersectDistances = new List<float>();
         private static List<GTriangle> kTrianglesWS = new List<GTriangle>();
@@ -161,5 +162,6 @@ namespace Runtime.Optimize.Voxelizer
             texture.name = "Voxelizer";
             UnityEditor.Extensions.UEAsset.CreateOrReplaceMainAsset(texture, _path);
         }
+        #endif
     }
 }

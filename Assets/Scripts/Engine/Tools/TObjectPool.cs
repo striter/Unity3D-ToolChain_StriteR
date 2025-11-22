@@ -108,6 +108,7 @@ namespace TObjectPool
     }
 #endregion
 }
+    
 namespace TPool
 {
     #region Reference 
