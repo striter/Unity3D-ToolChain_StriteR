@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Runtime.Geometry
 {
@@ -17,6 +18,16 @@ namespace Runtime.Geometry
         }
 
         public PLine Distinct() => start > end ? new PLine(end, start) : this;
+
+        public int Contract(int _src)
+        {
+            if (_src == start)
+                return end;
+            if (_src == end)
+                return start;
+            Debug.Assert(false,$"[{nameof(PLine)}|{nameof(Contract)}]:Invalid index to contract {_src} ({this.ToString()})");
+            return -1;
+        }
         
         public int this[int index] => index == 0 ? start : end;
         

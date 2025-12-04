@@ -35,7 +35,8 @@ namespace Runtime.Geometry
         {
             if (!Valid)
                 return;
-            
+
+            Gizmos.color = Color.white.SetA(.5f);
             if (_flag.IsFlagEnable(EDrawMeshFlag.Vertices))
             {
                 foreach (var vertex in vertices)
@@ -51,26 +52,55 @@ namespace Runtime.Geometry
             if (_flag.IsFlagEnable(EDrawMeshFlag.Edges))
             {
                 foreach (var edge in edges)
-                    new GLine(vertices, edge).DrawGizmos();
+                    new GLine(vertices, edge).Trim(new RangeFloat(.1f,.8f)).DrawGizmos();
             }
         }
 
-        int GetMatchTriangleCount(int _edgeIndex)
+        int2 GetAdjacentTriangles(PLine _edge,out int2 _edgeVertices)
         {
-            var matchCount = 0;
-            var srcEdge = edges[_edgeIndex].Distinct();
+            var matchTriangles = -kint2.one;
+            _edgeVertices = -kint2.one;
+            var srcEdge = _edge.Distinct();
             for (var i = triangles.Count - 1; i >= 0; i--)
             {
                 var triangle = triangles[i];
-                foreach (var edge in triangle.GetEdges())
+                for (var j = 0; j < 3; j++)
                 {
-                    if (edge.Distinct() == srcEdge)
-                        matchCount += 1;
+                    var edge = new PLine(triangle[j],triangle[(j + 1) % 3]).Distinct();
+                    if (edge != srcEdge) 
+                        continue;
+                    
+                    Debug.Assert(matchTriangles.x == -1 || matchTriangles.y == -1,$"[{nameof(GMesh)}:{nameof(GetAdjacentTriangles)}] Invalid mesh");
+
+                    var edgeVertex = triangle[(j + 2) % 3];
+                    if (matchTriangles.x == -1)
+                    {
+                        matchTriangles.x = i;
+                        _edgeVertices.x = edgeVertex;
+                    }
+                    else if(matchTriangles.y == -1)
+                    {
+                        matchTriangles.y = i;
+                        _edgeVertices.y = edgeVertex;
+                    }
                 }
             }
-            return matchCount;
+            return matchTriangles;
         }
-        
+
+        private static List<PLine> kAdjacentEdgeHelper = new();
+        List<PLine> GetAdjacentEdges(int _vertex)
+        {
+            kAdjacentEdgeHelper.Clear();
+            foreach(var edge in edges)
+            {
+                if(edge.start == _vertex || edge.end == _vertex)
+                    kAdjacentEdgeHelper.Add(edge);
+            }
+
+            return kAdjacentEdgeHelper;
+        }
+
         void CleanUpUnUsedVertices()
         {
             for (var i = vertices.Count - 1; i >= 0; i--)
@@ -141,6 +171,47 @@ namespace Runtime.Geometry
             Ctor();
         }
 
+        //https://graphics.stanford.edu/~mdfisher/subdivision.html
+        float3 LoopSubdivisionNewVertex(PLine _edge)
+        {
+            var v0 = vertices[_edge.start];
+            var v1 = vertices[_edge.end];
+            var matchTriangles = GetAdjacentTriangles(_edge,out var edgeVertices);
+            if ((matchTriangles == -1).any()) 
+                return (v0 + v1) / 2;
+
+            var v3 = vertices[edgeVertices.x];
+            var v4 = vertices[edgeVertices.y];
+            return (v0 + v1) * (3/8f) + (v3 + v4) * (1/8f);
+        }
+
+        float3 LoopSubdivisionOldVertex(int _vertexIndex)
+        {
+            var adjacentEdges = GetAdjacentEdges(_vertexIndex);
+            var n = adjacentEdges.Count;
+            switch (n)
+            {
+                case 0:
+                case 1:
+                {
+                    Debug.LogError($"[{nameof(GMesh)}|{nameof(LoopSubdivisionOldVertex)}]:Invalid edge count {adjacentEdges.Count} to division");
+                    return 0;
+                }
+                case 2:     //Edge case 
+                    return (vertices[adjacentEdges[0].Contract(_vertexIndex)] + vertices[adjacentEdges[1].Contract(_vertexIndex)]) * 1/8f + vertices[_vertexIndex] * 3/4f;
+                default:
+                {
+                    var sum = float3.zero;
+                    var beta = n == 3 ? (3 / 16f) : 3/(8f*n);
+                    for (var i = 0; i < adjacentEdges.Count; i++)
+                    {
+                        sum += vertices[adjacentEdges[i].Contract(_vertexIndex)] * beta;
+                    }
+                    return sum + (1 - n*beta) * vertices[_vertexIndex];
+                }
+            }
+        }
+        
         public void LoopSubdivision()
         {
             var newVertices = new List<float3>();
@@ -148,28 +219,28 @@ namespace Runtime.Geometry
             
             newVertices.AddRange(vertices);
             newTriangles.AddRange(triangles);
-            foreach (var pTriangle in triangles)
+            
+            for(var i = triangles.Count - 1 ; i >= 0; i--)
             {
+                var pTriangle = triangles[i];
                 var p0 = pTriangle.V0;
                 var p1 = pTriangle.V1;
                 var p2 = pTriangle.V2;
-                var v0 = vertices[pTriangle.V0];
-                var v1 = vertices[pTriangle.V1];
-                var v2 = vertices[pTriangle.V2];
-
-                var v3 = (v0 + v1) / 2;
-                var v4 = (v1 + v2) / 2;
-                var v5 = (v2 + v0) / 2;
-
+                
+                
                 var startVertex = newVertices.Count;
                 var p3 = startVertex;
                 var p4 = startVertex + 1;
                 var p5 = startVertex + 2;
-                
-                newVertices.Add(v3);
-                newVertices.Add(v4);
-                newVertices.Add(v5);
-                
+
+                newVertices[pTriangle.V0] = LoopSubdivisionOldVertex(pTriangle.V0);
+                newVertices[pTriangle.V1] = LoopSubdivisionOldVertex(pTriangle.V1);
+                newVertices[pTriangle.V2] = LoopSubdivisionOldVertex(pTriangle.V2);
+                newVertices.Add(LoopSubdivisionNewVertex(new PLine(pTriangle.V0,pTriangle.V1)));
+                newVertices.Add(LoopSubdivisionNewVertex(new PLine(pTriangle.V1,pTriangle.V2)));
+                newVertices.Add(LoopSubdivisionNewVertex(new PLine(pTriangle.V2,pTriangle.V0)));
+
+                newTriangles.RemoveAt(i);
                 newTriangles.Add(new PTriangle(p0,p3,p5));
                 newTriangles.Add(new PTriangle(p3,p1,p4));
                 newTriangles.Add(new PTriangle(p4,p2,p5));
@@ -178,6 +249,7 @@ namespace Runtime.Geometry
 
             triangles = newTriangles;
             vertices = newVertices;
+            Ctor();
         }
     }
 }

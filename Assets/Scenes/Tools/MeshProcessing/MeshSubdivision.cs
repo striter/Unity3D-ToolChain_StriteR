@@ -17,7 +17,7 @@ public class MeshProcessing : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.matrix = transform.localToWorldMatrix;
-        m_Mesh.DrawGizmos(EDrawMeshFlag.Triangles);
+        m_Mesh.DrawGizmos(EDrawMeshFlag.Vertices | EDrawMeshFlag.Edges);
     }
 
     [InspectorButton]
