@@ -27,6 +27,12 @@ public class MeshProcessing : MonoBehaviour
     }
 
     [InspectorButton]
+    public void SealVertices()
+    {
+        m_Mesh.SealVertices();
+    }
+
+    [InspectorButton]
     public void LoopSubdivision()
     {
         m_Mesh.LoopSubdivision();   

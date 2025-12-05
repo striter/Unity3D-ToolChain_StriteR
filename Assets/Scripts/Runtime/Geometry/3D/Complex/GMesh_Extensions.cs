@@ -171,6 +171,38 @@ namespace Runtime.Geometry
             Ctor();
         }
 
+        public void SealVertices(float _distanceBiasSQR = 0.00001f)
+        {
+            var count = vertices.Count;
+            for (var i = count - 1; i >= 0 ;i--)
+            {
+                var srcPosition = vertices[i];
+                for (var j = 0; j < i - 1; j++)
+                {
+                    var dstPosition = vertices[j];
+                    if(math.lengthsq(dstPosition - srcPosition) > _distanceBiasSQR)
+                        continue;
+
+                    for (var k = triangles.Count - 1; k >= 0; k--)
+                    {
+                        var triangle = triangles[k];
+
+                        for (var l = 0; l < 3; l++)
+                        {
+                            if (triangle[l] == j)
+                                triangle[l] = i;
+                        }
+
+                        triangles[k] = triangle;
+                    }
+                }
+            }
+            
+            CleanUpUnUsedVertices();
+            Ctor();
+        }
+        
+    #region Subdivision
         //https://graphics.stanford.edu/~mdfisher/subdivision.html
         float3 LoopSubdivisionNewVertex(PLine _edge)
         {
@@ -212,6 +244,7 @@ namespace Runtime.Geometry
             }
         }
         
+        private static Dictionary<PLine,int> kNewVertexHelper = new();
         public void LoopSubdivision()
         {
             var newVertices = new List<float3>();
@@ -219,6 +252,17 @@ namespace Runtime.Geometry
             
             newVertices.AddRange(vertices);
             newTriangles.AddRange(triangles);
+            kNewVertexHelper.Clear();
+
+            var newIndex = vertices.Count;
+            foreach (var edge in edges)
+            {
+                newVertices.Add(LoopSubdivisionNewVertex(edge));
+                kNewVertexHelper.Add(edge, newIndex++);
+            }
+
+            for (var i = 0; i < vertices.Count; i++)
+                newVertices[i] = LoopSubdivisionOldVertex(i);
             
             for(var i = triangles.Count - 1 ; i >= 0; i--)
             {
@@ -226,19 +270,9 @@ namespace Runtime.Geometry
                 var p0 = pTriangle.V0;
                 var p1 = pTriangle.V1;
                 var p2 = pTriangle.V2;
-                
-                
-                var startVertex = newVertices.Count;
-                var p3 = startVertex;
-                var p4 = startVertex + 1;
-                var p5 = startVertex + 2;
-
-                newVertices[pTriangle.V0] = LoopSubdivisionOldVertex(pTriangle.V0);
-                newVertices[pTriangle.V1] = LoopSubdivisionOldVertex(pTriangle.V1);
-                newVertices[pTriangle.V2] = LoopSubdivisionOldVertex(pTriangle.V2);
-                newVertices.Add(LoopSubdivisionNewVertex(new PLine(pTriangle.V0,pTriangle.V1)));
-                newVertices.Add(LoopSubdivisionNewVertex(new PLine(pTriangle.V1,pTriangle.V2)));
-                newVertices.Add(LoopSubdivisionNewVertex(new PLine(pTriangle.V2,pTriangle.V0)));
+                var p3 = kNewVertexHelper[new PLine(pTriangle.V0, pTriangle.V1).Distinct()];
+                var p4 = kNewVertexHelper[new PLine(pTriangle.V1, pTriangle.V2).Distinct()];
+                var p5 = kNewVertexHelper[new PLine(pTriangle.V2, pTriangle.V0).Distinct()];
 
                 newTriangles.RemoveAt(i);
                 newTriangles.Add(new PTriangle(p0,p3,p5));
@@ -251,5 +285,6 @@ namespace Runtime.Geometry
             vertices = newVertices;
             Ctor();
         }
+    #endregion
     }
 }
