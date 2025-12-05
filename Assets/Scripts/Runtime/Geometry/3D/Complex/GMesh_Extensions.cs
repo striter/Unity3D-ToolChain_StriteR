@@ -204,46 +204,7 @@ namespace Runtime.Geometry
         
     #region Subdivision
         //https://graphics.stanford.edu/~mdfisher/subdivision.html
-        float3 LoopSubdivisionNewVertex(PLine _edge)
-        {
-            var v0 = vertices[_edge.start];
-            var v1 = vertices[_edge.end];
-            var matchTriangles = GetAdjacentTriangles(_edge,out var edgeVertices);
-            if ((matchTriangles == -1).any()) 
-                return (v0 + v1) / 2;
 
-            var v3 = vertices[edgeVertices.x];
-            var v4 = vertices[edgeVertices.y];
-            return (v0 + v1) * (3/8f) + (v3 + v4) * (1/8f);
-        }
-
-        float3 LoopSubdivisionOldVertex(int _vertexIndex)
-        {
-            var adjacentEdges = GetAdjacentEdges(_vertexIndex);
-            var n = adjacentEdges.Count;
-            switch (n)
-            {
-                case 0:
-                case 1:
-                {
-                    Debug.LogError($"[{nameof(GMesh)}|{nameof(LoopSubdivisionOldVertex)}]:Invalid edge count {adjacentEdges.Count} to division");
-                    return 0;
-                }
-                case 2:     //Edge case 
-                    return (vertices[adjacentEdges[0].Contract(_vertexIndex)] + vertices[adjacentEdges[1].Contract(_vertexIndex)]) * 1/8f + vertices[_vertexIndex] * 3/4f;
-                default:
-                {
-                    var sum = float3.zero;
-                    var beta = n == 3 ? (3 / 16f) : 3/(8f*n);
-                    for (var i = 0; i < adjacentEdges.Count; i++)
-                    {
-                        sum += vertices[adjacentEdges[i].Contract(_vertexIndex)] * beta;
-                    }
-                    return sum + (1 - n*beta) * vertices[_vertexIndex];
-                }
-            }
-        }
-        
         private static Dictionary<PLine,int> kNewVertexHelper = new();
         public void LoopSubdivision()
         {
@@ -254,15 +215,59 @@ namespace Runtime.Geometry
             newTriangles.AddRange(triangles);
             kNewVertexHelper.Clear();
 
-            var newIndex = vertices.Count;
+            for (var i = 0; i < vertices.Count; i++)
+            {
+                var adjacentEdges = GetAdjacentEdges(i);
+                var n = adjacentEdges.Count;
+                var newPosition = float3.zero;
+                switch (n)
+                {
+                    case 0:
+                    case 1:
+                    {
+                        Debug.LogError($"[{nameof(GMesh)}|{nameof(LoopSubdivision)}]:Invalid edge count {adjacentEdges.Count} to division");
+                    }
+                        break;
+                    case 2: //Edge case 
+                    {
+                        newPosition =  (vertices[adjacentEdges[0].Contract(i)] + vertices[adjacentEdges[1].Contract(i)]) * 1/8f + vertices[i] * 3/4f;
+                    }
+                        break;
+                    default:
+                    {
+                        var sum = float3.zero;
+                        var beta = n == 3 ? (3 / 16f) : 3/(8f*n);
+                        for (var j = 0; j < adjacentEdges.Count; j++)
+                        {
+                            sum += vertices[adjacentEdges[j].Contract(i)] * beta;
+                        }
+                        newPosition =  sum + (1 - n*beta) * vertices[i];
+                    }
+                        break;
+                }
+                newVertices[i] = newPosition;
+            }
+            
+            var vertexIndex = vertices.Count;
             foreach (var edge in edges)
             {
-                newVertices.Add(LoopSubdivisionNewVertex(edge));
-                kNewVertexHelper.Add(edge, newIndex++);
+                var v0 = vertices[edge.start];
+                var v1 = vertices[edge.end];
+                var matchTriangles = GetAdjacentTriangles(edge,out var edgeVertices);
+                var newPosition = float3.zero;
+                if ((matchTriangles == -1).any()) 
+                    newPosition =  (v0 + v1) / 2;
+                else
+                {
+                    var v3 = vertices[edgeVertices.x];
+                    var v4 = vertices[edgeVertices.y];
+                    newPosition =  (v0 + v1) * (3/8f) + (v3 + v4) * (1/8f);
+                }                
+
+                newVertices.Add(newPosition);
+                kNewVertexHelper.Add(edge, vertexIndex++);
             }
 
-            for (var i = 0; i < vertices.Count; i++)
-                newVertices[i] = LoopSubdivisionOldVertex(i);
             
             for(var i = triangles.Count - 1 ; i >= 0; i--)
             {
